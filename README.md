@@ -13,9 +13,9 @@
 * sudo apt install build-essential libssl-dev libffi-dev python-dev
 * sudo apt install -y python3-venv
 
-> **Création de l'environnement**
-* python3 -m venv my_env
-* source my_env/bin/activate
+> **Installation de flask**
+* pip install flask
+* pip install flask-restplus
 
 
 
