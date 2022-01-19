@@ -1,36 +1,30 @@
+# import flask and swagger
 from markupsafe import escape
-from flask import Flask, abort, request
-# from flask_restplus import Api, Resource
-# app = Api(app = flask_app)
+from flask import Flask, abort, request, redirect, url_for, render_template
 
-# name_space = app.namespace('main', description='Main APIs')
-
+# creation d'une instance de flask
 app = Flask(__name__)
 
-# @name_space.route("/")
-# class MainClass(Resource):
-# 	def get(self):
-# 		return {
-# 			"status": "Got new data"
-# 		}
-# 	def post(self):
-# 		return {
-# 			"status": "Posted new data"
-# 		}
-@app.route('/')
+
+@app.route('/')      # Possible d'avoir plusieurs routes
 @app.route('/index/')
+
 def hello():
     return '<h1>Hello, World!</h1>'
 
+# Redirection
+@app.route('/admin/')
+def admin():
+    return redirect(url_for("capitalize", word="lol"))
 
-@app.route('/about/')
-def about():
-    return '<h3>This is a Flask web application.</h3>'
+@app.route('/about/<nael>') # Utilisation de pages HTML
+def about(nael):
+    return render_template("index.html",holla=nael, r=2, noms=["lol", "lul", "lil"]) 
 
-@app.route('/capitalize/<word>/')
+@app.route('/capitalize/<word>/') # On a accès <word> avec la variable word
 def capitalize(word):
-    return '<h1>{}</h1>'.format(escape(word.capitalize()))
-
+    return '<h1>Hello {} !</h1>'.format(escape(word.capitalize())) # .format ajoute ce qu'on lui donne à la place de {} 
+# .escape convertit les caracteres non alphanumeriques en String
 @app.route('/add/<int:n1>/<int:n2>/')
 def add(n1, n2):
     return '<h1>{}</h1>'.format(n1 + n2)
@@ -57,7 +51,7 @@ def entities():
 		'body': request.json
         }
 
-@app.route('/entities/<int:entity_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/entities/<int:entity_id>/', methods=['GET', 'PUT', 'DELETE'])
 def entity(entity_id):
     if request.method == "GET":
         return {
@@ -79,4 +73,6 @@ def entity(entity_id):
             'method': request.method
         }
 
-
+# permet de lancer l'appli
+# if __name__ == "__main__":
+#     app.run()
