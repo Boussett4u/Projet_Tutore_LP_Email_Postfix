@@ -1,5 +1,6 @@
 **/lib
 **/lib64
 **/share
-**/__pycache__**
+**/__pycache__
 **/bin
+**/install.sh
