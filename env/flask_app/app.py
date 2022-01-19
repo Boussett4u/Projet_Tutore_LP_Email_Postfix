@@ -1,5 +1,5 @@
 from markupsafe import escape
-from flask import Flask, abort
+from flask import Flask, abort, request
 # from flask_restplus import Api, Resource
 # app = Api(app = flask_app)
 
@@ -42,3 +42,41 @@ def greet_user(user_id):
         return '<h2>Hi {}</h2>'.format(users[user_id])
     except IndexError:
         abort(404)
+
+@app.route('/entities/', methods=['GET', 'POST'])
+def entities():
+    if request.method == "GET":
+        return {
+            'message': 'This endpoint should return a list of entities',
+            'method': request.method
+        }
+    if request.method == "POST":
+        return {
+            'message': 'This endpoint should create an entity',
+            'method': request.method,
+		'body': request.json
+        }
+
+@app.route('/entities/<int:entity_id>', methods=['GET', 'PUT', 'DELETE'])
+def entity(entity_id):
+    if request.method == "GET":
+        return {
+            'id': entity_id,
+            'message': 'This endpoint should return the entity {} details'.format(entity_id),
+            'method': request.method
+        }
+    if request.method == "PUT":
+        return {
+            'id': entity_id,
+            'message': 'This endpoint should update the entity {}'.format(entity_id),
+            'method': request.method,
+		'body': request.json
+        }
+    if request.method == "DELETE":
+        return {
+            'id': entity_id,
+            'message': 'This endpoint should delete the entity {}'.format(entity_id),
+            'method': request.method
+        }
+
+
