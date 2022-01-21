@@ -1,21 +1,28 @@
 # import flask and swagger
 from markupsafe import escape
-from flask import Flask, abort, request, redirect, url_for, render_template
+from flask import Flask, abort, request, redirect, url_for, render_template, request, session
+from datetime import timedelta
 
 # creation d'une instance de flask
 app = Flask(__name__)
 
+# On va crypter les données de session
+app.secret_key = "secret"
+
+# On garde les données de session 1 heure
+app.permanent_session_lifetime = timedelta(hours=1)
 
 @app.route('/')      # Possible d'avoir plusieurs routes
 @app.route('/index/')
 
 def hello():
-    return '<h1>Hello, World!</h1>'
+    return render_template("index.html", holla="Home Page")
 
 # Redirection
 @app.route('/admin/')
 def admin():
-    return redirect(url_for("capitalize", word="lol"))
+    return render_template("admin.html")
+    # return redirect(url_for("capitalize", word="lol"))
 
 @app.route('/about/<nael>') # Utilisation de pages HTML
 def about(nael):
@@ -29,11 +36,53 @@ def capitalize(word):
 def add(n1, n2):
     return '<h1>{}</h1>'.format(n1 + n2)
 
-@app.route('/users/<int:user_id>/')
-def greet_user(user_id):
-    users = ['Bob', 'Jane', 'Adam']
+# @app.route('/users/<int:user_id>/')
+# def greet_user(user_id):
+#     users = ['Bob', 'Jane', 'Adam']
+#     try:
+#         return '<h2>Hi {}</h2>'.format(users[user_id])
+#     except IndexError:
+#         abort(404)
+        
+@app.route('/login', methods=['GET', 'POST'])
+def login():
     try:
-        return '<h2>Hi {}</h2>'.format(users[user_id])
+        if request.method == "POST":
+            session.permanent = True
+            user = request.form['nm']
+            mdp = request.form['mdp']
+            session['user'] = user
+            session['mdp'] = mdp
+            if mdp == "lol" and user == "lol":
+                return redirect(url_for("user"))
+            else:
+                return render_template("loginwrong.html")
+        else:
+            if 'user' in session:
+                return redirect(url_for("user"))
+            else:
+                return render_template("login.html")
+    except IndexError:
+        abort(404)
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    session.pop('mdp', None)
+    return redirect(url_for("login"))
+
+@app.route('/user')
+def user():
+    try:
+        if 'user' in session:
+            user = session['user']
+            if 'mdp' in session:
+                mdp = session['mdp']
+                return f'<h1>{user}</h1>'
+            else:
+                return redirect(url_for("login"))
+        else:
+            return redirect(url_for("login"))
     except IndexError:
         abort(404)
 
@@ -74,5 +123,6 @@ def entity(entity_id):
         }
 
 # permet de lancer l'appli
-# if __name__ == "__main__":
-#     app.run()
+if __name__ == "__main__":
+    app.run(debug=True)
+

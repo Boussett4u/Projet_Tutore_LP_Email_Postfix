@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Login {% endblock %}
+
+{% block login %}
+<h1>Wrong id or password</h1>
+{% endblock%}
+{% block content %}
+<form action="#" method="post">
+    <p>Nom:</p>
+    <p><input type="text" name="nm" /></p>
+    <p>Mot de passe:</p>
+    <p><input type="text" name="mdp" /></p>
+    <p><input type="submit" value="submit" /></p>
+</form>
+{% endblock %}
