@@ -9,3 +9,5 @@ sudo apt install -y python3-venv
 . env/bin/activate
 pip install flask
 pip install flask-restplus
+pip install Flask-reCaptcha
+pip install flask-sqlalchemy

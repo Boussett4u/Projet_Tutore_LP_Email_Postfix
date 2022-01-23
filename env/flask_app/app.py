@@ -1,22 +1,31 @@
 # import flask and swagger
+from crypt import methods
 from markupsafe import escape
-from flask import Flask, abort, request, redirect, url_for, render_template, request, session
+from flask import Flask, abort, request, redirect, url_for, render_template, request, session, flash
 from datetime import timedelta
+from flask_sqlalchemy import SQLalchemy
 
 # creation d'une instance de flask
 app = Flask(__name__)
 
-# On va crypter les données de session
+# On va chiffrer les données de session
 app.secret_key = "secret"
 
-# On garde les données de session 1 heure
-app.permanent_session_lifetime = timedelta(hours=1)
+# On configure la table users
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# On garde les données de session 5 minutes
+app.permanent_session_lifetime = timedelta(minutes=5)
+
+# On crée une instance de bdd
+db = SQLalchemy(app)
+
 
 @app.route('/')      # Possible d'avoir plusieurs routes
 @app.route('/index/')
-
 def hello():
-    return render_template("index.html", holla="Home Page")
+    return render_template("index.html")
 
 # Redirection
 @app.route('/admin/')
@@ -36,29 +45,23 @@ def capitalize(word):
 def add(n1, n2):
     return '<h1>{}</h1>'.format(n1 + n2)
 
-# @app.route('/users/<int:user_id>/')
-# def greet_user(user_id):
-#     users = ['Bob', 'Jane', 'Adam']
-#     try:
-#         return '<h2>Hi {}</h2>'.format(users[user_id])
-#     except IndexError:
-#         abort(404)
-        
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     try:
         if request.method == "POST":
             session.permanent = True
-            user = request.form['nm']
+            user = request.form['nm'] # On donne en parametre dans la requete POST 
             mdp = request.form['mdp']
-            session['user'] = user
+            session['user'] = user # On définit les variables de session
             session['mdp'] = mdp
             if mdp == "lol" and user == "lol":
+                flash("Bien connecté", "connecté") #Utiliser 2 eme arg pour mettre une icone
                 return redirect(url_for("user"))
             else:
                 return render_template("loginwrong.html")
         else:
             if 'user' in session:
+                flash("Déja connecté", "connecté") #Utiliser 2 eme arg pour mettre une icone
                 return redirect(url_for("user"))
             else:
                 return render_template("login.html")
@@ -67,21 +70,32 @@ def login():
 
 @app.route('/logout')
 def logout():
+    if 'user' in session:
+            flash(f"{session['user']} déconnecté avec succès", "deconnecté") #Utiliser 2 eme arg pour mettre une icone
+    else: 
+            flash("Pas de compte connecté", "deconnecté") #Utiliser 2 eme arg pour mettre une icone
     session.pop('user', None)
-    session.pop('mdp', None)
+    session.pop('mdp', None)  
+    session.pop('email', None)  
     return redirect(url_for("login"))
 
-@app.route('/user')
+@app.route('/user', methods=["GET", "POST"])
 def user():
+    email = None # On définit l'email
     try:
         if 'user' in session:
-            user = session['user']
-            if 'mdp' in session:
-                mdp = session['mdp']
-                return f'<h1>{user}</h1>'
+            if request.method == "POST":    # On définit l'email
+                email = request.form['email']
+                session['email'] = email
+                flash("Email bien pris en compte", "connecté") #Utiliser 2 eme arg pour mettre une icone
+
             else:
-                return redirect(url_for("login"))
+                if "email" in session:
+                    email = session["email"]
+
+            return render_template("user.html", email=email)
         else:
+            flash("Pas de compte connecté", "deconnecté") #Utiliser 2 eme arg pour mettre une icone
             return redirect(url_for("login"))
     except IndexError:
         abort(404)
