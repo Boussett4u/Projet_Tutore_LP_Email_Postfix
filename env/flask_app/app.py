@@ -15,7 +15,7 @@ app = Flask(__name__)
 app.secret_key = "secret"
 
 # Cette chaîne nous permet de nous connecter à la bdd
-# bdd_uri = ""
+bdd_uri = "postgresql://postgres:nael2001@localhost:5432/test"
 
 # On garde les données de session 5 minutes
 app.permanent_session_lifetime = timedelta(minutes=5)
@@ -70,17 +70,20 @@ def login():
             # session.permanent = True
             user = request.form['nm'] # On donne en parametre dans la requete POST 
             mdp = request.form['mdp']
+            # trouve=0
             # s = Session()
             # utilisateurs = session.query(Utilisateurs)
-            # for utilisateur in utilisateurs
-            # if mdp == utilisateur.mdp and user == utilisateur.id:
-            if mdp == "lol" and user == "lol":
-                session['user'] = user # On définit les variables de session
-                session['mdp'] = mdp
-                flash("Bien connecté", "connecté") #Utiliser 2 eme arg pour mettre une icone
-                return redirect(url_for("user"))
-            else:
-                return render_template("loginwrong.html")
+            # for utilisateur in utilisateurs:
+            #     if mdp == utilisateur.mdp and user == utilisateur.email:
+            #         trouve=1
+            # # if mdp == "lol" and user == "lol":
+            #         session['user'] = user # On définit les variables de session
+            #         session['mdp'] = mdp
+            # if trouve==1:
+            #     flash("Bien connecté", "connecté") #Utiliser 2 eme arg pour mettre une icone
+            #     return redirect(url_for("user"))
+            # else:
+            #     return render_template("loginwrong.html")
         else:
             if 'user' in session:
                 flash("Déja connecté", "connecté") #Utiliser 2 eme arg pour mettre une icone
@@ -100,24 +103,23 @@ def signup():
             email =request.form['email']
             # s = Session()
             # utilisateurs = session.query(Utilisateurs)
-            # for utilisateur in utilisateurs
-            # if user != utilisateur.id:
-            if mdp == "lol" and user == "lol":
-                session['user'] = user # On définit les variables de session
-                session['mdp'] = mdp
-                # user = Utilisateurs( c'est un objet appartenant a la table book
-                #     id='{user}',
-                #     email='{email}',
-                #     mdp='{mdp}',
-                # )
-                # s = Session()
-                # s.add(user)
-                # s.commit()
-                flash("Inscription réussie", "connecté") #Utiliser 2 eme arg pour mettre une icone
-                return redirect(url_for("user"))
-            else:
-                flash(f"Utilisateur {session['user']} déja insrit", "connecté") #Utiliser 2 eme arg pour mettre une icone
-                return render_template("signup.html")
+            # for utilisateur in utilisateurs:
+            #     if user != utilisateur.email:
+            # # if mdp == "lol" and user == "lol":
+            #         session['user'] = user # On définit les variables de session
+            #         session['mdp'] = mdp
+            #         user = Utilisateurs( 
+            #             email='{email}',
+            #             mdp='{mdp}',
+            #         )
+            #         s = Session()
+            #         s.add(user)
+            #         s.commit()
+            #         flash("Inscription réussie", "connecté") #Utiliser 2 eme arg pour mettre une icone
+            #         return redirect(url_for("user"))
+            # else:
+            #     flash(f"Utilisateur {session['user']} déja insrit", "connecté") #Utiliser 2 eme arg pour mettre une icone
+            #     return render_template("signup.html")
         else:
             if 'user' in session:
                 flash(f"Utilisateur {session['user']} connecté", "connecté") #Utiliser 2 eme arg pour mettre une icone
