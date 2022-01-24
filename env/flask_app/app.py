@@ -3,7 +3,10 @@ from crypt import methods
 from markupsafe import escape
 from flask import Flask, abort, request, redirect, url_for, render_template, request, session, flash
 from datetime import timedelta
-from flask_sqlalchemy import SQLalchemy
+from sqlalchemy import create_engine  
+from sqlalchemy import Column, String  
+from sqlalchemy.ext.declarative import declarative_base  
+from sqlalchemy.orm import sessionmaker
 
 # creation d'une instance de flask
 app = Flask(__name__)
@@ -11,16 +14,31 @@ app = Flask(__name__)
 # On va chiffrer les données de session
 app.secret_key = "secret"
 
-# On configure la table users
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Cette chaîne nous permet de nous connecter à la bdd
+# bdd_uri = ""
 
 # On garde les données de session 5 minutes
 app.permanent_session_lifetime = timedelta(minutes=5)
 
-# On crée une instance de bdd
-db = SQLalchemy(app)
+# On crée une instance de moteur de bdd
+# db = create_engine(bdd_uri)  
 
+# On crée une session pour pouboir utiliser l'orm et ne pas travailler avec du SQL
+# Session = sessionmaker(bind=db)
+
+# Ajouter dans une table exemple
+# book = Book( c'est un objet appartenant a la table book
+#     title='Deep Learning',
+#     author='Ian Goodfellow',
+#     pages=775,
+#     published=datetime(2016, 11, 18)
+# )
+# s = Session()
+# s.add(book)
+# s.commit()
+# s.query(Book).first On peut vérifier si ça a été envoyé sur la base
+# s.close_all()
+# recreate_database()
 
 @app.route('/')      # Possible d'avoir plusieurs routes
 @app.route('/index/')
@@ -49,12 +67,16 @@ def add(n1, n2):
 def login():
     try:
         if request.method == "POST":
-            session.permanent = True
+            # session.permanent = True
             user = request.form['nm'] # On donne en parametre dans la requete POST 
             mdp = request.form['mdp']
-            session['user'] = user # On définit les variables de session
-            session['mdp'] = mdp
+            # s = Session()
+            # utilisateurs = session.query(Utilisateurs)
+            # for utilisateur in utilisateurs
+            # if mdp == utilisateur.mdp and user == utilisateur.id:
             if mdp == "lol" and user == "lol":
+                session['user'] = user # On définit les variables de session
+                session['mdp'] = mdp
                 flash("Bien connecté", "connecté") #Utiliser 2 eme arg pour mettre une icone
                 return redirect(url_for("user"))
             else:
@@ -65,6 +87,45 @@ def login():
                 return redirect(url_for("user"))
             else:
                 return render_template("login.html")
+            # s.close_all()
+    except IndexError:
+        abort(404)
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    try:
+        if request.method == "POST":
+            # session.permanent = True
+            user = request.form['nm'] # On donne en parametre dans la requete POST 
+            mdp = request.form['mdp']
+            email =request.form['email']
+            # s = Session()
+            # utilisateurs = session.query(Utilisateurs)
+            # for utilisateur in utilisateurs
+            # if user != utilisateur.id:
+            if mdp == "lol" and user == "lol":
+                session['user'] = user # On définit les variables de session
+                session['mdp'] = mdp
+                # user = Utilisateurs( c'est un objet appartenant a la table book
+                #     id='{user}',
+                #     email='{email}',
+                #     mdp='{mdp}',
+                # )
+                # s = Session()
+                # s.add(user)
+                # s.commit()
+                flash("Inscription réussie", "connecté") #Utiliser 2 eme arg pour mettre une icone
+                return redirect(url_for("user"))
+            else:
+                flash(f"Utilisateur {session['user']} déja insrit", "connecté") #Utiliser 2 eme arg pour mettre une icone
+                return render_template("signup.html")
+        else:
+            if 'user' in session:
+                flash(f"Utilisateur {session['user']} connecté", "connecté") #Utiliser 2 eme arg pour mettre une icone
+                return redirect(url_for("user"))
+            else:
+                return render_template("signup.html")
+            # s.close_all()
+            # recreate_database()
     except IndexError:
         abort(404)
 
@@ -85,15 +146,15 @@ def user():
     try:
         if 'user' in session:
             if request.method == "POST":    # On définit l'email
-                email = request.form['email']
-                session['email'] = email
+                mail = request.form['mail']
+                session['mail'] = mail
                 flash("Email bien pris en compte", "connecté") #Utiliser 2 eme arg pour mettre une icone
 
             else:
-                if "email" in session:
-                    email = session["email"]
+                if "mail" in session:
+                    mail = session["email"]
 
-            return render_template("user.html", email=email)
+            return render_template("user.html", mail=mail)
         else:
             flash("Pas de compte connecté", "deconnecté") #Utiliser 2 eme arg pour mettre une icone
             return redirect(url_for("login"))
