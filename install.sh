@@ -11,3 +11,7 @@ pip install flask
 pip install flask-restplus
 pip install Flask-reCaptcha
 pip install flask-sqlalchemy
+pip install psycopg2-binary
+pip install sqlalchemy-utils
+pip install Flask-Migrate
+pip install flask-bcrypt #chiffrement mot de passe
