@@ -27,8 +27,13 @@ La partie mail se fera avec Postfix et la partie applicative préférentiellemen
 
 ## Installation de l'environnement
 
-Il suffit de lancer le script installation.sh
+Il suffit de lancer le script installation.sh et dans le répertoire de app.py lancer les commandes
 
+```bash
+flask db init
+flask db migrate
+flask db upgrade
+```
 
 
 
