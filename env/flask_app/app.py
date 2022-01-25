@@ -28,12 +28,16 @@ bcrypt = Bcrypt(app)
 # On garde les données de session 5 minutes
 app.permanent_session_lifetime = timedelta(minutes=5)
 
+# On donne la chaîne de connexion pour la base de données
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(pguser)s:\
 %(pgpasswd)s@%(pghost)s:%(pgport)s/%(pgdb)s' % settings
 
+# On instancie un objet de type orm avec la chaine de connection
 db = SQLAlchemy(app)
+
 migrate = Migrate(app, db)
 
+# On instancie le modèle permettant de formaliser les données pour les envpyer à la table Utilisateurs
 class Utilisateurs(db.Model):
     __tablename__ = 'Utilisateurs'
     id = db.Column(db.Integer, primary_key=True)
@@ -41,6 +45,8 @@ class Utilisateurs(db.Model):
     email = db.Column(db.String())
     mdp = db.Column(db.String())
     admin = db.Column(db.Boolean)
+
+# Cela permet d'envoyer les données vers la bdd
 
     def __init__(self, nom, email, mdp):
         self.nom = nom
@@ -94,9 +100,9 @@ def login():
             # session.permanent = True
             email = request.form['email'] # On donne en parametre dans la requete POST 
             mdp = request.form['mdp']
-            found_user = Utilisateurs.query.filter_by(email=email).first()
+            found_user = Utilisateurs.query.filter_by(email=email).first() # On vérifie si il existe un utilisateur avec cet email dans la bdd
             if found_user:
-                if bcrypt.check_password_hash(found_user.mdp, mdp): # returns True
+                if bcrypt.check_password_hash(found_user.mdp, mdp): # returne vrai si les mots de passe sont les mêmes sans chiffrement
                     session['nom'] = found_user.nom
                     session['email'] = found_user.email
                     session['mdp'] = found_user.mdp
@@ -122,7 +128,7 @@ def signup():
             # session.permanent = True
             nom = request.form['nm'] # On donne en parametre dans la requete POST 
             email = request.form['email']            
-            mdp = bcrypt.generate_password_hash(request.form['mdp']).decode('utf-8')
+            mdp = bcrypt.generate_password_hash(request.form['mdp']).decode('utf-8') # On chiffre le mot de passe
             found_user = Utilisateurs.query.filter_by(email=email).first()
             if found_user:
                 flash(f"Utilisateur {session['nom']} déja insrit", "connecté") #Utiliser 2 eme arg pour mettre une icone
@@ -132,8 +138,8 @@ def signup():
                 session['email'] = email # On définit les variables de session
                 session['mdp'] = mdp
                 usr = Utilisateurs(nom, email, mdp)
-                db.session.add(usr)
-                db.session.commit()
+                db.session.add(usr) 
+                db.session.commit() # On envoie usr qui sera une ligne dans la bdd
                 flash("Inscription réussie", "connecté") #Utiliser 2 eme arg pour mettre une icone
                 return redirect(url_for("user"))
         else:
@@ -152,7 +158,7 @@ def logout():
         flash(f"{session['nom']} déconnecté avec succès", "deconnecté") #Utiliser 2 eme arg pour mettre une icone
     else: 
         flash("Pas de compte connecté", "deconnecté") #Utiliser 2 eme arg pour mettre une icone
-    session.pop('nom', None)
+    session.pop('nom', None) # On supprime les variables de session
     session.pop('email', None)  
     session.pop('mdp', None)  
     return redirect(url_for("login"))
