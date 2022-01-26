@@ -4,6 +4,8 @@ services:
   db:
     image: asrall_postgres
     restart: always
+    volumes:
+      - ./projet_db/scripts:/docker-entrypoint-initdb.d
     hostname: db
     build:
       context: ./projet_db
