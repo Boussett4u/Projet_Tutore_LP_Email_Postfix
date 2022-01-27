@@ -3,15 +3,24 @@
 {% block title %}Login {% endblock %}
 
 {% block login %}
-<h1>Wrong id or password</h1>
+<h1>Mauvais email ou mot de passe</h1>
 {% endblock%}
 {% block content %}
-<form action="#" method="post">
-    <p>Nom:</p>
-    <p><input type="text" name="nm" /></p>
-    <p>Mot de passe:</p>
-    <p><input type="password" name="mdp" /></p>
-    <p><input type="checkbox" onclick="document.write('hello')" /> Afficher le mot de passe</p>
-    <p><input type="submit" value="submit" /></p>
+<form action="#" method="post" name="form">
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" name="email" class="form-control" placeholder="Entrer votre email"/>
+        <small id="emailHelp" class="form-text text-muted">Ne partagez pas votre email</small>
+    </div>
+    <div class="form-group">
+        <label for="mdp">Mot de passe</label>
+        <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Entrer votre mot de passe">
+        
+    </div>
+    <div class="form-check">
+        <label class="form-check-label" for="verifmdp" >Afficher le mot de passe</label>
+        <input type="checkbox" class="form-check-input"  onchange="document.getElementById('mdp').type = this.checked ? 'text' : 'password'">
+    </div>
+    <button type="submit" class="btn btn-primary" value="submit" >Submit</button>
 </form>
 {% endblock %}

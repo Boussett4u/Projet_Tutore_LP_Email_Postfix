@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Expéditeurs {% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for msg in messages %}
+<p>{{msg}}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<p>Liste de mail de l'adresse {{email}}</p>
+
+
+<!-- {{table}} -->
+<form action="#" method="post" name="form">
+    <table class="table table-striped" id='table' name='table'>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>nom</th>
+                <th>email</th>
+                <th>mdp</th>
+                <th>admin</th>
+            </tr>
+        </thead>
+        <tbody id='table'>
+            {% for users in users %}
+            <tr id='tr'>
+                <td><input type=hidden id='id'  name='id' value="{{ users.id }}">{{ users.id }}</td>
+                <td><input type=hidden id='nom' name='nom'  value="{{ users.nom }}">{{ users.nom }}</td>
+                <td><input type=hidden id='email' name='email'  value="{{ users.email }}">{{ users.email }}</td>
+                <td><input type=hidden id='mdp' name='mdp'  value="{{ users.mdp }}">{{ users.mdp }}</td>
+                {% if users.admin: %}
+                <td id='ad'><input type=checkbox id='admin' name='admin' checked=true ></input>{{ users.admin }}</td>
+                {% else %}
+                <td id="ad"><input type=checkbox id='admin' name='admin' ></input>{{ users.admin }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-primary" onclick=relo()>Submit</button>
+</form>
+
+<script>
+    
+    
+    $(document).ready(function () {
+        $('#table').DataTable();
+        // columns: [
+        // null,
+        // {searchable: false},
+        // {orderable: false, searchable: false},
+        // {orderable: false, searchable: false},
+        // null],
+    });
+    
+    function relo(){
+        $('#table').find('tbody tr').each(function(){
+            $input = $(this).find('input[type=checkbox]')
+            $td = $(this).find('td[id=ad]')
+            if ($input.is(":checked")){
+                $td.html("True")
+                $input.attr('checked', true);
+            }else{
+                $td.html("False")
+                $(this).closest('td').text($(this).val())
+                $input.attr('checked', false);       
+            }
+        });
+        var tab=[]
+        $('#table').find('tbody tr').each(function(){
+            var obj = {},
+            // key0 = "id", .concat('',i.toString())
+            // key1 = "nom",
+            key2 = "email",
+            // key3 = "mdp",
+            key4 = "admin",
+            $td = $(this).find('td'),
+            $input = $(this).find('td[id=ad]').text(),
+            // val1 = $td.eq(1).text(),
+            val2 = $td.eq(2).text(),
+            // val3 = $td.eq(3).text(),
+            val4 = $input
+            // obj[key0] = val0;
+            // obj[key1] = val1;
+            obj[key2] = val2;
+            // obj[key3] = val3;
+            obj[key4] = val4;
+            tab.push(obj);
+        });
+        console.log(tab)
+        jQuery.ajax({
+            url: '/consultexp',
+            type: "POST",
+            data: JSON.stringify({ paramName: tab }),
+            success: function(msg) {
+                console.log(tab)
+            },
+            dataType: 'json'
+            
+        });     
+    }  
+    
+</script>
+
+{% endblock %}
+

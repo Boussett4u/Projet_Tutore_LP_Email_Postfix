@@ -14,8 +14,4 @@ pip install flask-sqlalchemy
 pip install psycopg2-binary
 pip install sqlalchemy-utils
 pip install Flask-Migrate
-pip install flask-bcrypt #chiffrement mot de passe
-#connection entre l'orm et la bdd
-flask db init
-flask db migrate
-flask db upgrade
+pip install flask-bcrypt # chiffrement mot de passe

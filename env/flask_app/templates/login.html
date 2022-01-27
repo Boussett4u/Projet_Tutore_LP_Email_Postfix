@@ -2,23 +2,66 @@
 {% block title %}Login {% endblock %}
 
 {% block content %}
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for msg in messages %}
-                <p>{{msg}}</p>
-                {% endfor %}
-        {% endif %}
-    {% endwith %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for msg in messages %}
+<p>{{msg}}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
 
+<!-- <form action="#" method="post" name="form">
+    <div class="form-group row">
+        <label for="email">Email</label>
+        <input type="text" name="email" class="form-control" placeholder="Entrer votre email"/>
+        <small id="emailHelp" class="form-text text-muted">Ne partagez pas votre email</small>
+    </div>
+    <div class="form-group">
+        <label for="mdp">Mot de passe</label>
+        <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Entrer votre mot de passe">
+    </div>
+    <br>
+    <div class="form-check">
+        <label class="form-check-label" for="verifmdp" >Afficher le mot de passe</label>
+        <input type="checkbox" class="form-check-input"  onchange="document.getElementById('mdp').type = this.checked ? 'text' : 'password'">
+    </div>
+    <br>
+    <button type="submit" class="btn btn-primary" value="submit" >Submit</button>
+</form> -->
+<br>
 <form action="#" method="post" name="form">
-    <p>Email :</p>
-    <p><input type="text" name="email" placeholder="Entrer votre email"/></p>
-    <p>Mot de passe :</p>
-    <p><input type="password" id="mdp" name="mdp" placeholder="Entrer votre mot de passe"></p>
-    <p><input type="checkbox" onchange="document.getElementById('mdp').type = this.checked ? 'text' : 'password'"> Show password</p>
-    
-    <p><input type="submit" value="submit" /></p>
+    <div class="form-group row">
+        <label for="nom" class="col-sm-2 col-form-label">Email</label>
+        <div class="col-sm-10">
+            <input type="text" name="email" class="form-control" placeholder="Entrer votre email"/>
+            <small id="emailHelp" class="form-text text-muted">Ne partagez pas votre email</small>
+        </div>
+    </div>
+    <!-- <br> -->
+    <div class="form-group row">
+        <label for="mdp" class="col-sm-2 col-form-label">Mot de passe</label>
+        <div class="col-sm-10">
+            <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Entrer votre mot de passe">
+        </div>
+    </div>
+    <br>
+    <div class="form-group row">
+        <div class="col-sm-2">Afficher mot de passe</div>
+        <div class="col-sm-10">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" onchange="document.getElementById('mdp').type = this.checked ? 'text' : 'password'
+                document.getElementById('confirmmdp').type = this.checked ? 'text' : 'password'">
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary" value="submit" >Submit</button>
+        </div>
+    </div>
 </form>
+
 
 {% endblock %}
 
