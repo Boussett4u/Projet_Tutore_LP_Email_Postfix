@@ -16,6 +16,7 @@ from flask_migrate import Migrate
 import psycopg2
 from localdbconf import bdd_uri as settings
 from localdbconf import mdp_admin as mdp_adminnohash
+from localdbconf import secret_key, site_key
 from flask_bcrypt import Bcrypt
 import sys
 from flask import Flask
@@ -29,8 +30,8 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = mdp_adminnohash
 app.config['RECAPTCHA_USE_SSL']= False
-app.config['RECAPTCHA_SITE_KEY']='6LfJt0IeAAAAAJzXffa3y4XckjEa3IHRYiQtQ54U'
-app.config['RECAPTCHA_SECRET_KEY']='6LfJt0IeAAAAAJgNyIow5R81ACZPnk6ZKTC5-FHQ'
+app.config['RECAPTCHA_SITE_KEY']= site_key
+app.config['RECAPTCHA_SECRET_KEY']= secret_key
 app.config['RECAPTCHA_OPTIONS']= {'theme':'black'}
 
 recaptcha = ReCaptcha(app)
