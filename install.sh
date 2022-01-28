@@ -15,3 +15,4 @@ pip install psycopg2-binary
 pip install sqlalchemy-utils
 pip install Flask-Migrate
 pip install flask-bcrypt # chiffrement mot de passe
+pip install Flask-WTF

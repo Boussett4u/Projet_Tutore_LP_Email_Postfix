@@ -14,6 +14,13 @@
 <br>
 <form action="#" method="post" name="form">
     <div class="form-group row">
+        <label for="identifiant" class="col-sm-2 col-form-label">Pseudo</label>
+        <div class="col-sm-10">
+            <input type="text" name="identifiant" class="form-control" placeholder="Entrer votre pseudo"/>
+        </div>
+    </div>
+    <br>
+    <div class="form-group row">
         <label for="nom" class="col-sm-2 col-form-label">Nom</label>
         <div class="col-sm-10">
             <input type="text" name="nm" class="form-control" placeholder="Entrer votre nom"/>
@@ -23,7 +30,7 @@
     <div class="form-group row">
         <label for="email" class="col-sm-2 col-form-label">Email</label>
         <div class="col-sm-10">
-            <input type="text" name="email" class="form-control" placeholder="Entrer votre email"/>
+            <input type="text" name="mail" class="form-control" placeholder="Entrer votre email"/>
             <small id="emailHelp" class="form-text text-muted">Ne partagez pas votre email</small>
         </div>
     </div>
@@ -33,14 +40,14 @@
             <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Entrer votre mot de passe">
         </div>
     </div>
-    <br>
+    <!-- <br> -->
     <div class="form-group row">
         <label for="confirmdp" class="col-sm-2 col-form-label">Confirmer mot de passe</label>
         <div class="col-sm-10">
             <input type="password" id="confirmmdp" name="confirmmdp" class="form-control" placeholder="Confirmer votre mot de passe">
         </div>
     </div>
-    
+    <br> 
     <div class="form-group row">
         <div class="col-sm-2">Afficher mot de passe</div>
         <div class="col-sm-10">

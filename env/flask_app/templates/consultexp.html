@@ -10,32 +10,32 @@
 {% endif %}
 {% endwith %}
 
-<p>Liste de mail de l'adresse {{email}}</p>
+<p>Liste d'expéditeur de {{identifiant}}</p>
 
+<i class="fa fa-info-circle" aria-hidden="true"></i>statut : 1 validé, 2 refusé, 3 en attente
+<br>
 
-<!-- {{table}} -->
+<br>
 <form action="#" method="post" name="form">
     <table class="table table-striped" id='table' name='table'>
         <thead>
             <tr>
-                <th>id</th>
-                <th>nom</th>
-                <th>email</th>
-                <th>mdp</th>
-                <th>admin</th>
+                <th>identifiant</th>
+                <th>statut</th>
             </tr>
         </thead>
         <tbody id='table'>
-            {% for users in users %}
+            {% for expediteurs in expediteurs %}
             <tr id='tr'>
-                <td><input type=hidden id='id'  name='id' value="{{ users.id }}">{{ users.id }}</td>
-                <td><input type=hidden id='nom' name='nom'  value="{{ users.nom }}">{{ users.nom }}</td>
-                <td><input type=hidden id='email' name='email'  value="{{ users.email }}">{{ users.email }}</td>
-                <td><input type=hidden id='mdp' name='mdp'  value="{{ users.mdp }}">{{ users.mdp }}</td>
-                {% if users.admin: %}
-                <td id='ad'><input type=checkbox id='admin' name='admin' checked=true ></input>{{ users.admin }}</td>
-                {% else %}
-                <td id="ad"><input type=checkbox id='admin' name='admin' ></input>{{ users.admin }}</td>
+                <td><input type=hidden id='mail'  name='mail' value="{{ expediteurs.mail }}">{{ expediteurs.mail }}</td>
+                {% if expediteurs.statut == 3: %}
+                <td id='stat'><input type="number" id='statut' name='statut' min="1" max="3"></input></td>
+                {% else: %}
+                {% if expediteurs.statut == 2: %}
+                <td id="stat"><input type="number" id='statut' name='statut' min="1" max="3"></input></td>
+                {% else: %}
+                <td id="stat"><input type="number" id='statut' name='statut' min="1" max="3"></input></td>
+                {% endif %}
                 {% endif %}
             </tr>
             {% endfor %}
@@ -59,53 +59,52 @@
     });
     
     function relo(){
-        $('#table').find('tbody tr').each(function(){
-            $input = $(this).find('input[type=checkbox]')
-            $td = $(this).find('td[id=ad]')
-            if ($input.is(":checked")){
-                $td.html("True")
-                $input.attr('checked', true);
-            }else{
-                $td.html("False")
-                $(this).closest('td').text($(this).val())
-                $input.attr('checked', false);       
-            }
-        });
+        // $('#table').find('tbody tr').each(function(){
+        //     $input = $(this).find('input[type=number][id=statut]')
+        //     $td = $(this).find('td')
+        //     if ($input.val()==3){
+        //         console.log("c'est 3")
+        //         // $input.val()=3
+        //     }else{
+        //         if($input.val()==2){
+        //             console.log("c'est 2")
+        //             console.log($td.eq(1).text())
+        //             // $input.val()=2      
+        //         }else{
+        //             console.log("c'est 1")
+        //             console.log($td.eq(1).text())
+        //             // $input.val()=1
+        //         }
+        //     }
+        // });
         var tab=[]
         $('#table').find('tbody tr').each(function(){
             var obj = {},
-            // key0 = "id", .concat('',i.toString())
-            // key1 = "nom",
-            key2 = "email",
-            // key3 = "mdp",
-            key4 = "admin",
+            key1 = "mail",
+            key2 = "statut",
             $td = $(this).find('td'),
-            $input = $(this).find('td[id=ad]').text(),
-            // val1 = $td.eq(1).text(),
-            val2 = $td.eq(2).text(),
-            // val3 = $td.eq(3).text(),
-            val4 = $input
-            // obj[key0] = val0;
-            // obj[key1] = val1;
+            $input = $(this).find('input[type=number][id=statut]')
+            val1 = $td.eq(0).text(),
+            val2 = $input.val(),
+            obj[key1] = val1;
             obj[key2] = val2;
-            // obj[key3] = val3;
-            obj[key4] = val4;
             tab.push(obj);
         });
         console.log(tab)
         jQuery.ajax({
-            url: '/consultexp',
-            type: "POST",
-            data: JSON.stringify({ paramName: tab }),
-            success: function(msg) {
-                console.log(tab)
-            },
-            dataType: 'json'
+                url: '/consultexp',
+                type: "POST",
+                data: JSON.stringify({ paramName: tab }),
+                success: function(msg) {
+                        console.log(tab)
+                    },
+                    dataType: 'json'
+                
+                });     
+            }  
             
-        });     
-    }  
-    
-</script>
-
-{% endblock %}
-
+        </script>
+        
+        {% endblock %}
+        
+        

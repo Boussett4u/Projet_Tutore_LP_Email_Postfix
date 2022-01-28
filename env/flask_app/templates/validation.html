@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for msg in messages %}
+<p>{{msg}}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<form action="#" method="post" name="form">
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Entrer votre mail avec laquelle vous envoyer des mails">
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Captcha</label>
+        {{ recaptcha }}
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<br>
+<p>{{ message }}</p>
+
+{% endblock%}
