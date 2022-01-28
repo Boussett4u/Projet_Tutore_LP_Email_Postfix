@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Permission d'accès au dossier database (Projet*/docker/projet/database) & install paquets
+./scripts/script.sh
+
 set -Eeo pipefail
 # TODO swap to -Eeuo pipefail above (after handling all potentially-unset variables)
 
