@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
   CREATE SEQUENCE IF NOT EXISTS utilisateur_id_seq;
   CREATE TABLE IF NOT EXISTS utilisateur(id INT NOT NULL DEFAULT nextval('utilisateur_id_seq'::regclass) PRIMARY KEY, identifiant VARCHAR(250) NOT NULL UNIQUE, nom VARCHAR(250) UNIQUE, mdp VARCHAR(250), administrateur BOOLEAN NOT NULL, mail VARCHAR(250) NOT NULL);

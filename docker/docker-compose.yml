@@ -5,7 +5,9 @@ services:
     image: asrall_postgres
     restart: always
     volumes:
+      - ./projet_db/scripts:/scripts
       - ./projet_db/scripts:/docker-entrypoint-initdb.d
+      - ./projet_db/database:/var/lib/postgresql/data
     hostname: db
     build:
       context: ./projet_db
@@ -13,6 +15,10 @@ services:
       POSTGRES_PASSWORD: padmin
       POSTGRES_USER: root
       POSTGRES_DB: postfix
+    networks:
+      - local
+    ports:
+      - 5432:5432
   postfix:
     depends_on:
       - db
@@ -23,5 +29,10 @@ services:
     volumes:
        - ./projet_postfix/etc/postfix:/etc/postfix
        - ./projet_postfix/scripts:/scripts
-    ports:
-      - 8400:80
+       - ./projet_postfix/log:/var/spool
+       - ./projet_postfix/etc/ssl:/etc/ssl
+    networks:
+      - local
+networks:
+    local:
+      driver: bridge
