@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}S'inscrire {% endblock %}
+{% block title %} {{ signup }} {% endblock %}
 
 {% block content %}
 {% with messages = get_flashed_messages() %}
@@ -21,7 +21,7 @@
     </div>
     <br>
     <div class="form-group row">
-        <label for="nom" class="col-sm-2 col-form-label">Nom</label>
+        <label for="nom" class="col-sm-2 col-form-label">{{ nom }}</label>
         <div class="col-sm-10">
             <input type="text" name="nm" class="form-control" placeholder="Entrer votre nom"/>
         </div>
@@ -31,25 +31,25 @@
         <label for="email" class="col-sm-2 col-form-label">Email</label>
         <div class="col-sm-10">
             <input type="text" name="mail" class="form-control" placeholder="Entrer votre email"/>
-            <small id="emailHelp" class="form-text text-muted">Ne partagez pas votre email</small>
+            <small id="emailHelp" class="form-text text-muted">{{ share }}</small>
         </div>
     </div>
     <div class="form-group row">
-        <label for="mdp" class="col-sm-2 col-form-label">Mot de passe</label>
+        <label for="mdp" class="col-sm-2 col-form-label">{{ mdp }}</label>
         <div class="col-sm-10">
             <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Entrer votre mot de passe">
         </div>
     </div>
     <!-- <br> -->
     <div class="form-group row">
-        <label for="confirmdp" class="col-sm-2 col-form-label">Confirmer mot de passe</label>
+        <label for="confirmdp" class="col-sm-2 col-form-label">{{ confirm }} {{ mdp }}</label>
         <div class="col-sm-10">
             <input type="password" id="confirmmdp" name="confirmmdp" class="form-control" placeholder="Confirmer votre mot de passe">
         </div>
     </div>
     <br> 
     <div class="form-group row">
-        <div class="col-sm-2">Afficher mot de passe</div>
+        <div class="col-sm-2"> {{ aff }} {{ mdp }}</div>
         <div class="col-sm-10">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" onchange="document.getElementById('mdp').type = this.checked ? 'text' : 'password'
@@ -59,7 +59,7 @@
     </div>
     <br>
     <div class="form-group row">
-        <label for="mdpad" class="col-sm-2 col-form-label">Mot de passe Admin</label>
+        <label for="mdpad" class="col-sm-2 col-form-label">{{ adpass }}</label>
         <div class="col-sm-10">
             <input type="password" id="mdpad" name="mdpad" class="form-control" placeholder="Mot de passe admin">
         </div>

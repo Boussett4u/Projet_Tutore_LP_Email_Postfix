@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Login {% endblock %}
+{% block title %} Login {% endblock %}
 
 {% block login %}
-<h1>Mauvais email ou mot de passe</h1>
+<h1>{{ bad }}</h1>
 {% endblock%}
 {% block content %}
 <br>
@@ -16,14 +16,14 @@
     </div>
     <!-- <br> -->
     <div class="form-group row">
-        <label for="mdp" class="col-sm-2 col-form-label">Mot de passe</label>
+        <label for="mdp" class="col-sm-2 col-form-label">{{ mdp }}</label>
         <div class="col-sm-10">
             <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Entrer votre mot de passe">
         </div>
     </div>
     <br>
     <div class="form-group row">
-        <div class="col-sm-2">Afficher mot de passe</div>
+        <div class="col-sm-2">{{ aff }} {{ mdp }}</div>
         <div class="col-sm-10">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" onchange="document.getElementById('mdp').type = this.checked ? 'text' : 'password'

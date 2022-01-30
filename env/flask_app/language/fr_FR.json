@@ -1,0 +1,34 @@
+{
+    "signup": "S'inscrire ",
+    "login": "Se connecter ",
+    "logout": "Se déconnecter ",
+    "usersp": "Espace utilisateur ", 
+    "consultMail": "Consulter mails en attente ",
+    "consultMailBlack": "Consulter mails blacklistés ",
+    "consultexp": "Consulter expéditeurs ",
+    "lexp": "Liste d'expéditeurs de ",
+    "lemail": "Liste de mails de ",
+    "exped": "Expéditeurs",
+    "statusexp": "Statut : 1 validé, 2 : refusé, 3 : en attente ",
+    "identifiant": "Identifiant ",
+    "status": "Statut ",
+    "chadress": "Veuillez choisir une adresse ",
+    "sup": "Supprimer ",
+    "mdp": "Mot de passe ",
+    "aff": "Afficher ",
+    "nom": "Nom " ,
+    "confirm": "Confirmer ",
+    "dejacon": "Déjà connecté ",
+    "inscr": "Inscription réussie",
+    "pasdecompte": "Pas de compte connecte ",
+    "modif": "Modifications bien prises en compte ",
+    "bad": "Mauvais email ou mot de passe ",
+    "share": "Ne partagez pas votre email ",
+    "adpass": "Mot de passe Admin ",
+    "invtok": "Token invalide"
+
+
+  }
+
+
+ 

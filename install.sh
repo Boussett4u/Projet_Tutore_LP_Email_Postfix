@@ -16,3 +16,8 @@ pip install sqlalchemy-utils
 pip install Flask-Migrate
 pip install flask-bcrypt # chiffrement mot de passe
 pip install Flask-WTF
+pip install Flask-Babel
+#cd /env/flask_app
+#flask db init
+#flask db migrate
+#flask db upgrade

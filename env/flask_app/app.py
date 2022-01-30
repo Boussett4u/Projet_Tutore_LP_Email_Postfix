@@ -4,6 +4,7 @@
 # import flask and swagger
 from cgi import test
 from crypt import methods
+from enum import unique
 from markupsafe import escape
 from flask import Flask, abort, request, redirect, url_for, render_template, request, session, flash
 from datetime import timedelta
@@ -22,7 +23,11 @@ import sys
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_recaptcha import ReCaptcha
-
+from flask_babel import Babel
+import locale
+import datetime
+import glob
+import json
               
 # creation d'une instance de flask
 app = Flask(__name__)
@@ -40,6 +45,28 @@ app.config['DEBUG'] = True
 
 # On va chiffrer les donnees de session
 app.secret_key = "secret"
+
+# Config multi-lingue
+app_language = 'fr_FR'
+locale.setlocale(locale.LC_ALL, app_language)
+languages = {}
+stats = {}
+date_format = "%d %b %Y %H:%M:%S %Z"
+last_updated_time = ""
+
+language_list = glob.glob("language/*.json")
+for lang in language_list:
+    filename = lang.split('\\')
+    lang_code = filename[1].split('.')[0]
+with open(lang, 'r', encoding='utf8') as file:
+    languages[lang_code] = json.loads(file.read())
+
+def get_stats(input):
+  return locale.format_string('%d', input)
+def get_currencies(input):
+  return locale.currency(input, international=True)
+
+
 
 # On instancie un objet pour le chiffrement
 bcrypt = Bcrypt(app)
@@ -82,6 +109,7 @@ class Expediteur(db.Model):
     mail = db.Column(db.String(250), unique=True, nullable=False)
     utilisateur_id = db.Column(db.ForeignKey(Utilisateur.id), nullable=False)
     statut = db.Column(db.Integer, unique=False, nullable=False, default=3)
+    token = db.Column(db.String(250), unique=True, nullable=True )
     #statut : 1 valide, 2 refuse, 3 en attente
 
     def __init__(self, mail, utilisateur_id, statut):
@@ -111,14 +139,18 @@ def validation():
     if request.method == 'POST': 
         if recaptcha.verify(): # On vérifie si le captcha a été validé 
             message = 'Captcha validé' # Send success message
-            expmail= request.form.get('email')
+            expmail = request.form.get('email')
+            token = request.form.get('email')
             expediteur = Expediteur.query.filter_by(mail=expmail).first()
             if expediteur:
-                message= 'Adresse '+ expmail + ' bien validée' 
-                expediteur.statut=1
-                db.session.commit()
+                if expediteur.token == token:
+                    message= 'Adresse '+ expmail + ' bien validée' 
+                    expediteur.statut=1
+                    db.session.commit()
+                else:
+                    message= invtok
             else:
-                message= 'Adresse de message invalide, veuillez en essayer une autre avec laquelle vous envoyez des mails'
+                message= 'Adresse de messagerie invalide'
         else:
             message = 'Veuillez valider le captcha' # Send error message
     return render_template('validation.html', message=message)
@@ -134,6 +166,10 @@ def user():
     # email = None # On definit l'email
     try:
         if 'identifiant' in session:
+            found_user = Utilisateur.query.filter_by(identifiant=session['identifiant']).first() # On verifie si il existe un utilisateur avec cet email dans la bdd
+            if found_user.admin:
+                return redirect(url_for("admin"))
+            else:
             # if request.method == "POST":    # On definit l'email
             #     email = request.form['email']
             #     session['email'] = email
@@ -148,8 +184,8 @@ def user():
 
             # return render_template("user.html", mail=mail)
         # else:
-            flash(f"Bienvenue, {session['identifiant']}")
-            return render_template("user.html")
+                flash(f"Bienvenue, {session['identifiant']}")
+                return render_template("user.html")
         else:
             flash("Pas de compte connecte", "deconnecte") #Utiliser 2 eme arg pour mettre une icone
             return redirect(url_for("login"))
