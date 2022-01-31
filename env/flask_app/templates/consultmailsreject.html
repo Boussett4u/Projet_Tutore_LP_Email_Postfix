@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Mails {% endblock %}
+{% block title %} {{_("Mails") }} {% endblock %}
 
 {% block content %}
 {% with messages = get_flashed_messages() %}
@@ -13,7 +13,7 @@
 
 
 <form name="liste" action="#" method="POST">
-    <label for="mail" class="col-sm-2 col-form-label">Veuillez choisir une adresse</label>
+    <label for="mail" class="col-sm-2 col-form-label">{{ _("Veuillez choisir une adresse") }}</label>
     <br>
     <select name= mail method="GET" action="/">
         {% for expediteurs in expediteurs %}
@@ -23,16 +23,16 @@
     <button type="submit" class="btn btn-primary" value="submit" >Submit</button>
 </form>
 <br>
-<p>Liste de mails de {{identifiant}}</p>
+<p>{{ _("Liste de mails de") }} {{identifiant}}</p>
 
 <form action="#" method="post" name="form">
     <table class="table table-striped" id='table' name='table'>
         <thead>
             <tr>
-                <th>identifiant mail</th>
-                <th>id postfix</th>
-                <th>supprimer ?</th>
-                <th>statut</th>
+                <th>{{ _("ID mail") }}</th>
+                <th>{{ _("ID postfix") }}</th>
+                <th>{{ _("Supprimer ?") }}</th>
+                <th>{{ _("Statut") }}</th>
             </tr>
         </thead>
         <tbody id='table'>

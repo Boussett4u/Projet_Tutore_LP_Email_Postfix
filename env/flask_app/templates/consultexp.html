@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ exped }} {% endblock %}
+{% block title %}{{ _("Expéditeurs") }} {% endblock %}
 
 {% block content %}
 {% with messages = get_flashed_messages() %}
@@ -10,7 +10,7 @@
 {% endif %}
 {% endwith %}
 
-<p>{{ lexp }} {{identifiant}}</p>
+<p>{{ _("Liste d'expéditeurs de ") }} {{identifiant}}</p>
 
 <i class="fa fa-info-circle" aria-hidden="true"></i>{{ statusexp }}
 <br>
@@ -20,8 +20,8 @@
     <table class="table table-striped" id='table' name='table'>
         <thead>
             <tr>
-                <th>{{ identifiant }}</th>
-                <th>{{ status }}</th>
+                <th>{{ _("Identifiant") }}</th>
+                <th>{{ _("Statut") }}</th>
             </tr>
         </thead>
         <tbody id='table'>

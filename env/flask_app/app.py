@@ -6,7 +6,7 @@ from cgi import test
 from crypt import methods
 from enum import unique
 from markupsafe import escape
-from flask import Flask, abort, request, redirect, url_for, render_template, request, session, flash
+from flask import Flask, abort, request, g, redirect, url_for, render_template, request, session, flash
 from datetime import timedelta
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
@@ -23,9 +23,9 @@ import sys
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_recaptcha import ReCaptcha
-from flask_babel import Babel
+from flask_babel import Babel, format_datetime, gettext
+from datetime import datetime
 import locale
-import datetime
 import glob
 import json
               
@@ -47,25 +47,19 @@ app.config['DEBUG'] = True
 app.secret_key = "secret"
 
 # Config multi-lingue
-app_language = 'fr_FR'
-locale.setlocale(locale.LC_ALL, app_language)
-languages = {}
-stats = {}
-date_format = "%d %b %Y %H:%M:%S %Z"
-last_updated_time = ""
+app.config['BABEL_DEFAULT_LOCALE'] = 'fr'
+babel = Babel(app)
 
-language_list = glob.glob("language/*.json")
-for lang in language_list:
-    filename = lang.split('\\')
-    lang_code = filename[1].split('.')[0]
-with open(lang, 'r', encoding='utf8') as file:
-    languages[lang_code] = json.loads(file.read())
+@babel.localeselector
+def get_locale():
+    # return 'fr'
+    return request.accept_languages.best_match(['fr', 'en'])
 
-def get_stats(input):
-  return locale.format_string('%d', input)
-def get_currencies(input):
-  return locale.currency(input, international=True)
-
+@babel.timezoneselector
+def get_timezone():
+    user = getattr(g, 'user', None)
+    if user is not None:
+        return user.timezone
 
 
 # On instancie un objet pour le chiffrement
@@ -83,7 +77,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(pguser)s:\
 
 # On instancie un objet de type orm avec la chaine de connection
 db = SQLAlchemy(app)
-
 
 migrate = Migrate(app, db)
 # On instancie le modele permettant de formaliser les donnees pour les envoyer a la table Utilisateurs
@@ -138,27 +131,30 @@ def validation():
     message = '' 
     if request.method == 'POST': 
         if recaptcha.verify(): # On vérifie si le captcha a été validé 
-            message = 'Captcha validé' # Send success message
+            message = gettext('Captcha validé') # Send success message
             expmail = request.form.get('email')
             token = request.form.get('email')
             expediteur = Expediteur.query.filter_by(mail=expmail).first()
             if expediteur:
                 if expediteur.token == token:
-                    message= 'Adresse '+ expmail + ' bien validée' 
+                    message= gettext('Adresse ') + expmail + gettext(' bien validée') 
                     expediteur.statut=1
+                    # mails = Mail.query.filter_by(expediteur_id=expediteur.id)
+                    # for mail in mails:
+                        # db.session.delete(mail)
                     db.session.commit()
                 else:
-                    message= invtok
+                    message= gettext('Token invalide')
             else:
-                message= 'Adresse de messagerie invalide'
+                message= gettext('Adresse de messagerie invalide')
         else:
-            message = 'Veuillez valider le captcha' # Send error message
+            message = gettext('Veuillez valider le captcha') # Send error message
     return render_template('validation.html', message=message)
 
 # Redirection
 @app.route('/admin/')
 def admin():
-    flash(f"Bienvenue, {session['nom']}")
+    flash(gettext("Bienvenue") +f", {session['nom']}")
     return render_template("admin.html")
 
 @app.route('/user/', methods=["GET", "POST"])
@@ -184,10 +180,10 @@ def user():
 
             # return render_template("user.html", mail=mail)
         # else:
-                flash(f"Bienvenue, {session['identifiant']}")
+                flash(gettext("Bienvenue")+f", {session['identifiant']}")
                 return render_template("user.html")
         else:
-            flash("Pas de compte connecte", "deconnecte") #Utiliser 2 eme arg pour mettre une icone
+            flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
             return redirect(url_for("login"))
 
     except IndexError:
@@ -218,7 +214,7 @@ def login():
                 return render_template("loginwrong.html")
         else:
             if 'identifiant' in session:
-                flash("Deja connecte", "connecte") #Utiliser 2 eme arg pour mettre une icone
+                flash(gettext("Compte déjà connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                 return redirect(url_for("user"))
             else:
                 return render_template("login.html")
@@ -237,7 +233,7 @@ def signup():
             mdpadmin = request.form['mdpad']
             found_user = Utilisateur.query.filter_by(identifiant=identifiant).first()
             if found_user:
-                flash(f"Utilisateur {identifiant} deja insrit", "connecte") #Utiliser 2 eme arg pour mettre une icone
+                flash(gettext("Utilisateur déja inscrit"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                 return render_template("signup.html")
             else:
                 if  bcrypt.check_password_hash(mdp_admin, mdpadmin):
@@ -252,11 +248,11 @@ def signup():
                 usr = Utilisateur(identifiant, nom, mail, mdp, admin)
                 db.session.add(usr)
                 db.session.commit() # On envoie usr qui sera une ligne dans la bdd
-                flash("Inscription reussie", "connecte") #Utiliser 2 eme arg pour mettre une icone
+                flash(gettext("Inscription reussie"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                 return redirect(url_for("user"))
         else:
             if 'identifiant' in session:
-                flash(f"Utilisateur {session['identifiant']} connecte", "connecte") #Utiliser 2 eme arg pour mettre une icone
+                flash(gettext("Compte déjà connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                 return redirect(url_for("user"))
             else:
                 return render_template("signup.html")
@@ -269,7 +265,7 @@ def logout():
     if 'identifiant' in session:
         flash(f"{session['identifiant']} deconnecte avec succes", "deconnecte") #Utiliser 2 eme arg pour mettre une icone
     else: 
-        flash("Pas de compte connecte", "deconnecte") #Utiliser 2 eme arg pour mettre une icone
+        flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
     session.pop('identifiant', None) # On supprime les variables de session
     session.pop('nom', None) # On supprime les variables de session
     session.pop('mail', None)  
@@ -310,10 +306,10 @@ def consultmails():
                 if 'nom' in session:
                     return render_template("consultmails.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs)
                 else:
-                    flash("Pas de compte connecte", "connecte") #Utiliser 2 eme arg pour mettre une icone
+                    flash(gettext("Modifications bien prises en compte"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                     return render_template("login.html")
         else:
-            flash("Pas de compte connecte", "deconnecte") #Utiliser 2 eme arg pour mettre une icone
+            flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
             return redirect(url_for("login"))
     except IndexError:
         abort(404)
@@ -346,15 +342,16 @@ def consultmailsblacklist():
                 #             exp.statut = 3
                 # db.session.commit()
                 # flash("Veuillez recharger la page")
+                flash(gettext("Modifications bien prises en compte"))
                 return render_template("consultmails.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs, lmails=lmails)
             else:
                 if 'nom' in session:
                     return render_template("consultmails.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs)
                 else:
-                    flash("Pas de compte connecte", "connecte") #Utiliser 2 eme arg pour mettre une icone
+                    flash(gettext("Pas de compte connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                     return render_template("login.html")
         else:
-            flash("Pas de compte connecte", "deconnecte") #Utiliser 2 eme arg pour mettre une icone
+            flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
             return redirect(url_for("login"))
     except IndexError:
         abort(404)
@@ -393,16 +390,16 @@ def consultexp():
                         else:
                             exp.statut = 3
                 db.session.commit()
-                flash("Modifications bien prises en compte")
+                flash(gettext("Modifications bien prises en compte"))
                 return render_template("consultexp.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs)
             else:
                 if 'nom' in session:
                     return render_template("consultexp.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs)
                 else:
-                    flash("Pas de compte connecte", "connecte") #Utiliser 2 eme arg pour mettre une icone
+                    flash(gettext("Pas de compte connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                     return render_template("login.html")
         else:
-            flash("Pas de compte connecte", "deconnecte") #Utiliser 2 eme arg pour mettre une icone
+            flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
             return redirect(url_for("login"))
     except IndexError:
         abort(404)
