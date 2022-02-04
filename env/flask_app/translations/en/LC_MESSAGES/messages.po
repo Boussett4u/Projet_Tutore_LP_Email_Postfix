@@ -211,3 +211,27 @@ msgstr "Admin password"
 #: templates/stats.html:2
 msgid "Statistiques"
 msgstr "Statistics"
+
+#: templates/stats.html:31
+msgid "Nombre d'utilisateurs"
+msgstr "Number of users"
+
+#: templates/stats.html:31
+msgid "Nombre total d'expéditeurs"
+msgstr "Total number of senders"
+
+#: templates/stats.html:31
+msgid "Nombre d'expéditeurs validés"
+msgstr "Number of validated senders"
+
+#: templates/stats.html:31
+msgid "Nombre d'expéditeurs blacklistés"
+msgstr "Number of blacklisted senders"
+
+#: templates/stats.html:31
+msgid "Nombre d'expéditeurs en attente"
+msgstr "Number of pending senders"
+
+#: templates/stats.html:31
+msgid "Nombre de mails"
+msgstr "Number of mails"

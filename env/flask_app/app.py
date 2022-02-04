@@ -128,7 +128,24 @@ def hello():
 
 @app.route('/stats/')
 def stats():
-    return render_template("stats.html")
+    uti = Utilisateur.query.count()
+    exp = Expediteur.query.count()
+    expvalid = Expediteur.query.filter_by(statut =1).count()
+    expblack = Expediteur.query.filter_by(statut =2).count()
+    expatt = Expediteur.query.filter_by(statut =3).count()
+    mails = Mail.query.count()
+    tab = []
+    tab.append(uti)
+    tab.append(exp)
+    tab.append(expvalid)
+    tab.append(expblack)
+    tab.append(expatt)
+    tab.append(mails)
+
+    labels = [gettext("Nombre d'utilisateurs"), gettext("Nombre total d'expéditeurs"), gettext("Nombre d'expéditeurs validés"), gettext("Nombre d'expéditeurs blacklistés"), gettext("Nombre d'expéditeurs en attente"), gettext("Nombre de mails")]
+
+    return render_template("stats.html", tab= json.dumps(tab), labels= json.dumps(labels))
+    # return render_template("stats.html", uti= json.dumps(uti), exp=json.dumps(exp), expvalid=json.dumps(expvalid), expblack=json.dumps(expblack), expatt=json.dumpsexpatt, mails=mails)
 
 @app.route('/validation/', methods=["GET", "POST"])
 def validation():
