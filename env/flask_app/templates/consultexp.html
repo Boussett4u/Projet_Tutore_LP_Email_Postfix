@@ -12,7 +12,7 @@
 
 <p>{{ _("Liste d'expéditeurs de ") }} {{identifiant}}</p>
 
-<i class="fa fa-info-circle" aria-hidden="true"></i>{{ statusexp }}
+<i class="fa fa-info-circle" aria-hidden="true"></i>{{ _("Statut : 1 valide, 2 refuse, 3 en attente") }}
 <br>
 
 <br>
@@ -29,12 +29,12 @@
             <tr id='tr'>
                 <td><input type=hidden id='mail'  name='mail' value="{{ expediteurs.mail }}">{{ expediteurs.mail }}</td>
                 {% if expediteurs.statut == 3: %}
-                <td id='stat'><input type="number" id='statut' name='statut' min="1" max="3"></input></td>
+                <td id='stat'><input type="number" id='statut' name='statut' min="1" max="3" value="3"></input></td>
                 {% else: %}
                 {% if expediteurs.statut == 2: %}
-                <td id="stat"><input type="number" id='statut' name='statut' min="1" max="3"></input></td>
+                <td id="stat"><input type="number" id='statut' name='statut' min="1" max="3" value="2"></input></td>
                 {% else: %}
-                <td id="stat"><input type="number" id='statut' name='statut' min="1" max="3"></input></td>
+                <td id="stat"><input type="number" id='statut' name='statut' min="1" max="3" value="1"></input></td>
                 {% endif %}
                 {% endif %}
             </tr>
@@ -59,24 +59,24 @@
     });
     
     function relo(){
-        // $('#table').find('tbody tr').each(function(){
-        //     $input = $(this).find('input[type=number][id=statut]')
-        //     $td = $(this).find('td')
-        //     if ($input.val()==3){
-        //         console.log("c'est 3")
-        //         // $input.val()=3
-        //     }else{
-        //         if($input.val()==2){
-        //             console.log("c'est 2")
-        //             console.log($td.eq(1).text())
-        //             // $input.val()=2      
-        //         }else{
-        //             console.log("c'est 1")
-        //             console.log($td.eq(1).text())
-        //             // $input.val()=1
-        //         }
-        //     }
-        // });
+        $('#table').find('tbody tr').each(function(){
+            $input = $(this).find('input[type=number][id=statut]')
+            $td = $(this).find('td')
+            if ($input.val()==3){
+                console.log("c'est 3")
+                // $input.val()=3
+            }else{
+                if($input.val()==2){
+                    console.log("c'est 2")
+                    console.log($td.eq(1).text())
+                    // $input.val()=2      
+                }else{
+                    console.log("c'est 1")
+                    console.log($td.eq(1).text())
+                    // $input.val()=1
+                }
+            }
+        });
         var tab=[]
         $('#table').find('tbody tr').each(function(){
             var obj = {},

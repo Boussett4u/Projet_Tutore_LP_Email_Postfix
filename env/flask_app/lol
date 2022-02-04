@@ -1,5 +1,0 @@
-messbienv= gettext("Bienvenue")
-messnoaccount= gettext("Pas de compte connecté")
-messallaccount= gettext("Compte déjà connecté")
-messallaccountins= gettext("Utilisateur déja inscrit")
-messmodif= gettext("Modifications bien prises en compte")

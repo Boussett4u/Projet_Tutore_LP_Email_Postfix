@@ -94,9 +94,29 @@ msgstr "Check blacklisted mails"
 msgid "Consulter expéditeurs "
 msgstr "Check senders"
 
+#: templates/base.html:52
+msgid "Consulter statistiques "
+msgstr "Check statistics"
+
 #: templates/consultexp.html:2
 msgid "Expéditeurs"
 msgstr "Senders"
+
+#: templates/admin.html:33
+msgid "Expéditeur"
+msgstr "Sender"
+
+#: templates/admin.html:34
+msgid "Mails en attente"
+msgstr "Pending mails"
+
+#: templates/admin.html:35
+msgid "Mails blacklistés"
+msgstr "Blacklisted mails"
+
+#: templates/consultexp.html:15
+msgid "Statut : 1 valide, 2 refuse, 3 en attente"
+msgstr "Status : 1 valid, 2 refused, 3 pending"
 
 #: templates/consultexp.html:13
 msgid "Liste d'expéditeurs de "
@@ -188,3 +208,6 @@ msgstr "Admin password"
 msgid "Mot de passe admin"
 msgstr "Admin password"
 
+#: templates/stats.html:2
+msgid "Statistiques"
+msgstr "Statistics"

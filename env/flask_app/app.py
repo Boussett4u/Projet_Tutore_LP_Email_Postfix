@@ -52,8 +52,8 @@ babel = Babel(app)
 
 @babel.localeselector
 def get_locale():
-    # return 'fr'
-    return request.accept_languages.best_match(['fr', 'en'])
+    return 'en'
+    # return request.accept_languages.best_match(['fr', 'en'])
 
 @babel.timezoneselector
 def get_timezone():
@@ -126,6 +126,10 @@ class Mail(db.Model):
 def hello():
     return render_template("index.html")
 
+@app.route('/stats/')
+def stats():
+    return render_template("stats.html")
+
 @app.route('/validation/', methods=["GET", "POST"])
 def validation():
     message = '' 
@@ -152,17 +156,31 @@ def validation():
     return render_template('validation.html', message=message)
 
 # Redirection
-@app.route('/admin/')
+@app.route('/admin/', methods=['GET', 'POST'])
 def admin():
-    flash(gettext("Bienvenue") +f", {session['nom']}")
-    return render_template("admin.html")
+    utilisateurs = Utilisateur.query
+    if request.method == 'POST': 
+        mail = request.form['mail']
+        action = request.form['act']
+        utilisateur = Utilisateur.query.filter_by(mail=mail).first()
+        session['identifiant'] = utilisateur.identifiant
+        if action == "Expediteur":
+            return redirect(url_for("consultexp"))   
+        else:
+            if action == "Mails en attente":
+                return redirect(url_for("consultmails"))
+            else:
+                return redirect(url_for("consultmailsblacklist"))
+    else:
+        flash(gettext("Bienvenue") +f", {session['nom']}")
+        return render_template("admin.html", utilisateurs=utilisateurs)
 
 @app.route('/user/', methods=["GET", "POST"])
 def user():
     # email = None # On definit l'email
     try:
-        if 'identifiant' in session:
-            found_user = Utilisateur.query.filter_by(identifiant=session['identifiant']).first() # On verifie si il existe un utilisateur avec cet email dans la bdd
+        if 'mail' in session:
+            found_user = Utilisateur.query.filter_by(mail=session['mail']).first() # On verifie si il existe un utilisateur avec cet email dans la bdd
             if found_user.admin:
                 return redirect(url_for("admin"))
             else:
@@ -301,10 +319,10 @@ def consultmails():
                 #             exp.statut = 3
                 # db.session.commit()
                 # flash("Veuillez recharger la page")
-                return render_template("consultmails.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs, lmails=lmails)
+                return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
             else:
                 if 'nom' in session:
-                    return render_template("consultmails.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs)
+                    return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs)
                 else:
                     flash(gettext("Modifications bien prises en compte"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                     return render_template("login.html")
@@ -343,10 +361,10 @@ def consultmailsblacklist():
                 # db.session.commit()
                 # flash("Veuillez recharger la page")
                 flash(gettext("Modifications bien prises en compte"))
-                return render_template("consultmails.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs, lmails=lmails)
+                return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
             else:
                 if 'nom' in session:
-                    return render_template("consultmails.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs)
+                    return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs)
                 else:
                     flash(gettext("Pas de compte connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                     return render_template("login.html")
@@ -401,6 +419,21 @@ def consultexp():
         else:
             flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
             return redirect(url_for("login"))
+    except IndexError:
+        abort(404)
+
+@app.route('/status/', methods=['GET', 'POST'])
+def status():
+    try:
+        if request.method == "POST":
+            tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
+            print(tab,file=sys.stderr)
+            for mails in tab: 
+                mail = Mail.query.filter_by(id=mails['identifiant']).first()
+                if mails['statut']=='supprimé':
+                    db.session.delete(mail)
+            db.session.commit()
+            return render_template("consultmails.html", )
     except IndexError:
         abort(404)
 

@@ -93,6 +93,10 @@ msgstr ""
 msgid "Consulter expéditeurs "
 msgstr ""
 
+#: templates/base.html:52
+msgid "Consulter statistiques "
+msgstr 
+
 #: templates/consultexp.html:2
 msgid "Expéditeurs"
 msgstr ""
