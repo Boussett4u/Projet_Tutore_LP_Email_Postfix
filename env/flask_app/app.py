@@ -188,7 +188,7 @@ def admin():
         if action == "Expediteur":
             return redirect(url_for("consultexp"))   
         else:
-            if action == "Mails en attente":
+            if action == "Mails en attente" or action == "Pending mails":
                 return redirect(url_for("consultmails"))
             else:
                 return redirect(url_for("consultmailsblacklist"))
@@ -393,7 +393,7 @@ def consultmailsblacklist():
     try:
         if 'identifiant' in session:
             users = Utilisateur.query.filter_by(identifiant=session['identifiant']).first()
-            expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id, statut =2)
+            expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id, statut =2).all()
             t= []
             for e in expediteurs:
                 t.append(e.id)
@@ -441,6 +441,11 @@ def consultexp():
         if 'identifiant' in session:
             users = Utilisateur.query.filter_by(identifiant=session['identifiant']).first()
             expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id)
+            t = dict()
+            for exp in expediteurs:
+                mails = Mail.query.filter_by(expediteur_id=exp.id).count()
+                t[exp.mail] = mails
+            print(t, file=sys.stderr)
             # mails = Mail.query.filter_by(expediteur_id = expediteurs.id)
             if request.method == "POST":
                 tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
@@ -456,10 +461,10 @@ def consultexp():
                             exp.statut = 3
                 db.session.commit()
                 flash(gettext("Modifications bien prises en compte"))
-                return render_template("consultexp.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs)
+                return render_template("consultexp.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs, t=t)
             else:
                 if 'nom' in session:
-                    return render_template("consultexp.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs)
+                    return render_template("consultexp.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs, t=t)
                 else:
                     flash(gettext("Pas de compte connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                     return render_template("login.html")

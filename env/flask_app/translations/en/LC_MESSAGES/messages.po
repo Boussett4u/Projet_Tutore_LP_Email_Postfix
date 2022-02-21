@@ -250,11 +250,11 @@ msgstr "rejected"
 
 #: templates/consultmailsreject.html:65
 msgid "supprimé"
-msgstr "sent"
+msgstr "removed"
 
 #: templates/consultmailsreject.html:68
 msgid "non-supprimé"
-msgstr "removed"
+msgstr "sent"
 
 #: templates/consultmails.html:36
 msgid "Expéditeur"
@@ -266,9 +266,9 @@ msgstr "pending"
 
 #: templates/consultmails.html:65
 msgid "supprimé"
-msgstr "sent"
+msgstr "removed"
 
 #: templates/consultmails.html:68
 msgid "non-supprimé"
-msgstr "removed"
+msgstr "sent"
 

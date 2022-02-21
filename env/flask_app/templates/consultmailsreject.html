@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} {{_("Mails") }} {% endblock %}
+{% block title %} {{ _("Mails")}} {% endblock %}
 
 {% block content %}
 {% with messages = get_flashed_messages() %}
@@ -12,7 +12,7 @@
 
 
 
-<form name="liste" action="#" method="POST">
+<!-- <form name="liste" action="#" method="POST">
     <label for="mail" class="col-sm-2 col-form-label">{{ _("Veuillez choisir une adresse") }}</label>
     <br>
     <select name= mail method="GET" action="/">
@@ -22,7 +22,7 @@
     </select>
     <button type="submit" class="btn btn-primary" value="submit" >Submit</button>
 </form>
-<br>
+<br>  -->
 
 <i class="fa fa-info-circle" aria-hidden="true"></i>{{ _("Statut : 1 valide, 2 refuse, 3 en attente") }}
 <br>
@@ -33,6 +33,7 @@
     <table class="table table-striped" id='table' name='table'>
         <thead>
             <tr>
+                <th>{{ _("Expéditeur") }}</th>
                 <th>{{ _("ID mail") }}</th>
                 <th>{{ _("ID postfix") }}</th>
                 <th>{{ _("Supprimer ?") }}</th>
@@ -41,12 +42,17 @@
         </thead>
         <tbody id='table'>
             {% for mails in lmails %}
+            {% for exp in expediteurs %}
+            {% if exp.id == mails.expediteur_id %}
             <tr id='tr'>
+                <td><button type=button id='sender'  name='sender' value="{{ exp.id }}">{{ exp.mail }}</td>
                 <td><input type=hidden id='id'  name='id' value="{{ mails.id }}">{{ mails.id }}</td>
                 <td><input type=hidden id='postfixid'  name='postfixid' value="{{ mails.id_mail_postfix }}">{{ mails.id_mail_postfix }}</td>
                 <td id="sup"><input type=checkbox id='sup' name='sup' ></input></td>
-                <td><input type=text id='statut'  name='statut' value={{ _("rejeté") }} readonly="readonly" ></td>
+                <td><input type=text id='statut'  name='statut' value={{ _("en attente") }} readonly="readonly" ></td>
             </tr>
+            {% endif %}
+            {% endfor %}
             {% endfor %}
             
         </tbody>
@@ -56,17 +62,27 @@
 
 <script>
     
+    $(document).ready(function () {
+        $('#table').DataTable();
+        // columns: [
+        // null,
+        // {searchable: false},
+        // {orderable: false, searchable: false},
+        // {orderable: false, searchable: false},
+        // null],
+    });
+    
     function relo(){
         $('#table').find('tbody tr').each(function(){
             $input = $(this).find('input[type=checkbox]')
             $tr = $(this).find('input[id=statut]')
-            if ($input.is(":checked")){
+            if ($input.is(":checked") ){
                 $input.attr('checked', true);
-                $tr.val({{ _("supprimé") }});
-            }else{
-                $input.attr('checked', false);  
-                $tr.val({{ _("non-supprimé") }})   
-            }
+            //     $tr.val({{ _("supprimé") }});
+            // }else{
+            //     $input.attr('checked', false);  
+            //     $tr.val({{ _("non-supprimé") }})   
+            // }
             
         });
         
@@ -85,16 +101,16 @@
         });
         console.log(tab)
         
-        jQuery.ajax({
-            url: '/api/modifmails',
-            type: "POST",
-            data: JSON.stringify({ paramName: tab }),
-            success: function(msg) {
-                console.log(tab)
-            },
-            dataType: 'json'
+        // jQuery.ajax({
+        //     url: '/api/modifmails',
+        //     type: "POST",
+        //     data: JSON.stringify({ paramName: tab }),
+        //     success: function(msg) {
+        //         console.log(tab)
+        //     },
+        //     dataType: 'json'
             
-        });   
+        // });   
     }
     
     

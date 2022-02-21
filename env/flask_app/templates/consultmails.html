@@ -76,13 +76,13 @@
         $('#table').find('tbody tr').each(function(){
             $input = $(this).find('input[type=checkbox]')
             $tr = $(this).find('input[id=statut]')
-            if ($input.is(":checked")){
+            if ($input.is(":checked") ){
                 $input.attr('checked', true);
-                $tr.val({{ _("supprimé") }});
-            }else{
-                $input.attr('checked', false);  
-                $tr.val({{ _("non-supprimé") }})   
-            }
+            //     $tr.val({{ _("supprimé") }});
+            // }else{
+            //     $input.attr('checked', false);  
+            //     $tr.val({{ _("non-supprimé") }})   
+            // }
             
         });
         
@@ -101,16 +101,16 @@
         });
         console.log(tab)
         
-        jQuery.ajax({
-            url: '/api/modifmails',
-            type: "POST",
-            data: JSON.stringify({ paramName: tab }),
-            success: function(msg) {
-                console.log(tab)
-            },
-            dataType: 'json'
+        // jQuery.ajax({
+        //     url: '/api/modifmails',
+        //     type: "POST",
+        //     data: JSON.stringify({ paramName: tab }),
+        //     success: function(msg) {
+        //         console.log(tab)
+        //     },
+        //     dataType: 'json'
             
-        });   
+        // });   
     }
     
     
