@@ -191,3 +191,7 @@ msgstr ""
 msgid "Mot de passe admin"
 msgstr ""
 
+#: templates/validation.html:15
+msgid "Veuillez valider le captcha afin de valider votre email"
+msgstr ""
+

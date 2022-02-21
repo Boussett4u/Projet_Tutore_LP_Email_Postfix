@@ -26,7 +26,9 @@
         </thead>
         <tbody id='table'>
             {% for expediteurs in expediteurs %}
+
             <tr id='tr'>
+                <td><input type=hidden id='nb'  name='nb' value="{{ expediteurs.mail }}">{{ expediteurs.mail }}</td>
                 <td><input type=hidden id='mail'  name='mail' value="{{ expediteurs.mail }}">{{ expediteurs.mail }}</td>
                 {% if expediteurs.statut == 3: %}
                 <td id='stat'><input type="number" id='statut' name='statut' min="1" max="3" value="3"></input></td>

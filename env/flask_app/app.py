@@ -39,6 +39,7 @@ app.config['RECAPTCHA_SITE_KEY']= site_key
 app.config['RECAPTCHA_SECRET_KEY']= secret_key
 app.config['RECAPTCHA_OPTIONS']= {'theme':'black'}
 
+# Création du captcha     
 recaptcha = ReCaptcha(app)
 
 app.config['DEBUG'] = True
@@ -153,21 +154,24 @@ def validation():
     if request.method == 'POST': 
         if recaptcha.verify(): # On vérifie si le captcha a été validé 
             message = gettext('Captcha validé') # Send success message
-            expmail = request.form.get('email')
-            token = request.form.get('email')
-            expediteur = Expediteur.query.filter_by(mail=expmail).first()
-            if expediteur:
-                if expediteur.token == token:
-                    message= gettext('Adresse ') + expmail + gettext(' bien validée') 
-                    expediteur.statut=1
-                    # mails = Mail.query.filter_by(expediteur_id=expediteur.id)
-                    # for mail in mails:
-                        # db.session.delete(mail)
-                    db.session.commit()
-                else:
-                    message= gettext('Token invalide')
-            else:
-                message= gettext('Adresse de messagerie invalide')
+            # expediteur = Expediteur.query.filter_by(mail=token).first()
+            # expediteur.statut = 1
+            # db.session.commit()  
+            # expmail = request.form.get('email')
+            # token = request.form.get('email')
+            # expediteur = Expediteur.query.filter_by(mail=token).first()
+            # if expediteur:
+            #     if expediteur.token == token:
+            #         message= gettext('Adresse ') + expmail + gettext(' bien validée') 
+            #         expediteur.statut=1
+            #         # mails = Mail.query.filter_by(expediteur_id=expediteur.id)
+            #         # for mail in mails:
+            #             # db.session.delete(mail)
+            #         db.session.commit()
+            #     else:
+            #         message= gettext('Token invalide')
+            # else:
+            #     message= gettext('Adresse de messagerie invalide')
         else:
             message = gettext('Veuillez valider le captcha') # Send error message
     return render_template('validation.html', message=message)
@@ -313,15 +317,25 @@ def consultmails():
     try:
         if 'identifiant' in session:
             users = Utilisateur.query.filter_by(identifiant=session['identifiant']).first()
-            expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id, statut =3)
+            expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id, statut =3).all()
+            t= []
+            for e in expediteurs:
+                t.append(e.id)
+            print(t,file=sys.stderr)
+
+            lmails= Mail.query.filter(Mail.expediteur_id.in_(t))
+            print(lmails,file=sys.stderr)
+            # lmails= Mail.query.filter_by(expediteur_id=expediteurs.id)
             if request.method == "POST":
-                if request.json:
-                    tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
-                    print(tab,file=sys.stderr)
-                else:
-                    mail = request.form.get('mail')
-                    expediteur = Expediteur.query.filter_by(mail=mail).first()
-                    lmails= Mail.query.filter_by(expediteur_id=expediteur.id)
+                expediteur = request.form.get('sender')
+                return redirect(url_for("consultmailsexp"), expediteur)
+                # if request.json:
+                #     tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
+                #     print(tab,file=sys.stderr)
+                # else:
+                #     mail = request.form.get('mail')
+                #     expediteur = Expediteur.query.filter_by(mail=mail).first()
+                #     lmails= Mail.query.filter_by(expediteur_id=expediteur.id)
                 # if request.json:
                 #     tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
                 #     print(tab,file=sys.stderr)
@@ -335,11 +349,36 @@ def consultmails():
                 #         else:
                 #             exp.statut = 3
                 # db.session.commit()
-                # flash("Veuillez recharger la page")
-                return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
+                    # flash("Veuillez recharger la page")
+                # return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
             else:
                 if 'nom' in session:
-                    return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs)
+                    return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
+                else:
+                    flash(gettext("Modifications bien prises en compte"), "connecte") #Utiliser 2 eme arg pour mettre une icone
+                    return render_template("login.html")
+        else:
+            flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
+            return redirect(url_for("login"))
+    except IndexError:
+        abort(404)
+
+@app.route('/consultmailsexp/<expediteur>', methods=['GET', 'POST'])
+def consultmailsexp(expediteur):
+    try:
+        if 'identifiant' in session:
+            users = Utilisateur.query.filter_by(identifiant=session['identifiant']).first()
+            exp = Expediteur.query.filter_by(utilisateur_id=users.id, mail= expediteur).first()
+            lmails= Mail.query.filter_by(expediteur_id = exp.id).all()
+            print(lmails, file=sys.stderr)
+            if request.method == "POST":
+                if request.json:
+                    tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
+                    print(tab,file=sys.stderr)
+                return render_template("consultmailsexp.html", identifiant=session['identifiant'], expediteur=expediteur, lmails=lmails)
+            else:
+                if 'nom' in session:
+                    return render_template("consultmailsexp.html", identifiant=session['identifiant'], expediteur=expediteur, lmails=lmails)
                 else:
                     flash(gettext("Modifications bien prises en compte"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                     return render_template("login.html")
@@ -355,35 +394,25 @@ def consultmailsblacklist():
         if 'identifiant' in session:
             users = Utilisateur.query.filter_by(identifiant=session['identifiant']).first()
             expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id, statut =2)
+            t= []
+            for e in expediteurs:
+                t.append(e.id)
+            lmails= Mail.query.filter(Mail.expediteur_id.in_(t))
+
             if request.method == "POST":
                 if request.json:
                     tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
                     print(tab,file=sys.stderr)
-                else:
-                    mail = request.form.get('mail')
-                    expediteur = Expediteur.query.filter_by(mail=mail).first()
-                    lmails= Mail.query.filter_by(expediteur_id=expediteur.id)
-                # if request.json:
-                #     tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
-                #     print(tab,file=sys.stderr)
-                # for exps in tab: 
-                #     exp = Expediteur.query.filter_by(mail=exps['mail']).first()
-                #     if exps['statut']=='1':
-                #         exp.statut = 1
-                #     else:
-                #         if exps['statut']=='2':
-                #             exp.statut = 2
-                #         else:
-                #             exp.statut = 3
-                # db.session.commit()
-                # flash("Veuillez recharger la page")
-                flash(gettext("Modifications bien prises en compte"))
+                # else:
+                #     mail = request.form.get('mail')
+                #     expediteur = Expediteur.query.filter_by(mail=mail).first()
+                #     lmails= Mail.query.filter_by(expediteur_id=expediteur.id)
                 return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
             else:
                 if 'nom' in session:
-                    return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs)
+                    return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
                 else:
-                    flash(gettext("Pas de compte connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
+                    flash(gettext("Modifications bien prises en compte"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                     return render_template("login.html")
         else:
             flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
@@ -412,6 +441,7 @@ def consultexp():
         if 'identifiant' in session:
             users = Utilisateur.query.filter_by(identifiant=session['identifiant']).first()
             expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id)
+            # mails = Mail.query.filter_by(expediteur_id = expediteurs.id)
             if request.method == "POST":
                 tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
                 for exps in tab: 

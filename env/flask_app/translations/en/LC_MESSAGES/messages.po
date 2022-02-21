@@ -235,3 +235,40 @@ msgstr "Number of pending senders"
 #: templates/stats.html:31
 msgid "Nombre de mails"
 msgstr "Number of mails"
+
+#: templates/validation.html:15
+msgid "Veuillez valider le captcha afin de valider votre email"
+msgstr "Please validate the captcha to validate your email"
+
+#: templates/consultmailsreject.html:36
+msgid "Expéditeur"
+msgstr "Sender"
+
+#: templates/consultmailsreject.html:48
+msgid "rejeté"
+msgstr "rejected"
+
+#: templates/consultmailsreject.html:65
+msgid "supprimé"
+msgstr "sent"
+
+#: templates/consultmailsreject.html:68
+msgid "non-supprimé"
+msgstr "removed"
+
+#: templates/consultmails.html:36
+msgid "Expéditeur"
+msgstr "Sender"
+
+#: templates/consultmails.html:48
+msgid "en attente"
+msgstr "pending"
+
+#: templates/consultmails.html:65
+msgid "supprimé"
+msgstr "sent"
+
+#: templates/consultmails.html:68
+msgid "non-supprimé"
+msgstr "removed"
+
