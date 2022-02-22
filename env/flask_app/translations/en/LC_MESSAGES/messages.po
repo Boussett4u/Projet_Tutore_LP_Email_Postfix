@@ -272,3 +272,27 @@ msgstr "removed"
 msgid "non-supprimé"
 msgstr "sent"
 
+#: templates/index.html:5
+msgid "L'application de filtrage"
+msgstr "The filtering application"
+
+#: templates/index.html:12
+msgid "Serveur"
+msgstr "Server"
+
+#: templates/index.html:13
+msgid "Etat"
+msgstr "Status"
+
+#: templates/index.html:19
+msgid "Base de données"
+msgstr "Database"
+
+#: templates/index.html:20
+msgid "Fonctionnel"
+msgstr "Operational"
+
+#: templates/index.html:25
+msgid "Non-fonctionnel"
+msgstr "Non-operational"
+

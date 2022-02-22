@@ -5,6 +5,7 @@
 from cgi import test
 from crypt import methods
 from enum import unique
+from httplib2 import Response
 from markupsafe import escape
 from flask import Flask, abort, request, g, redirect, url_for, render_template, request, session, flash
 from datetime import timedelta
@@ -28,6 +29,7 @@ from datetime import datetime
 import locale
 import glob
 import json
+import pytest
               
 # creation d'une instance de flask
 app = Flask(__name__)
@@ -43,6 +45,7 @@ app.config['RECAPTCHA_OPTIONS']= {'theme':'black'}
 recaptcha = ReCaptcha(app)
 
 app.config['DEBUG'] = True
+
 
 # On va chiffrer les donnees de session
 app.secret_key = "secret"
@@ -148,6 +151,44 @@ def stats():
     return render_template("stats.html", tab= json.dumps(tab), labels= json.dumps(labels))
     # return render_template("stats.html", uti= json.dumps(uti), exp=json.dumps(exp), expvalid=json.dumps(expvalid), expblack=json.dumps(expblack), expatt=json.dumpsexpatt, mails=mails)
 
+@app.route('/statut/')
+def statut():
+    db = True
+    postfix = True 
+    app = True
+    c1=0
+    c2=0
+    c3=0
+    # db.session.
+    test = Utilisateur
+    if not test:
+        db = False
+    if (db):
+        mess1= "Base de données fonctionnelle \n"
+        c1=1
+    else:
+        mess1= "Base de données non-fonctionnelle \n"
+    if (postfix):
+        mess2 = "Serveur postfix fonctionnel \n"
+        c2=1
+    else:
+        mess2 = "Serveur postfix non-fonctionnel \n"
+    if(app):
+        mess3 = "Application fonctionnelle"
+        c3=1
+    else:
+        mess3 = "Application non-fonctionnelle"
+        # abort(400)
+    # flash(mess)
+    # return redirect(url_for('hello'))
+    if c1+c2+c3 == 3:
+        # abort(200, mess)
+        return render_template("index.html", c1=c1, c2=c2, c3=c3 ), 200
+        # return redirect(url_for("hello", mess=mess)), 200
+    else:
+        return render_template("index.html", c1=c1, c2=c2, c3=c3 ), 500
+        # abort(500, mess)
+ 
 @app.route('/validation/', methods=["GET", "POST"])
 def validation():
     message = '' 
