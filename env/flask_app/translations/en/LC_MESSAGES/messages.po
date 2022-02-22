@@ -98,6 +98,10 @@ msgstr "Check senders"
 msgid "Consulter statistiques "
 msgstr "Check statistics"
 
+#: templates/base.html:56
+msgid "Consulter statut "
+msgstr "Check status"
+
 #: templates/consultexp.html:2
 msgid "Expéditeurs"
 msgstr "Senders"

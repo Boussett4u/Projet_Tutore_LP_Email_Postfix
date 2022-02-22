@@ -118,10 +118,12 @@ class Mail(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_mail_postfix = db.Column(db.String(250), unique=True, nullable=False)
     expediteur_id = db.Column(db.ForeignKey(Expediteur.id), nullable=False)
+    date = db.Column(db.DateTime)
 
-    def __init__(self, id_mail_postfix, expediteur_id):
+    def __init__(self, id_mail_postfix, expediteur_id, date):
         self.id_mail_postfix = id_mail_postfix
         self.expediteur_id = expediteur_id
+        self.date = date
 
 
 

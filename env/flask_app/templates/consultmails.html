@@ -37,6 +37,7 @@
                 <th>{{ _("ID mail") }}</th>
                 <th>{{ _("ID postfix") }}</th>
                 <th>{{ _("Supprimer ?") }}</th>
+                <th> Date </th>
                 <th>{{ _("Statut") }}</th>
             </tr>
         </thead>
@@ -49,6 +50,7 @@
                 <td><input type=hidden id='id'  name='id' value="{{ mails.id }}">{{ mails.id }}</td>
                 <td><input type=hidden id='postfixid'  name='postfixid' value="{{ mails.id_mail_postfix }}">{{ mails.id_mail_postfix }}</td>
                 <td id="sup"><input type=checkbox id='sup' name='sup' ></input></td>
+                <td><input type=hidden id='date'  name='date' value="{{ mails.date }}">{{ mails.date }}</td>               
                 <td><input type=text id='statut'  name='statut' value={{ _("en attente") }} readonly="readonly" ></td>
             </tr>
             {% endif %}
