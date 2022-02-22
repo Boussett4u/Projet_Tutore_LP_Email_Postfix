@@ -45,7 +45,7 @@
             {% for exp in expediteurs %}
             {% if exp.id == mails.expediteur_id %}
             <tr id='tr'>
-                <td><button type=button id='sender'  name='sender' value="{{ exp.id }}">{{ exp.mail }}</td>
+                <td><button type=submit id='sender'  name='sender' value="{{ exp.mail }}">{{ exp.mail }}</td>
                 <td><input type=hidden id='id'  name='id' value="{{ mails.id }}">{{ mails.id }}</td>
                 <td><input type=hidden id='postfixid'  name='postfixid' value="{{ mails.id_mail_postfix }}">{{ mails.id_mail_postfix }}</td>
                 <td id="sup"><input type=checkbox id='sup' name='sup' ></input></td>
@@ -78,11 +78,13 @@
             $tr = $(this).find('input[id=statut]')
             if ($input.is(":checked") ){
                 $input.attr('checked', true);
-            //     $tr.val({{ _("supprimé") }});
-            // }else{
-            //     $input.attr('checked', false);  
-            //     $tr.val({{ _("non-supprimé") }})   
-            // }
+                supp = "{{_("supprimé")}}"
+                $tr.val(supp);
+            }else{
+                $input.attr('checked', false);  
+                nsupp = "{{ _("non-supprimé") }}"
+                $tr.val(nsupp)   
+            }
             
         });
         

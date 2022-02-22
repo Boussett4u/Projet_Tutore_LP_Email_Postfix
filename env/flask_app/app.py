@@ -321,14 +321,14 @@ def consultmails():
             t= []
             for e in expediteurs:
                 t.append(e.id)
-            print(t,file=sys.stderr)
+            # print(t,file=sys.stderr)
 
             lmails= Mail.query.filter(Mail.expediteur_id.in_(t))
-            print(lmails,file=sys.stderr)
+            # print(lmails,file=sys.stderr)
             # lmails= Mail.query.filter_by(expediteur_id=expediteurs.id)
             if request.method == "POST":
                 expediteur = request.form.get('sender')
-                return redirect(url_for("consultmailsexp"), expediteur)
+                return redirect(url_for("consultmailsexp", expediteur=expediteur))
                 # if request.json:
                 #     tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
                 #     print(tab,file=sys.stderr)
@@ -400,14 +400,16 @@ def consultmailsblacklist():
             lmails= Mail.query.filter(Mail.expediteur_id.in_(t))
 
             if request.method == "POST":
-                if request.json:
-                    tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
-                    print(tab,file=sys.stderr)
+                expediteur = request.form.get('sender')
+                return redirect(url_for("consultmailsexp", expediteur=expediteur))
+                # if request.json:
+                #     tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
+                #     print(tab,file=sys.stderr)
                 # else:
                 #     mail = request.form.get('mail')
                 #     expediteur = Expediteur.query.filter_by(mail=mail).first()
                 #     lmails= Mail.query.filter_by(expediteur_id=expediteur.id)
-                return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
+                # return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
             else:
                 if 'nom' in session:
                     return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)

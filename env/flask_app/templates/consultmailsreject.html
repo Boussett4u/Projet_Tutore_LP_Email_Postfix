@@ -78,11 +78,13 @@
             $tr = $(this).find('input[id=statut]')
             if ($input.is(":checked") ){
                 $input.attr('checked', true);
-            //     $tr.val({{ _("supprimé") }});
-            // }else{
-            //     $input.attr('checked', false);  
-            //     $tr.val({{ _("non-supprimé") }})   
-            // }
+                supp = "{{_("supprimé")}}"
+                $tr.val(supp);
+            }else{
+                $input.attr('checked', false);  
+                nsupp = "{{ _("non-supprimé") }}"
+                $tr.val(nsupp)   
+            }
             
         });
         
