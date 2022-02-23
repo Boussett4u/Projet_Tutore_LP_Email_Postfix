@@ -150,7 +150,7 @@ def stats():
 
     labels = [gettext("Nombre d'utilisateurs"), gettext("Nombre total d'expéditeurs"), gettext("Nombre d'expéditeurs validés"), gettext("Nombre d'expéditeurs blacklistés"), gettext("Nombre d'expéditeurs en attente"), gettext("Nombre de mails")]
 
-    return render_template("stats.html", tab= json.dumps(tab), labels= json.dumps(labels))
+    return render_template("stats.html", tab= json.dumps(tab), labels= json.dumps(labels), mails=mails, exp=exp, uti=uti)
     # return render_template("stats.html", uti= json.dumps(uti), exp=json.dumps(exp), expvalid=json.dumps(expvalid), expblack=json.dumps(expblack), expatt=json.dumpsexpatt, mails=mails)
 
 @app.route('/statut/')

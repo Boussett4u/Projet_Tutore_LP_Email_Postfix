@@ -224,6 +224,10 @@ msgstr "Number of users"
 msgid "Nombre total d'expéditeurs"
 msgstr "Total number of senders"
 
+#: templates/stats.html:62
+msgid "Nombre d'expéditeurs"
+msgstr "Number of senders"
+
 #: templates/stats.html:31
 msgid "Nombre d'expéditeurs validés"
 msgstr "Number of validated senders"
@@ -239,6 +243,18 @@ msgstr "Number of pending senders"
 #: templates/stats.html:31
 msgid "Nombre de mails"
 msgstr "Number of mails"
+
+#: templates/stats.html:115
+msgid "Destinataires"
+msgstr "Recipients"
+
+#: templates/stats.html:103
+msgid "Statistiques"
+msgstr "Statistics"
+
+#: templates/admin.html:115
+msgid "Utilisateurs"
+msgstr "Users"
 
 #: templates/validation.html:15
 msgid "Veuillez valider le captcha afin de valider votre email"

@@ -10,17 +10,89 @@
 {% endif %}
 {% endwith %}
 
-
-<div class="col-xs-10 col-sm-6 col-md-6">
-    <div class="card card-style mb-2">
-        <div class="card-body">
-            <div class="chart-container" style="position: relative;">
-                <canvas id="chart"></canvas>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title text-center">{{ _("Nombre d'utilisateurs") }}</h5>
+                <h1 class="card-text text-center">{{ uti }}</h1>
+            </div>
+            <div class="card-footer">
+                <small class="text-white">Last updated 3 mins ago</small>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-body">
+                <h5 class="card-title text-center">{{ _("Nombre d'expéditeurs") }}</h5>
+                <h1 class="card-text text-center">{{ exp }}</h1>
+            </div>
+            <div class="card-footer">
+                <small class="text-white">Last updated 3 mins ago</small>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title text-center">{{ _("Nombre de mails") }}</h5>
+                <h1 class="card-text text-center font-size">{{ mails }}</h1>
+            </div>
+            <div class="card-footer">
+                <small class="text-white">Last updated 3 mins ago</small>
             </div>
         </div>
     </div>
 </div>
 
+
+</br>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col-xs-10 col-sm-6 col-md-6">
+        <div class="card card-style mb-2">
+            <div class="card-body">
+                <div class="chart-container" style="position: relative">
+                    <canvas id="chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <canvas id="chart" max-height="100" max-width="50"></canvas> -->
+    
+    <div class="col-xs-10 col-sm-6 col-md-6">
+        <div class="card card-style mb-2">
+            <div class="card-body">
+                <div class="d-flex justify-content-center">
+                    <div class="chart-container center" style="position: relative; height:46.2vh; width:24vw">
+                        <canvas id="chart1"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <div class="col-xs-10 col-sm-6 col-md-6">
+    <div class="card card-style mb-2">
+        <div class="card-body">
+            <div class="chart-container" style="position: center">
+                <canvas id="chart"></canvas>
+            </div>
+        </div>
+    </div>
+</div> -->
+<!-- <canvas id="chart" max-height="100" max-width="50"></canvas> -->
+
+<!-- <div class="col-xs-10 col-sm-6 col-md-6">
+    <div class="card card-style mb-2">
+        <div class="card-body">
+            <div class="chart-container" style="position: relative;">
+                <canvas id="chart1"></canvas>
+            </div>
+        </div>
+    </div>
+</div> -->
 <script>
     let tab = JSON.parse({{tab | tojson }});
     let labels = JSON.parse({{labels | tojson }});
@@ -30,7 +102,7 @@
         data: {
             labels: labels,
             datasets: [{
-                // label: '# of Votes',
+                label: ' {{ _("Statistiques") }}',
                 data: tab,
                 backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
@@ -51,13 +123,28 @@
                 borderWidth: 1
             }]
         },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+    });
+    
+    const ctx1 = document.getElementById('chart1').getContext('2d');
+    const myChart1 = new Chart(ctx1, {
+        type: 'pie',
+        data: {
+            labels: ['{{ _("Destinataires") }}', '{{ _("Expéditeurs") }}'],
+            datasets: [{
+                label: '{{ _("Destinataires vs Expéditeurs") }}',
+                data: [{{uti}}, {{exp}}],
+                backgroundColor: ['rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'],
+                borderWidth: 1,
+                hoverBorderColor: "black",
+                hoverBorderWidth: 2,
+                pointHoverRadius: 5
+            }],
+        },
     });
 </script>
 
