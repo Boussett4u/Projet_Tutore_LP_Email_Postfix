@@ -18,7 +18,7 @@ class Utilisateur(db.Model):
         #Définition des colonnes
         id = db.Column(db.Integer, primary_key=True)
         identifiant = db.Column(db.String(250), unique=True, nullable=False)
-        nom = db.Column(db.String(250), unique=True, nullable=True)
+        nom = db.Column(db.String(250), unique=False, nullable=True)
         mdp = db.Column(db.String(250), unique=False, nullable=False)
         admin = db.Column(db.Boolean, default=False)
         mail = db.Column(db.String(250), unique=False, nullable=False)
@@ -34,11 +34,11 @@ class Utilisateur(db.Model):
 class Expediteur(db.Model):
         #Définition des colonnes
         id = db.Column(db.Integer, primary_key=True)
-        mail = db.Column(db.String(250), unique=True, nullable=False)
+        mail = db.Column(db.String(250), unique=False, nullable=False)
         utilisateur_id = db.Column(db.ForeignKey(Utilisateur.id), nullable=False)
         statut = db.Column(db.Integer, unique=False, nullable=False, default=3)
         #statut : 1 validé, 2 refusé, 3 en attente
-        token = db.Column(db.String(250), unique=True, nullable=False)
+        token = db.Column(db.String(250), nullable=False)
 
         #Constructeur
         def __init__(self, mail, utilisateur_id, statut, token): 
