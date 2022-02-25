@@ -32,7 +32,7 @@ smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 # information on enabling SSL in the smtp client.
 
 smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
-myhostname = ff91aa20a6cb.numericable.fr
+myhostname = mondomaine.fr
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
 mydestination = $myhostname, /etc/mailname, ff91aa20a6cb, localhost.localdomain, localhost
@@ -43,6 +43,6 @@ recipient_delimiter = +
 inet_interfaces = all
 inet_protocols = all
 
-smtpd_recipient_restrictions = check_recipient_access hash:/etc/postfix/access
+smtpd_recipient_restrictions = check_recipient_access pcre:/etc/postfix/access
 #header_checks = regexp:/etc/postfix/header_check_validation
 #body_checks = regexp:/etc/postfix/body_check_validation
