@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 #Configuration pour utiliser flask et SQLAlchemy               
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postfix:postfix@localhost:5432/postfix'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://root:padmin@docker_db_1:5432/postfix'
 db = SQLAlchemy(app)
 
 #Création des classes correspondant aux tables de la base de données (utilisé aussi pour la création de la base en phase de test)
