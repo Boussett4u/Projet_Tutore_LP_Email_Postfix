@@ -252,6 +252,62 @@ msgstr "Recipients"
 msgid "Statistiques"
 msgstr "Statistics"
 
+#: templates/stats.html:103
+msgid "Mails acceptés"
+msgstr "Accepted mails"
+
+#: templates/stats.html:103
+msgid "Mails rejetés"
+msgstr "Rejected mails"
+
+#: templates/stats.html:103
+msgid "Janvier"
+msgstr "January"
+
+#: templates/stats.html:103
+msgid "Février"
+msgstr "February"
+
+#: templates/stats.html:103
+msgid "Mars"
+msgstr "March"
+
+#: templates/stats.html:103
+msgid "Avril"
+msgstr "April"
+
+#: templates/stats.html:103
+msgid "Mai"
+msgstr "May"
+
+#: templates/stats.html:103
+msgid "Juin"
+msgstr "June"
+
+#: templates/stats.html:103
+msgid "Juillet"
+msgstr "July"
+
+#: templates/stats.html:103
+msgid "Aout"
+msgstr "August"
+
+#: templates/stats.html:103
+msgid "Septembre"
+msgstr "September"
+
+#: templates/stats.html:103
+msgid "Octobre"
+msgstr "October"
+
+#: templates/stats.html:103
+msgid "Novembre"
+msgstr "November"
+
+#: templates/stats.html:103
+msgid "Décembre"
+msgstr "December"
+
 #: templates/admin.html:115
 msgid "Utilisateurs"
 msgstr "Users"
