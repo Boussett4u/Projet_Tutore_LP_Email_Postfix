@@ -1,6 +1,6 @@
 
 /^paul@localhost$/	OK
-/^reject@localhost$/	REJECT vade retro satanas
 /^hold@localhost$/	OK
 /^filter@localhost$/	FILTER filter:dummy
 /^defer@localhost$/	OK
+/^reject@localhost$/ 	FILTER filter:dummy
