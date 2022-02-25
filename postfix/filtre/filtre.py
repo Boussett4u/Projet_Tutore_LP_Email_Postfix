@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 #coding: utf-8
 
-#On récuềre les modules nécessaires
+#On récupère les modules nécessaires
 import os, sys, smtplib, getopt, subprocess, fileinput, email, hashlib, syslog
 from datetime import datetime
 
@@ -158,75 +158,89 @@ def ajouterStat(statut):
 
 #Transmission des logs a rsyslog
 syslog.openlog(logoption=syslog.LOG_PID, facility=syslog.LOG_MAIL)
+
+#Vérification de l'existence du destinataire dans la table
+destinataire_existe = Utilisateur.query.filter_by(mail=destinataire).count()
+
+#S'il existe
+if destinataire_existe > 0:
+
+        #Récupération de ses informations
+        destinataire_bdd = Utilisateur.query.filter_by(mail=destinataire).first()
+
+        #Vérification de l'expéditeur, est-il déjà dans la table et associé à ce destinataire ?
+        expediteur_existe = Expediteur.query.filter_by(mail=expediteur).filter_by(utilisateur_id=destinataire_bdd.id).count()
+
+        #Si oui
+        if expediteur_existe > 0:
+
+                #Info pour le log
+                syslog.syslog(syslog.LOG_INFO, 'L\'expediteur existe - Verification de son statut')
+
+                #si oui, récupération de l'objet de la base correspondant à cet expéditeur dans une variable
+                expediteur_bdd = Expediteur.query.filter_by(mail=expediteur, utilisateur_id=destinataire_bdd.id).first()
+
+                #En fonction du statut
         
-#Vérification de l'expéditeur, est-il déjà dans la table ?
-expediteur_existe = Expediteur.query.filter_by(mail=expediteur).count()
+                #Si accepté
+                if expediteur_bdd.statut==1:
 
-if expediteur_existe > 0:
-
-        #Info pour le log
-        syslog.syslog(syslog.LOG_INFO, 'L\'expediteur existe - Verification de son statut')
-
-        #si oui, récupération de l'objet de la base correspondant à cet expéditeur dans une variable
-        expediteur_bdd = Expediteur.query.filter_by(mail=expediteur).first()
-        
-        #En fonction du statut
-        
-        #Si accepté
-        if expediteur_bdd.statut==1:
-
-                #Information destinée aux logs
-                syslog.syslog(syslog.LOG_INFO, 'Expediteur connu et valide - Tranfert du mail au destinataire')
+                        #Information destinée aux logs
+                        syslog.syslog(syslog.LOG_INFO, 'Expediteur connu et valide - Tranfert du mail au destinataire')
                 
-                #Envoi du mail sans contrôle particulier
-                sendmail = os.popen("/usr/lib/sendmail {0}".format(destinataire), "w")
-                sendmail.write(message)
+                        #Envoi du mail sans contrôle particulier
+                        sendmail = os.popen("/usr/lib/sendmail {0}".format(destinataire), "w")
+                        sendmail.write(message)
 
-                #Ajout d'une entrée dans la table statistiques
-                ajouterStat(1)
+                        #Ajout d'une entrée dans la table statistiques
+                        ajouterStat(1)
+               
+                #Si refusé        
+                elif expediteur_bdd.statut==2:
+
+                        #Informations destinées aux logs
+                        syslog.syslog(syslog.LOG_INFO, 'Expediteur refuse - Mail retourne a l\'expediteur')      
                 
-        #Si refusé        
-        elif expediteur_bdd.statut==2:
+                        #Ajoute d'une entrée dans la table statistiques
+                        ajouterStat(2)
 
-                #Informations destinées aux logs
-                syslog.syslog(syslog.LOG_INFO, 'Expediteur refuse - Mail retourne a l\'expediteur')      
-                      
-                #Ajoute d'une entrée dans la table statistiques
-                ajouterStat(2)
+                        #Envoi du code d'erreur 69 qui permet a postfix de retourner le message à l'expéditeur comme non-livrable
+                        EX_UNVALIABLE=69
+                        sys.exit(EX_UNVALIABLE)
+                
+                else:
+                        #Si en attente
 
-                #Envoi du code d'erreur 69 qui permet a postfix de retourner le message à l'expéditeur comme non-livrable
-                EX_UNVALIABLE=69
-                sys.exit(EX_UNVALIABLE)
- 
+                        #Informations destinées aux logs
+                        syslog.syslog(syslog.LOG_INFO, 'Expediteur en attente - Mail mis en quarantaine - Envoi d\'un lien de validation')
+                
+                        #Resprise de la fonction definie pour ce cas de figure, permettant de générer un lien et mettre en quarantaine
+                        envoyerLien(expediteur, mail_id, message, mailValidation, destinataire)
+
+                        #Enregistrement du mail dans la base pour pouvoir le retrouver :
+                        ajouterMail(expediteur, mail_id)
+
+                        #Ajout d'une entrée dans la table statistiques
+                        ajouterStat(3)
+
+        #Cas où l'expéditeur n'existe pas dans la table Expediteur                
         else:
-        #Si en attente
 
                 #Informations destinées aux logs
-                syslog.syslog(syslog.LOG_INFO, 'Expediteur en attente - Mail mis en quarantaine - Envoi d\'un lien de validation')
-                
-                #Resprise de la fonction definie pour ce cas de figure, permettant de générer un lien et mettre en quarantaine
-                envoyerLien(expediteur, mail_id, message, mailValidation, destinataire)
+                syslog.syslog(syslog.LOG_INFO, 'Expediteur inconnu - Attribution du statut en attente - Mail mis en quarantaine - Envoi d\'un lien de validation')
+        
+                #Ajout de l'expéditeur inconnu dans la base avec le statut en attente
+                ajouterExpediteur(destinataire, expediteur)
 
-                #Enregistrement du mail dans la base pour pouvoir le retrouver :
+                #Ajout du mail correspondant dans la table mail
                 ajouterMail(expediteur, mail_id)
 
-                #Ajout d'une entrée dans la table statistiques
+                #Fonction permettant de générer le lien et envoyer en quarantaine le mail
+                envoyerLien(expediteur, mail_id, message, mailValidation, destinataire)
+
+                #Ajout d'une entrée dans la table statistique
                 ajouterStat(3)
 
-#Cas où l'expéditeur n'existe pas dans la table Expediteur                
+
 else:
-
-        #Informations destinées aux logs
-        syslog.syslog(syslog.LOG_INFO, 'Expediteur inconnu - Attribution du statut en attente - Mail mis en quarantaine - Envoi d\'un lien de validation')
-        
-        #Ajout de l'expéditeur inconnu dans la base avec le statut en attente
-        ajouterExpediteur(destinataire, expediteur)
-        
-        #Ajout du mail correspondant dans la table mail
-        ajouterMail(expediteur, mail_id)
-
-        #Fonction permettant de générer le lien et envoyer en quarantaine le mail
-        envoyerLien(expediteur, mail_id, message, mailValidation, destinataire)
-
-        #Ajout d'une entrée dans la table statistique
-        ajouterStat(3)
+        syslog.syslog(syslog.LOG_INFO, 'Destinataire inconnu')
