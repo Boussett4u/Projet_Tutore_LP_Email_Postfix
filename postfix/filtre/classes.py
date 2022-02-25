@@ -2,7 +2,7 @@
 #coding: utf-8
 
 import os, sys, smtplib, getopt, subprocess, fileinput, email
-  
+from datetime import datetime  
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -58,7 +58,7 @@ class Mail(db.Model):
         def __init__(self,id_mail_postfix, expediteur_id):
                 self.id_mail_postfix = id_mail_postfix
                 self.expediteur_id = expediteur_id
-                self.date = date
+                self.date = datetime.now()
 
 
 class Statistiques(db.Model):
