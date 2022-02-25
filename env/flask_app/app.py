@@ -5,6 +5,7 @@
 from cgi import test
 from crypt import methods
 from enum import unique
+from re import S
 from httplib2 import Response
 from markupsafe import escape
 from flask import Flask, abort, request, g, redirect, url_for, render_template, request, session, flash
@@ -26,6 +27,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_recaptcha import ReCaptcha
 from flask_babel import Babel, format_datetime, gettext
 from datetime import datetime
+from datetime import date
 import locale
 import glob
 import json
@@ -125,7 +127,17 @@ class Mail(db.Model):
         self.expediteur_id = expediteur_id
         self.date = date
 
-
+class Statistiques(db.Model):
+        #Définition des colonnes
+        id = db.Column(db.Integer, primary_key=True)
+        date = db.Column(db.DateTime, nullable=False)
+        #1 = accepté, 2 = rejeté, 3 = en attente
+        actionFiltre = db.Column(db.Integer, nullable=False)
+        
+        #Constructeur
+        def __init__(self, date, actionFiltre):
+                self.date = date
+                self.actionFiltre = actionFiltre
 
 @app.route('/')      # Possible d'avoir plusieurs routes
 @app.route('/index/')
@@ -150,7 +162,149 @@ def stats():
 
     labels = [gettext("Nombre d'utilisateurs"), gettext("Nombre total d'expéditeurs"), gettext("Nombre d'expéditeurs validés"), gettext("Nombre d'expéditeurs blacklistés"), gettext("Nombre d'expéditeurs en attente"), gettext("Nombre de mails")]
 
-    return render_template("stats.html", tab= json.dumps(tab), labels= json.dumps(labels), mails=mails, exp=exp, uti=uti)
+    stats1 = Statistiques.query.filter_by(actionFiltre=1).all()
+    stats2 = Statistiques.query.filter_by(actionFiltre=2).all()
+    stats3 = Statistiques.query.filter_by(actionFiltre=3).all()
+
+    sd1= Statistiques.query.filter_by(actionFiltre=1).count() 
+    sd2= Statistiques.query.filter_by(actionFiltre=2).count()
+    sd3= Statistiques.query.filter_by(actionFiltre=3).count()
+    dico1=[0,0,0,0,0,0,0,0,0,0,0,0]
+    dico2=[0,0,0,0,0,0,0,0,0,0,0,0]
+    dico3=[0,0,0,0,0,0,0,0,0,0,0,0]
+    for st1 in stats1: 
+        if st1.date.strftime("%m") == "01":
+            # dico1['{{_("Janvier")}}']+=1
+            dico1[0]+=1
+        # dico1["02"]+=dico1["01"]
+        elif st1.date.strftime("%m") == "02":
+            # dico1['{{_("Février")}}']+=1
+            dico1[1]+=1
+        elif st1.date.strftime("%m") == "03":
+            # dico1["Mars"]+=1
+            dico1[2]+=1
+        elif st1.date.strftime("%m") == "04":
+            # dico1["Mai"]+=1
+            dico1[3]+=1
+        elif st1.date.strftime("%m") == "05":
+            # dico1["Juin"]+=1
+            dico1[4]+=1
+        elif st1.date.strftime("%m") == "06":
+            # dico1["Juillet"]+=1
+            dico1[5]+=1
+        elif st1.date.strftime("%m") == "07":
+            # dico1["Aout"]+=1
+            dico1[6]+=1
+        elif st1.date.strftime("%m") == "08":
+            # dico1["08"]+=1
+            dico1[7]+=1
+        elif st1.date.strftime("%m") == "09":
+            # dico1["09"]+=1
+            dico1[8]+=1
+        elif st1.date.strftime("%m") == "10":
+            # dico1["10"]+=1
+            dico1[9]+=1
+        elif st1.date.strftime("%m") == "11":
+            # dico1["11"]+=1
+            dico1[10]+=1
+        elif st1.date.strftime("%m") == "12":
+            # dico1["12"]+=1
+            dico1[11]+=1
+        # dico1[i] = st1.date.strftime("%Y-%m-%d")
+        # i+=1
+
+    dico1[1]+=dico1[0]
+    dico1[2]+=dico1[1]
+    dico1[3]+=dico1[2]
+    dico1[4]+=dico1[3]
+    dico1[5]+=dico1[4]
+    dico1[6]+=dico1[5]
+    dico1[7]+=dico1[6]
+    dico1[8]+=dico1[7]
+    dico1[9]+=dico1[8]
+    dico1[10]+=dico1[9]
+    dico1[11]+=dico1[10]
+
+    for st2 in stats2: 
+        if st2.date.strftime("%m") == "01":
+            dico2[0]+=1
+        elif st2.date.strftime("%m") == "02":
+            dico2[1]+=1
+        elif st2.date.strftime("%m") == "03":
+            dico2[2]+=1
+        elif st2.date.strftime("%m") == "04":
+            dico2[3]+=1
+        elif st2.date.strftime("%m") == "05":
+            dico2[4]+=1
+        elif st2.date.strftime("%m") == "06":
+            dico2[5]+=1
+        elif st2.date.strftime("%m") == "07":
+            dico2[6]+=1
+        elif st2.date.strftime("%m") == "08":
+            dico2[7]+=1
+        elif st2.date.strftime("%m") == "09":
+            dico2[8]+=1
+        elif st2.date.strftime("%m") == "10":
+            dico2[9]+=1
+        elif st2.date.strftime("%m") == "11":
+            dico2[10]+=1
+        elif st2.date.strftime("%m") == "12":
+            dico2[11]+=1
+        # dico2[j] = st2.date.strftime("%Y-%m-%d")
+        # j+=1
+    dico2[1]+=dico2[0]
+    dico2[2]+=dico2[1]
+    dico2[3]+=dico2[2]
+    dico2[4]+=dico2[3]
+    dico2[5]+=dico2[4]
+    dico2[6]+=dico2[5]
+    dico2[7]+=dico2[6]
+    dico2[8]+=dico2[7]
+    dico2[9]+=dico2[8]
+    dico2[10]+=dico2[9]
+    dico2[11]+=dico2[10]
+
+    for st3 in stats3: 
+        if st3.date.strftime("%m") == "01":
+            dico3[0]+=1
+        elif st3.date.strftime("%m") == "02":
+            dico3[1]+=1
+        elif st3.date.strftime("%m") == "03":
+            dico3[2]+=1
+        elif st3.date.strftime("%m") == "04":
+            dico3[3]+=1
+        elif st3.date.strftime("%m") == "05":
+            dico3[4]+=1
+        elif st3.date.strftime("%m") == "06":
+            dico3[5]+=1
+        elif st3.date.strftime("%m") == "07":
+            dico3[6]+=1
+        elif st3.date.strftime("%m") == "08":
+            dico3[7]+=1
+        elif st3.date.strftime("%m") == "09":
+            dico3[8]+=1
+        elif st3.date.strftime("%m") == "10":
+            dico3[9]+=1
+        elif st3.date.strftime("%m") == "11":
+            dico3[10]+=1
+        elif st3.date.strftime("%m") == "12":
+            dico3[11]+=1
+        # dico3[z] = st3.date.strftime("%Y-%m-%d")
+        # z+=1
+    
+    dico3[1]+=dico3[0]
+    dico3[2]+=dico3[1]
+    dico3[3]+=dico3[2]
+    dico3[4]+=dico3[3]
+    dico3[5]+=dico3[4]
+    dico3[6]+=dico3[5]
+    dico3[7]+=dico3[6]
+    dico3[8]+=dico3[7]
+    dico3[9]+=dico3[8]
+    dico3[10]+=dico3[9]
+    dico3[11]+=dico3[10]
+
+    return render_template("stats.html", tab= json.dumps(tab), labels= json.dumps(labels), sd1=sd1, sd2=sd2, sd3=sd3, dico1= json.dumps(dico1), dico2= json.dumps(dico2), dico3= json.dumps(dico3),mails=mails, exp=exp, uti=uti)
     # return render_template("stats.html", uti= json.dumps(uti), exp=json.dumps(exp), expvalid=json.dumps(expvalid), expblack=json.dumps(expblack), expatt=json.dumpsexpatt, mails=mails)
 
 @app.route('/statut/')
@@ -473,8 +627,14 @@ def modifmails():
             print(tab,file=sys.stderr)
             for mails in tab: 
                 mail = Mail.query.filter_by(id=mails['identifiant']).first()
-                if mails['statut']=='supprimé':
+                if mails['statut']=='supprimé' or 'removed':
+                    stat = Statistiques(date= today.strftime("%Y-%m-%d"), actionFiltre=2)
+                    db.session.add(stat)
                     db.session.delete(mail)
+                # if mails['statut']=='acheminé' or '':
+                    # stat = Statistiques(date= today.strftime("%Y-%m-%d"), actionFiltre=1)
+                    # db.session.add(stat)
+                #     mail.statut = 2
             db.session.commit()
             return render_template("consultmails.html", )
     except IndexError:
@@ -493,20 +653,30 @@ def consultexp():
             print(t, file=sys.stderr)
             # mails = Mail.query.filter_by(expediteur_id = expediteurs.id)
             if request.method == "POST":
-                tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
-                for exps in tab: 
-                    exp = Expediteur.query.filter_by(mail=exps['mail']).first()
-                    if exps['statut']=='1':
-                        exp.statut = 1
-                    else:
-                        if exps['statut']=='2':
-                            exp.statut = 2
-                            # on va supprimer ses mails d
+                expediteur = request.form.get('mail')
+                if expediteur:
+                    return redirect(url_for("consultmailsexp", expediteur=expediteur))
+                else:
+                    tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
+                    for exps in tab: 
+                        exp = Expediteur.query.filter_by(mail=exps['mail']).first()
+                        if exps['statut']=='1':
+                            stat = Statistiques(date= today.strftime("%Y-%m-%d"), actionFiltre=1)
+                            db.session.add(stat)
+                            exp.statut = 1
                         else:
-                            exp.statut = 3
-                db.session.commit()
-                flash(gettext("Modifications bien prises en compte"))
-                return render_template("consultexp.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs, t=t)
+                            if exps['statut']=='2':
+                                stat = Statistiques(date= today.strftime("%Y-%m-%d"), actionFiltre=2)
+                                exp.statut = 2
+                                db.session.add(stat)
+                                # on va supprimer ses mails d
+                            else:
+                                stat = Statistiques(date= today.strftime("%Y-%m-%d"), actionFiltre=3)
+                                db.session.add(stat)
+                                exp.statut = 3
+                    db.session.commit()
+                    flash(gettext("Modifications bien prises en compte"))
+                    return render_template("consultexp.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs, t=t)
             else:
                 if 'nom' in session:
                     return render_template("consultexp.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs, t=t)

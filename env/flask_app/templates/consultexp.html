@@ -30,8 +30,9 @@
             {% for expediteurs in expediteurs %}
             
             <tr id='tr'>
-                <td><input type=hidden id='id'  name='id' value="{{ expediteurs.mail }}">{{ expediteurs.id }}</td>
-                <td><input type=hidden id='mail'  name='mail' value="{{ expediteurs.mail }}">{{ expediteurs.mail }}</td>
+                <td><input type=hidden id='id'  name='id' value="{{ expediteurs.id }}">{{ expediteurs.id }}</td>
+                <td><button type=submit id='mail'  name='mail' value="{{ expediteurs.mail }}">{{ expediteurs.mail }}</td>
+                <!-- <td><input type=hidden id='mail'  name='mail' value="{{ expediteurs.mail }}">{{ expediteurs.mail }}</td> -->
                 {% if expediteurs.mail in t: %}
                 <td><input type=hidden id='nb'  name='nb' value="{{ expediteurs.mail }}">{{ t.get(expediteurs.mail) }}</td>
                 {% endif %}

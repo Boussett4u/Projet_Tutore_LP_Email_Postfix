@@ -69,45 +69,47 @@
         // null],
     });
     
-    function relo(){
+        function relo(){
         $('#table').find('tbody tr').each(function(){
             $input = $(this).find('input[type=checkbox]')
             $tr = $(this).find('input[id=statut]')
-            if ($input.is(":checked")){
+            if ($input.is(":checked") ){
                 $input.attr('checked', true);
-                $tr.val({{ _("supprimé") }});
+                supp = "{{_("supprimé")}}"
+                $tr.val(supp);
             }else{
                 $input.attr('checked', false);  
-                $tr.val({{ _("non-supprimé") }})   
+                nsupp = "{{ _("non-supprimé") }}"
+                $tr.val(nsupp)   
             }
             
         });
         
         var tab=[]
-        // $('#table').find('tbody tr').each(function(){
-        //     var obj = {},
-        //     key1 = "identifiant",
-        //     key2 = "statut",
-        //     $td = $(this).find('td'),
-        //     $input = $(this).find('input[id=statut]').val(),
-        //     val1 = $td.eq(0).text(),
-        //     val2 = $input
-        //     obj[key1] = val1;
-        //     obj[key2] = val2;
-        //     tab.push(obj);
-        // });
-        // console.log(tab)
+        $('#table').find('tbody tr').each(function(){
+            var obj = {},
+            key1 = "identifiant",
+            key2 = "statut",
+            $td = $(this).find('td'),
+            $input = $(this).find('input[id=statut]').val(),
+            val1 = $td.eq(0).text(),
+            val2 = $input
+            obj[key1] = val1;
+            obj[key2] = val2;
+            tab.push(obj);
+        });
+        console.log(tab)
         
-        // jQuery.ajax({
-        //     url: '/api/modifmails',
-        //     type: "POST",
-        //     data: JSON.stringify({ paramName: tab }),
-        //     success: function(msg) {
-        //         console.log(tab)
-        //     },
-        //     dataType: 'json'
+        jQuery.ajax({
+            url: '/api/modifmails',
+            type: "POST",
+            data: JSON.stringify({ paramName: tab }),
+            success: function(msg) {
+                console.log(tab)
+            },
+            dataType: 'json'
             
-        // });   
+        });   
     }
     
     
