@@ -345,15 +345,15 @@ def statut():
         return render_template("index.html", c1=c1, c2=c2, c3=c3 ), 500
         # abort(500, mess)
  
-@app.route('/validation/', methods=["GET", "POST"])
-def validation():
+@app.route('/validation/<token>', methods=["GET", "POST"])
+def validation(token):
     message = '' 
     if request.method == 'POST': 
         if recaptcha.verify(): # On vérifie si le captcha a été validé 
             message = gettext('Captcha validé') # Send success message
-            # expediteur = Expediteur.query.filter_by(mail=token).first()
-            # expediteur.statut = 1
-            # db.session.commit()  
+            expediteur = Expediteur.query.filter_by(token=token).first()
+            expediteur.statut = 1
+            db.session.commit()  
             # expmail = request.form.get('email')
             # token = request.form.get('email')
             # expediteur = Expediteur.query.filter_by(mail=token).first()
@@ -624,11 +624,10 @@ def modifmails():
     try:
         if request.method == "POST":
             tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
-            print(tab,file=sys.stderr)
             for mails in tab: 
                 mail = Mail.query.filter_by(id=mails['identifiant']).first()
-                if mails['statut']=='supprimé' or 'removed':
-                    stat = Statistiques(date= today.strftime("%Y-%m-%d"), actionFiltre=2)
+                if mail['statut']=='supprimé' or 'removed':
+                    stat = Statistiques(date= datetime.today().strftime('%Y-%m-%d'), actionFiltre=2)
                     db.session.add(stat)
                     db.session.delete(mail)
                 # if mails['statut']=='acheminé' or '':
@@ -650,32 +649,12 @@ def consultexp():
             for exp in expediteurs:
                 mails = Mail.query.filter_by(expediteur_id=exp.id).count()
                 t[exp.mail] = mails
-            print(t, file=sys.stderr)
             # mails = Mail.query.filter_by(expediteur_id = expediteurs.id)
             if request.method == "POST":
                 expediteur = request.form.get('mail')
-                if expediteur:
+                if expediteur != None:
                     return redirect(url_for("consultmailsexp", expediteur=expediteur))
                 else:
-                    tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
-                    for exps in tab: 
-                        exp = Expediteur.query.filter_by(mail=exps['mail']).first()
-                        if exps['statut']=='1':
-                            stat = Statistiques(date= today.strftime("%Y-%m-%d"), actionFiltre=1)
-                            db.session.add(stat)
-                            exp.statut = 1
-                        else:
-                            if exps['statut']=='2':
-                                stat = Statistiques(date= today.strftime("%Y-%m-%d"), actionFiltre=2)
-                                exp.statut = 2
-                                db.session.add(stat)
-                                # on va supprimer ses mails d
-                            else:
-                                stat = Statistiques(date= today.strftime("%Y-%m-%d"), actionFiltre=3)
-                                db.session.add(stat)
-                                exp.statut = 3
-                    db.session.commit()
-                    flash(gettext("Modifications bien prises en compte"))
                     return render_template("consultexp.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs, t=t)
             else:
                 if 'nom' in session:
@@ -686,6 +665,38 @@ def consultexp():
         else:
             flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
             return redirect(url_for("login"))
+    except IndexError:
+        abort(404)
+
+@app.route('/api/modifexp/', methods=['GET', 'POST'])
+def modifexp():
+    try:
+        users = Utilisateur.query.filter_by(identifiant=session['identifiant']).first()
+        expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id)
+        t = dict()
+        for exp in expediteurs:
+            mails = Mail.query.filter_by(expediteur_id=exp.id).count()
+            t[exp.mail] = mails
+        if request.method == "POST":
+            tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
+            for exps in tab: 
+                exp = Expediteur.query.filter_by(mail=exps['mail']).first()
+                if exps['statut']=='1':
+                    stat = Statistiques(date= datetime.today().strftime('%Y-%m-%d'), actionFiltre=1)
+                    db.session.add(stat)
+                    exp.statut = 1
+                else:
+                    if exps['statut']=='2':
+                        stat = Statistiques(date= datetime.today().strftime('%Y-%m-%d'), actionFiltre=2)
+                        exp.statut = 2
+                        db.session.add(stat)
+                        # on va supprimer ses mails d
+                    else:
+                        stat = Statistiques(date= datetime.today().strftime('%Y-%m-%d'), actionFiltre=3)
+                        db.session.add(stat)
+                        exp.statut = 3
+            db.session.commit()
+            return render_template("consultexp.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs, t=t)
     except IndexError:
         abort(404)
 
