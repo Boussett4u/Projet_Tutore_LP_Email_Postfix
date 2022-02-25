@@ -1,12 +1,17 @@
 #!/usr/bin/python3
 #coding: utf-8
 
+#On récuềre les modules nécessaires
 import os, sys, smtplib, getopt, subprocess, fileinput, email, hashlib, syslog
-
 from datetime import datetime
 
+#Ici ce qui concerne l'ORM
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+
+#Ici ce qui concerne les classes créées dans le fichiers classes.py
+from classes import Utilisateur, db, Expediteur, Mail, Statistiques
+
 
 #Récupération des arguments
 #e: = expediteur, d: destinataire, q: id_mail
@@ -32,64 +37,64 @@ db = SQLAlchemy(app)
 
 #Création des classes correspondant aux tables de la base de données (utilisé aussi pour la création de la base en phase de test)
 
-class Utilisateur(db.Model):
-        #Définition des colonnes
-        id = db.Column(db.Integer, primary_key=True)
-        identifiant = db.Column(db.String(250), unique=True, nullable=False)
-        nom = db.Column(db.String(250), unique=True, nullable=True)
-        mdp = db.Column(db.String(250), unique=False, nullable=False)
-        admin = db.Column(db.Boolean, default=False)
-        mail = db.Column(db.String(250), unique=False, nullable=False)
+# class Utilisateur(db.Model):
+#         #Définition des colonnes
+#         id = db.Column(db.Integer, primary_key=True)
+#         identifiant = db.Column(db.String(250), unique=True, nullable=False)
+#         nom = db.Column(db.String(250), unique=True, nullable=True)
+#         mdp = db.Column(db.String(250), unique=False, nullable=False)
+#         admin = db.Column(db.Boolean, default=False)
+#         mail = db.Column(db.String(250), unique=False, nullable=False)
 
-        #Constructeur
-        def __init__(self, identifiant, nom, mdp, admin, mail):
-                self.identifiant = identifiant
-                self.nom = nom
-                self.mdp = mdp
-                self.admin = admin
-                self.mail = mail
+#         #Constructeur
+#         def __init__(self, identifiant, nom, mdp, admin, mail):
+#                 self.identifiant = identifiant
+#                 self.nom = nom
+#                 self.mdp = mdp
+#                 self.admin = admin
+#                 self.mail = mail
         
-class Expediteur(db.Model):
-        #Définition des colonnes
-        id = db.Column(db.Integer, primary_key=True)
-        mail = db.Column(db.String(250), unique=True, nullable=False)
-        utilisateur_id = db.Column(db.ForeignKey(Utilisateur.id), nullable=False)
-        statut = db.Column(db.Integer, unique=False, nullable=False, default=3)
-        #statut : 1 validé, 2 refusé, 3 en attente
-        token = db.Column(db.String(250), unique=True, nullable=False)
+# class Expediteur(db.Model):
+#         #Définition des colonnes
+#         id = db.Column(db.Integer, primary_key=True)
+#         mail = db.Column(db.String(250), unique=True, nullable=False)
+#         utilisateur_id = db.Column(db.ForeignKey(Utilisateur.id), nullable=False)
+#         statut = db.Column(db.Integer, unique=False, nullable=False, default=3)
+#         #statut : 1 validé, 2 refusé, 3 en attente
+#         token = db.Column(db.String(250), unique=True, nullable=False)
 
         
-        #Constructeur
-        def __init__(self, mail, utilisateur_id, statut, token): 
-                self.mail = mail
-                self.utilisateur_id = utilisateur_id
-                self.statut = statut
-                self.token = token
+#         #Constructeur
+#         def __init__(self, mail, utilisateur_id, statut, token): 
+#                 self.mail = mail
+#                 self.utilisateur_id = utilisateur_id
+#                 self.statut = statut
+#                 self.token = token
 
-class Mail(db.Model):
-        #Définition des colonnes
-        id = db.Column(db.Integer, primary_key=True)
-        id_mail_postfix = db.Column(db.String(250), unique=True, nullable=False)
-        expediteur_id = db.Column(db.ForeignKey(Expediteur.id), nullable=False)
-        date = db.Column(db.DateTime, nullable=False)
+# class Mail(db.Model):
+#         #Définition des colonnes
+#         id = db.Column(db.Integer, primary_key=True)
+#         id_mail_postfix = db.Column(db.String(250), unique=True, nullable=False)
+#         expediteur_id = db.Column(db.ForeignKey(Expediteur.id), nullable=False)
+#         date = db.Column(db.DateTime, nullable=False)
 
-        #Constructeur
-        def __init__(self,id_mail_postfix, expediteur_id, date):
-                self.id_mail_postfix = id_mail_postfix
-                self.expediteur_id = expediteur_id
-                self.date = date
+#         #Constructeur
+#         def __init__(self,id_mail_postfix, expediteur_id, date):
+#                 self.id_mail_postfix = id_mail_postfix
+#                 self.expediteur_id = expediteur_id
+#                 self.date = date
 
-class Statistiques(db.Model):
-        #Définition des colonnes
-        id = db.Column(db.Integer, primary_key=True)
-        date = db.Column(db.DateTime, nullable=False)
-        #1 = accepté, 2 = rejeté, 3 = en attente
-        actionFiltre = db.Column(db.Integer, nullable=False)
+# class Statistiques(db.Model):
+#         #Définition des colonnes
+#         id = db.Column(db.Integer, primary_key=True)
+#         date = db.Column(db.DateTime, nullable=False)
+#         #1 = accepté, 2 = rejeté, 3 = en attente
+#         actionFiltre = db.Column(db.Integer, nullable=False)
         
-        #Constructeur
-        def __init__(self, date, actionFiltre):
-                self.date = date
-                self.actionFiltre = actionFiltre
+#         #Constructeur
+#         def __init__(self, date, actionFiltre):
+#                 self.date = date
+#                 self.actionFiltre = actionFiltre
                 
 #Actions du filtre
 
@@ -125,7 +130,7 @@ def envoyerLien(expediteur, mail_id, message, mailValidation, destinataire):
 #Fonction permettant d'ajouter un nouveau mail dans la table
 def ajouterMail(expediteur, mail_id):
         infoExpediteur = Expediteur.query.filter_by(mail=expediteur).first()
-        nouveauMail = Mail (mail_id, infoExpediteur.id, datetime.now())
+        nouveauMail = Mail (mail_id, infoExpediteur.id)
         db.session.add(nouveauMail)
         db.session.commit()
 
