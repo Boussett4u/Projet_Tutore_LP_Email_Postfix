@@ -7,7 +7,7 @@ services:
     volumes:
       - ./projet_db/scripts:/scripts
       - ./projet_db/scripts:/docker-entrypoint-initdb.d
-      - ./projet_db/database:/var/lib/postgresql/data
+      #- ./projet_db/database:/var/lib/postgresql/data
     hostname: db
     build:
       context: ./projet_db
@@ -19,6 +19,7 @@ services:
       - local
     ports:
       - 5432:5432
+
   postfix:
     depends_on:
       - db
@@ -26,6 +27,11 @@ services:
     hostname: postfix
     build:
       context: ./projet_postfix
+    environment:
+      POSTFIX_DOMAIN: exemple@toto.com:adresseIPTransimision, exemple@titi.com
+      DB_IP: 0.0.0.0 
+      DB_USER: user 
+      DB_PASSWORD: password
     volumes:
        - ./projet_postfix/etc/postfix:/etc/postfix
        - ./projet_postfix/scripts:/scripts
