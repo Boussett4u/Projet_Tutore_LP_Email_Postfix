@@ -85,17 +85,17 @@ class Statistiques(db.Model):
 # #Récupération du message
 # message=""
 # for line in sys.stdin:
-#         message += line
+# #         message += line
 
-message=""
-while 1:
-    line = sys.stdin.readline()
-    if line=='\n':
-        break
-    else:
-        message+=line
+# message=""
+# while 1:
+#     line = sys.stdin.readline()
+#     if line=='\n':
+#         break
+#     else:
+#         message+=line
 
-parametre={}
+# parametre={}
 # fichier = open("/home/testfiltre/filtre/test.txt", "r")
 # for ligne in fichier:
 #         resu = line.split("=")
@@ -103,24 +103,31 @@ parametre={}
 # fichier.close()
 
 
-# while 1:
-#     line = sys.stdin.readline()
-#     if line=='\n':
-#         break
-#     else:
-#         resu = line.split("=")
-#         parametre[resu[0]] = resu[1]  
+
+# fichier = open("/home/testfiltre/filtre/test.txt", "a")
+# fichier.write(message)
+# fichier.close()
+
+
+
+#Récupération des paramètres 
+
+parametre={}
+while 1:
+    line = sys.stdin.readline()
+    if line=='\n':
+        break
+    else:
+        #Construction d'une tableau clé valeur avec les paramètres
+        resu = line.split("=")
+        parametre[resu[0]] = resu[1]  
  
-        
 
 
-
-fichier = open("/home/testfiltre/filtre/test.txt", "a")
-fichier.write(message)
-fichier.close()
+#Test pour voir si ça écrit bien le bon paramètre
 
 # fichier = open("/home/testfiltre/filtre/test2.txt", "a")
-# fichier.write(parametre["recipient"])
+# fichier.write(parametre["queue_id"])
 # fichier.close()
 
         
