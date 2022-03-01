@@ -624,14 +624,18 @@ def modifmails():
             tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
             for mails in tab: 
                 mail = Mail.query.filter_by(id=mails['identifiant']).first()
-                if mail['statut']=='supprimé' or 'removed':
+                if mails['statut']=='supprimé' or 'removed':
                     stat = Statistiques(date= datetime.today().strftime('%Y-%m-%d'), actionFiltre=2)
                     db.session.add(stat)
                     db.session.delete(mail)
-                # if mails['statut']=='acheminé' or '':
+                # if mails['statut']=='acheminé' or 'sent':
                     # stat = Statistiques(date= today.strftime("%Y-%m-%d"), actionFiltre=1)
                     # db.session.add(stat)
-                #     mail.statut = 2
+                #     mail.statut = 1
+                 # if mails['statut']=='en attente' or 'pending':
+                    # stat = Statistiques(date= today.strftime("%Y-%m-%d"), actionFiltre=3)
+                    # db.session.add(stat)
+                #     mail.statut = 3
             db.session.commit()
             return render_template("consultmails.html", )
     except IndexError:
