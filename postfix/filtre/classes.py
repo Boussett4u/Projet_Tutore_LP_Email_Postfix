@@ -17,15 +17,13 @@ db = SQLAlchemy(app)
 class Utilisateur(db.Model):
         #Définition des colonnes
         id = db.Column(db.Integer, primary_key=True)
-        identifiant = db.Column(db.String(250), unique=True, nullable=False)
         nom = db.Column(db.String(250), unique=False, nullable=True)
         mdp = db.Column(db.String(250), unique=False, nullable=False)
         admin = db.Column(db.Boolean, default=False)
         mail = db.Column(db.String(250), unique=False, nullable=False)
 
         #Constructeur
-        def __init__(self, identifiant, nom, mdp, admin, mail):
-                self.identifiant = identifiant
+        def __init__(self, nom, mdp, admin, mail):
                 self.nom = nom
                 self.mdp = mdp
                 self.admin = admin
