@@ -346,17 +346,19 @@ def statut():
 @app.route('/validation/<token>', methods=["GET", "POST"])
 def validation(token):
     message = '' 
-    if request.method == 'POST': 
-	expediteur = Expediteur.query.filter_by(token=token).first()
-	if expediteur.statut != 1:
-        	if recaptcha.verify(): # On vérifie si le captcha a été validé 
-            		message = gettext('Captcha validé') # Send success message
-            		expediteur.statut = 1
-            		db.session.commit()
-		else:
-            		message = gettext('Veuillez valider le captcha') # Send error message
-	else:
-		message = gettext('Expediteur deja valide') # Send error message
+    expediteur = Expediteur.query.filter_by(token=token).first()
+    if expediteur.statut != 1:
+        if request.method == 'POST': 
+            if recaptcha.verify(): # On vérifie si le captcha a été validé 
+                message = gettext('Captcha validé') # Send success message
+                expediteur.statut = 1
+                db.session.commit()
+        else:
+            message = gettext('Veuillez valider le captcha') # Send error message
+    else:
+	    message = gettext('Expediteur ' + expediteur.mail + ' deja valide') # Send error message
+    return render_template('validation.html', message=message, mail =expediteur.mail)
+
             # expmail = request.form.get('email')
             # token = request.form.get('email')
             # expediteur = Expediteur.query.filter_by(mail=token).first()
@@ -372,8 +374,6 @@ def validation(token):
             #         message= gettext('Token invalide')
             # else:
             #     message= gettext('Adresse de messagerie invalide')
-
-    return render_template('validation.html', message=message)
 
 # Redirection
 @app.route('/admin/', methods=['GET', 'POST'])
@@ -497,7 +497,7 @@ def signup():
 
 @app.route('/logout/')
 def logout():
-    if 'identifiant' in session:
+    if 'email' in session:
         flash(f"{session['nom']} deconnecte avec succes", "deconnecte") #Utiliser 2 eme arg pour mettre une icone
     else: 
         flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
