@@ -89,15 +89,13 @@ migrate = Migrate(app, db)
 
 class Utilisateur(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    identifiant = db.Column(db.String(250), unique=True, nullable=False)
     nom = db.Column(db.String(250), unique=True, nullable=True)
     mail = db.Column(db.String(250), unique=False, nullable=False)
     mdp = db.Column(db.String(250), unique=False, nullable=False)
     admin = db.Column(db.Boolean, default=False)
     
 
-    def __init__(self, identifiant, nom, mail, mdp, admin):
-        self.identifiant = identifiant
+    def __init__(self, nom, mail, mdp, admin):
         self.nom = nom
         self.mail = mail
         self.mdp = mdp
@@ -349,11 +347,16 @@ def statut():
 def validation(token):
     message = '' 
     if request.method == 'POST': 
-        if recaptcha.verify(): # On vérifie si le captcha a été validé 
-            message = gettext('Captcha validé') # Send success message
-            expediteur = Expediteur.query.filter_by(token=token).first()
-            expediteur.statut = 1
-            db.session.commit()  
+	expediteur = Expediteur.query.filter_by(token=token).first()
+	if expediteur.statut != 1:
+        	if recaptcha.verify(): # On vérifie si le captcha a été validé 
+            		message = gettext('Captcha validé') # Send success message
+            		expediteur.statut = 1
+            		db.session.commit()
+		else:
+            		message = gettext('Veuillez valider le captcha') # Send error message
+	else:
+		message = gettext('Expediteur deja valide') # Send error message
             # expmail = request.form.get('email')
             # token = request.form.get('email')
             # expediteur = Expediteur.query.filter_by(mail=token).first()
@@ -369,8 +372,7 @@ def validation(token):
             #         message= gettext('Token invalide')
             # else:
             #     message= gettext('Adresse de messagerie invalide')
-        else:
-            message = gettext('Veuillez valider le captcha') # Send error message
+
     return render_template('validation.html', message=message)
 
 # Redirection
@@ -381,7 +383,7 @@ def admin():
         mail = request.form['mail']
         action = request.form['act']
         utilisateur = Utilisateur.query.filter_by(mail=mail).first()
-        session['identifiant'] = utilisateur.identifiant
+        session['mail'] = utilisateur.mail
         if action == "Expediteur":
             return redirect(url_for("consultexp"))   
         else:
@@ -416,7 +418,7 @@ def user():
 
             # return render_template("user.html", mail=mail)
         # else:
-                flash(gettext("Bienvenue")+f", {session['identifiant']}")
+                flash(gettext("Bienvenue")+f", {session['nom']}")
                 return render_template("user.html")
         else:
             flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
@@ -430,12 +432,11 @@ def login():
     try:
         if request.method == "POST":
             session.permanent = True
-            identifiant = request.form['identifiant'] # On donne en parametre dans la requete POST 
+            mail = request.form['mail'] # On donne en parametre dans la requete POST 
             mdp = request.form['mdp']
-            found_user = Utilisateur.query.filter_by(identifiant=identifiant).first() # On verifie si il existe un utilisateur avec cet email dans la bdd
+            found_user = Utilisateur.query.filter_by(mail=mail).first() # On verifie si il existe un utilisateur avec cet email dans la bdd
             if found_user:
                 if bcrypt.check_password_hash(found_user.mdp, mdp): # returne vrai si les mots de passe sont les memes sans chiffrement
-                    session['identifiant'] = found_user.identifiant
                     session['nom'] = found_user.nom
                     session['mail'] = found_user.mail
                     session['mdp'] = found_user.mdp
@@ -449,7 +450,7 @@ def login():
             else:
                 return render_template("loginwrong.html")
         else:
-            if 'identifiant' in session:
+            if 'mail' in session:
                 flash(gettext("Compte déjà connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                 return redirect(url_for("user"))
             else:
@@ -462,12 +463,11 @@ def signup():
     try:
         if request.method == "POST":
             session.permanent = True
-            nom = request.form['nm'] # On donne en parametre dans la requete POST 
-            identifiant = request.form['identifiant']            
+            nom = request.form['nm'] # On donne en parametre dans la requete POST          
             mdp = bcrypt.generate_password_hash(request.form['mdp']).decode('utf-8') # On chiffre le mot de passe
             mail = request.form['mail']
             mdpadmin = request.form['mdpad']
-            found_user = Utilisateur.query.filter_by(identifiant=identifiant).first()
+            found_user = Utilisateur.query.filter_by(mail=mail).first()
             if found_user:
                 flash(gettext("Utilisateur déja inscrit"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                 return render_template("signup.html")
@@ -476,18 +476,17 @@ def signup():
                     admin=True
                 else:
                     admin=False
-                session['identifiant'] = identifiant
                 session['nom'] = nom
                 session['mail'] = mail # On definit les variables de session
                 session['mdp'] = mdp
                 session['admin'] = admin
-                usr = Utilisateur(identifiant, nom, mail, mdp, admin)
+                usr = Utilisateur(nom, mail, mdp, admin)
                 db.session.add(usr)
                 db.session.commit() # On envoie usr qui sera une ligne dans la bdd
                 flash(gettext("Inscription reussie"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                 return redirect(url_for("user"))
         else:
-            if 'identifiant' in session:
+            if 'mail' in session:
                 flash(gettext("Compte déjà connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                 return redirect(url_for("user"))
             else:
@@ -499,10 +498,9 @@ def signup():
 @app.route('/logout/')
 def logout():
     if 'identifiant' in session:
-        flash(f"{session['identifiant']} deconnecte avec succes", "deconnecte") #Utiliser 2 eme arg pour mettre une icone
+        flash(f"{session['nom']} deconnecte avec succes", "deconnecte") #Utiliser 2 eme arg pour mettre une icone
     else: 
         flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
-    session.pop('identifiant', None) # On supprime les variables de session
     session.pop('nom', None) # On supprime les variables de session
     session.pop('mail', None)  
     session.pop('mdp', None)  
@@ -512,8 +510,8 @@ def logout():
 @app.route('/consultmails/', methods=['GET', 'POST'])
 def consultmails():
     try:
-        if 'identifiant' in session:
-            users = Utilisateur.query.filter_by(identifiant=session['identifiant']).first()
+        if 'mail' in session:
+            users = Utilisateur.query.filter_by(mail=session['mail']).first()
             expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id, statut =3).all()
             t= []
             for e in expediteurs:
@@ -550,7 +548,7 @@ def consultmails():
                 # return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
             else:
                 if 'nom' in session:
-                    return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
+                    return render_template("consultmails.html", mail=session['mail'], expediteurs=expediteurs, lmails=lmails)
                 else:
                     flash(gettext("Modifications bien prises en compte"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                     return render_template("login.html")
@@ -563,8 +561,8 @@ def consultmails():
 @app.route('/consultmailsexp/<expediteur>', methods=['GET', 'POST'])
 def consultmailsexp(expediteur):
     try:
-        if 'identifiant' in session:
-            users = Utilisateur.query.filter_by(identifiant=session['identifiant']).first()
+        if 'mail' in session:
+            users = Utilisateur.query.filter_by(mail=session['mail']).first()
             exp = Expediteur.query.filter_by(utilisateur_id=users.id, mail= expediteur).first()
             lmails= Mail.query.filter_by(expediteur_id = exp.id).all()
             print(lmails, file=sys.stderr)
@@ -572,10 +570,10 @@ def consultmailsexp(expediteur):
                 if request.json:
                     tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
                     print(tab,file=sys.stderr)
-                return render_template("consultmailsexp.html", identifiant=session['identifiant'], expediteur=expediteur, lmails=lmails)
+                return render_template("consultmailsexp.html", mail=session['mail'], expediteur=expediteur, lmails=lmails)
             else:
                 if 'nom' in session:
-                    return render_template("consultmailsexp.html", identifiant=session['identifiant'], expediteur=expediteur, lmails=lmails)
+                    return render_template("consultmailsexp.html", mail=session['mail'], expediteur=expediteur, lmails=lmails)
                 else:
                     flash(gettext("Modifications bien prises en compte"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                     return render_template("login.html")
@@ -588,8 +586,8 @@ def consultmailsexp(expediteur):
 @app.route('/consultmailsblacklist/', methods=['GET', 'POST'])
 def consultmailsblacklist():
     try:
-        if 'identifiant' in session:
-            users = Utilisateur.query.filter_by(identifiant=session['identifiant']).first()
+        if 'mail' in session:
+            users = Utilisateur.query.filter_by(mail=session['mail']).first()
             expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id, statut =2).all()
             t= []
             for e in expediteurs:
@@ -609,7 +607,7 @@ def consultmailsblacklist():
                 # return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
             else:
                 if 'nom' in session:
-                    return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
+                    return render_template("consultmails.html", mail=session['mail'], expediteurs=expediteurs, lmails=lmails)
                 else:
                     flash(gettext("Modifications bien prises en compte"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                     return render_template("login.html")
@@ -642,8 +640,8 @@ def modifmails():
 @app.route('/consultexp/', methods=['GET', 'POST'])
 def consultexp():
     try:
-        if 'identifiant' in session:
-            users = Utilisateur.query.filter_by(identifiant=session['identifiant']).first()
+        if 'mail' in session:
+            users = Utilisateur.query.filter_by(mail=session['mail']).first()
             expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id)
             t = dict()
             for exp in expediteurs:
@@ -655,10 +653,10 @@ def consultexp():
                 if expediteur != None:
                     return redirect(url_for("consultmailsexp", expediteur=expediteur))
                 else:
-                    return render_template("consultexp.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs, t=t)
+                    return render_template("consultexp.html", mail=session['mail'], users=users, expediteurs=expediteurs, t=t)
             else:
                 if 'nom' in session:
-                    return render_template("consultexp.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs, t=t)
+                    return render_template("consultexp.html", mail=session['mail'], users=users, expediteurs=expediteurs, t=t)
                 else:
                     flash(gettext("Pas de compte connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                     return render_template("login.html")
@@ -671,7 +669,7 @@ def consultexp():
 @app.route('/api/modifexp/', methods=['GET', 'POST'])
 def modifexp():
     try:
-        users = Utilisateur.query.filter_by(identifiant=session['identifiant']).first()
+        users = Utilisateur.query.filter_by(mail=session['mail']).first()
         expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id)
         t = dict()
         for exp in expediteurs:
@@ -696,7 +694,7 @@ def modifexp():
                         db.session.add(stat)
                         exp.statut = 3
             db.session.commit()
-            return render_template("consultexp.html", identifiant=session['identifiant'], users=users, expediteurs=expediteurs, t=t)
+            return render_template("consultexp.html", mail=session['mail'], users=users, expediteurs=expediteurs, t=t)
     except IndexError:
         abort(404)
 
