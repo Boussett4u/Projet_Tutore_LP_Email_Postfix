@@ -103,12 +103,8 @@ destinataire = options["-d"]
 expediteur = options["-e"]
 mail_id = options["-q"]
 
-#Récupération du modèle de mail de validation (ici avec lien et chemin temporaire à mettre à jour avec l'application)
-mailValidation=""
-fichier = open("/home/testfiltre/filtre/mailValidation.txt", "r")
-for ligne in fichier:
-        mailValidation+=ligne
-fichier.close()
+#Préparation du mail de validation
+mailValidation="Subjet : validation expediteur \n Veuillez cliquer sur ce lien et valider le CAPTCHA  : "
 
 #Récupération du message
 message=""
@@ -117,10 +113,13 @@ for line in sys.stdin:
 
 #Fonction permettant d'envoyer un lien de validation a l'expéditeur dont le statut est en attente, et de mettre le mail en quarantaine (en queue hold)
 def envoyerLien(expediteur, mail_id, message, mailValidation, destinataire):
+
+        #On récupère le token de l'expediteur
+        expediteur_bdd = Expediteur.query.filter_by(mail=expediteur, utilisateur_id=destinataire_bdd.id).first()
         
         #Envoi d'un mail à l'expéditeur avec le lien de validation
         smtp = smtplib.SMTP("localhost")
-        smtp.sendmail("reject@localhost", [expediteur], "From: no-reply@localhost\nTo:{0}\n{1}".format(destinataire, mailValidation))
+        smtp.sendmail("reject@localhost", [expediteur], "From: no-reply@localhost\nTo:{0}\n{1}http://127.0.0.1:5000/validation/{2}".format(destinataire, mailValidation, expediteur_bdd.token))
 
         #Mise en quarantaine du message dans un répertoire spécifique
         mailFichier = open("/home/testfiltre/quarantaine/{0}".format(mail_id), "a")
@@ -136,8 +135,12 @@ def ajouterMail(expediteur, mail_id):
 
 #Fonction pour ajouter un expéditeur
 def ajouterExpediteur(destinataire, expediteur):
+        #calcul de la date pour le token
+        date=datetime.now()
+
+        #Ajout des informations
         infoDestinataire = Utilisateur.query.filter_by(mail=destinataire).first()
-        nouvelExpediteur = Expediteur(expediteur, infoDestinataire.id, 3, hashlib.md5(("VALIDATE"+expediteur).encode('utf-8')).hexdigest())
+        nouvelExpediteur = Expediteur(expediteur, infoDestinataire.id, 3, hashlib.md5(("VALIDATE"+date.strftime("%m/%d/%Y")+expediteur).encode('utf-8')).hexdigest())
         db.session.add(nouvelExpediteur)
         db.session.commit()
 

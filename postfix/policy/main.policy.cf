@@ -47,9 +47,9 @@ inet_protocols = all
 #smtpd_recipient_restrictions = check_recipient_access hash:/etc/postfix/access
 
 #pour policy
-smtpd_recipient_restrictions =
-			     reject_unauth_destination
-			     check_policy_service unix:private/policy
+smtpd_data_restrictions =
+		     reject_unauth_destination
+		     check_policy_service unix:private/policy
 policy_time_limit = 3600
 smtpd_policy_service_request_limit = 1
 
