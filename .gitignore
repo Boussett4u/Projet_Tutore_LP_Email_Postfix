@@ -3,5 +3,5 @@
 **/share
 **/__pycache__
 **/bin
-**/localdbconf.py
+**/config.py
 **/migrations
