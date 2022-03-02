@@ -315,9 +315,10 @@ def statut():
     db = True
     postfix = True 
     app = True
-    c1=0
-    c2=0
-    c3=0
+    c1 = c2 = c3=0
+    #c1=0
+    #c2=0
+    #c3=0
     # db.session.
     test = Utilisateur
     if not test:
@@ -404,33 +405,48 @@ def admin():
 def user():
     # email = None # On definit l'email
     try:
-        if 'mail' in session:
-            found_user = Utilisateur.query.filter_by(mail=session['mail']).first() # On verifie si il existe un utilisateur avec cet email dans la bdd
-            if found_user.admin:
-                return redirect(url_for("admin"))
-            else:
-            # if request.method == "POST":    # On definit l'email
-            #     email = request.form['email']
-            #     session['email'] = email
-            #     found_user =Utilisateurs.query.filter_by(email=user).first()
-            #     found_user.email = email
-            #     db.session.commit()
-            #     flash("Email bien pris en compte", "connecte") #Utiliser 2 eme arg pour mettre une icone
-
-            # else:
-            #     if "email" in session:
-            #         mail = session["email"]
-
-            # return render_template("user.html", mail=mail)
-        # else:
-                flash(gettext("Bienvenue")+f", {session['nom']}")
-                return render_template("user.html")
-        else:
-            flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
+        if 'mail' not in session:
+	    flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
             return redirect(url_for("login"))
-
+        found_user = Utilisateur.query.filter_by(mail=session['mail']).first() # On verifie si il existe un utilisateur avec cet email dans la bdd
+        if found_user.admin:
+            return redirect(url_for("admin"))
+        flash(gettext("Bienvenue")+f", {session['nom']}")
+        return render_template("user.html")
     except IndexError:
         abort(404)
+	
+@app.route('/user/', methods=["GET", "POST"])
+# def user():
+#     # email = None # On definit l'email
+#     try:
+#         if 'mail' in session:
+#             found_user = Utilisateur.query.filter_by(mail=session['mail']).first() # On verifie si il existe un utilisateur avec cet email dans la bdd
+#             if found_user.admin:
+#                 return redirect(url_for("admin"))
+#             else:
+#             # if request.method == "POST":    # On definit l'email
+#             #     email = request.form['email']
+#             #     session['email'] = email
+#             #     found_user =Utilisateurs.query.filter_by(email=user).first()
+#             #     found_user.email = email
+#             #     db.session.commit()
+#             #     flash("Email bien pris en compte", "connecte") #Utiliser 2 eme arg pour mettre une icone
+
+#             # else:
+#             #     if "email" in session:
+#             #         mail = session["email"]
+
+#             # return render_template("user.html", mail=mail)
+#         # else:
+#                 flash(gettext("Bienvenue")+f", {session['nom']}")
+#                 return render_template("user.html")
+#         else:
+#             flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
+#             return redirect(url_for("login"))
+
+#     except IndexError:
+#         abort(404)
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
