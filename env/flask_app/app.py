@@ -435,6 +435,9 @@ def user():
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     try:
+	if 'mail' in session:
+                flash(gettext("Compte déjà connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
+                return redirect(url_for("user"))
         if request.method == "POST":
             session.permanent = True
             mail = request.form['mail'] # On donne en parametre dans la requete POST 
@@ -450,22 +453,49 @@ def login():
                         return redirect(url_for("admin"))
                     else:
                         return redirect(url_for('user'))
-                else:
                     return render_template("loginwrong.html")
-            else:
                 return render_template("loginwrong.html")
-        else:
-            if 'mail' in session:
-                flash(gettext("Compte déjà connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
-                return redirect(url_for("user"))
-            else:
-                return render_template("login.html")
+        return render_template("login.html")
     except IndexError:
         abort(404)
+
+# @app.route('/login/', methods=['GET', 'POST'])
+# def login():
+#     try:
+#         if request.method == "POST":
+#             session.permanent = True
+#             mail = request.form['mail'] # On donne en parametre dans la requete POST 
+#             mdp = request.form['mdp']
+#             found_user = Utilisateur.query.filter_by(mail=mail).first() # On verifie si il existe un utilisateur avec cet email dans la bdd
+#             if found_user:
+#                 if bcrypt.check_password_hash(found_user.mdp, mdp): # returne vrai si les mots de passe sont les memes sans chiffrement
+#                     session['nom'] = found_user.nom
+#                     session['mail'] = found_user.mail
+#                     session['mdp'] = found_user.mdp
+#                     session['admin'] = found_user.admin
+#                     if found_user.admin:
+#                         return redirect(url_for("admin"))
+#                     else:
+#                         return redirect(url_for('user'))
+#                 else:
+#                     return render_template("loginwrong.html")
+#             else:
+#                 return render_template("loginwrong.html")
+#         else:
+#             if 'mail' in session:
+#                 flash(gettext("Compte déjà connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
+#                 return redirect(url_for("user"))
+#             else:
+#                 return render_template("login.html")
+#     except IndexError:
+#         abort(404)
 
 @app.route('/signup/', methods=['GET', 'POST'])
 def signup():
     try:
+	if 'mail' in session:
+                flash(gettext("Compte déjà connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
+                return redirect(url_for("user"))
         if request.method == "POST":
             session.permanent = True
             nom = request.form['nm'] # On donne en parametre dans la requete POST          
@@ -476,29 +506,59 @@ def signup():
             if found_user:
                 flash(gettext("Utilisateur déja inscrit"), "connecte") #Utiliser 2 eme arg pour mettre une icone
                 return render_template("signup.html")
+            if  bcrypt.check_password_hash(mdp_admin, mdpadmin):
+                admin=True
             else:
-                if  bcrypt.check_password_hash(mdp_admin, mdpadmin):
-                    admin=True
-                else:
-                    admin=False
-                session['nom'] = nom
-                session['mail'] = mail # On definit les variables de session
-                session['mdp'] = mdp
-                session['admin'] = admin
-                usr = Utilisateur(nom, mail, mdp, admin)
-                db.session.add(usr)
-                db.session.commit() # On envoie usr qui sera une ligne dans la bdd
-                flash(gettext("Inscription reussie"), "connecte") #Utiliser 2 eme arg pour mettre une icone
-                return redirect(url_for("user"))
-        else:
-            if 'mail' in session:
-                flash(gettext("Compte déjà connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
-                return redirect(url_for("user"))
-            else:
-                return render_template("signup.html")
-
+                admin=False
+            session['nom'] = nom
+            session['mail'] = mail # On definit les variables de session
+            session['mdp'] = mdp
+            session['admin'] = admin
+            usr = Utilisateur(nom, mail, mdp, admin)
+            db.session.add(usr)
+            db.session.commit() # On envoie usr qui sera une ligne dans la bdd
+            flash(gettext("Inscription reussie"), "connecte") #Utiliser 2 eme arg pour mettre une icone
+            return redirect(url_for("user"))        
+        return render_template("signup.html")
     except IndexError:
         abort(404)
+	
+@app.route('/signup/', methods=['GET', 'POST'])
+# def signup():
+#     try:
+#         if request.method == "POST":
+#             session.permanent = True
+#             nom = request.form['nm'] # On donne en parametre dans la requete POST          
+#             mdp = bcrypt.generate_password_hash(request.form['mdp']).decode('utf-8') # On chiffre le mot de passe
+#             mail = request.form['mail']
+#             mdpadmin = request.form['mdpad']
+#             found_user = Utilisateur.query.filter_by(mail=mail).first()
+#             if found_user:
+#                 flash(gettext("Utilisateur déja inscrit"), "connecte") #Utiliser 2 eme arg pour mettre une icone
+#                 return render_template("signup.html")
+#             else:
+#                 if  bcrypt.check_password_hash(mdp_admin, mdpadmin):
+#                     admin=True
+#                 else:
+#                     admin=False
+#                 session['nom'] = nom
+#                 session['mail'] = mail # On definit les variables de session
+#                 session['mdp'] = mdp
+#                 session['admin'] = admin
+#                 usr = Utilisateur(nom, mail, mdp, admin)
+#                 db.session.add(usr)
+#                 db.session.commit() # On envoie usr qui sera une ligne dans la bdd
+#                 flash(gettext("Inscription reussie"), "connecte") #Utiliser 2 eme arg pour mettre une icone
+#                 return redirect(url_for("user"))
+#         else:
+#             if 'mail' in session:
+#                 flash(gettext("Compte déjà connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
+#                 return redirect(url_for("user"))
+#             else:
+#                 return render_template("signup.html")
+
+#     except IndexError:
+#         abort(404)
 
 @app.route('/logout/')
 def logout():
@@ -515,112 +575,167 @@ def logout():
 @app.route('/consultmails/', methods=['GET', 'POST'])
 def consultmails():
     try:
-        if 'mail' in session:
-            users = Utilisateur.query.filter_by(mail=session['mail']).first()
-            expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id, statut =3).all()
-            t= []
-            for e in expediteurs:
-                t.append(e.id)
-            # print(t,file=sys.stderr)
-
-            lmails= Mail.query.filter(Mail.expediteur_id.in_(t))
-            # print(lmails,file=sys.stderr)
-            # lmails= Mail.query.filter_by(expediteur_id=expediteurs.id)
-            if request.method == "POST":
-                expediteur = request.form.get('sender')
-                return redirect(url_for("consultmailsexp", expediteur=expediteur))
-                # if request.json:
-                #     tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
-                #     print(tab,file=sys.stderr)
-                # else:
-                #     mail = request.form.get('mail')
-                #     expediteur = Expediteur.query.filter_by(mail=mail).first()
-                #     lmails= Mail.query.filter_by(expediteur_id=expediteur.id)
-                # if request.json:
-                #     tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
-                #     print(tab,file=sys.stderr)
-                # for exps in tab: 
-                #     exp = Expediteur.query.filter_by(mail=exps['mail']).first()
-                #     if exps['statut']=='1':
-                #         exp.statut = 1
-                #     else:
-                #         if exps['statut']=='2':
-                #             exp.statut = 2
-                #         else:
-                #             exp.statut = 3
-                # db.session.commit()
-                    # flash("Veuillez recharger la page")
-                # return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
-            else:
-                if 'nom' in session:
-                    return render_template("consultmails.html", mail=session['mail'], expediteurs=expediteurs, lmails=lmails)
-                else:
-                    flash(gettext("Modifications bien prises en compte"), "connecte") #Utiliser 2 eme arg pour mettre une icone
-                    return render_template("login.html")
-        else:
-            flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
+        if 'mail' not in session:
+	    flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
             return redirect(url_for("login"))
+        users = Utilisateur.query.filter_by(mail=session['mail']).first()
+        expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id, statut =3).all()
+        t= []
+        for e in expediteurs:
+            t.append(e.id)
+        lmails= Mail.query.filter(Mail.expediteur_id.in_(t))
+        if request.method == "POST":
+            expediteur = request.form.get('sender')
+            return redirect(url_for("consultmailsexp", expediteur=expediteur))
+
+        return render_template("consultmails.html", mail=session['mail'], expediteurs=expediteurs, lmails=lmails)
     except IndexError:
         abort(404)
+	
+@app.route('/consultmails/', methods=['GET', 'POST'])
+# def consultmails():
+#     try:
+#         if 'mail' in session:
+#             users = Utilisateur.query.filter_by(mail=session['mail']).first()
+#             expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id, statut =3).all()
+#             t= []
+#             for e in expediteurs:
+#                 t.append(e.id)
+#             # print(t,file=sys.stderr)
+
+#             lmails= Mail.query.filter(Mail.expediteur_id.in_(t))
+#             # print(lmails,file=sys.stderr)
+#             # lmails= Mail.query.filter_by(expediteur_id=expediteurs.id)
+#             if request.method == "POST":
+#                 expediteur = request.form.get('sender')
+#                 return redirect(url_for("consultmailsexp", expediteur=expediteur))
+#                 # if request.json:
+#                 #     tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
+#                 #     print(tab,file=sys.stderr)
+#                 # else:
+#                 #     mail = request.form.get('mail')
+#                 #     expediteur = Expediteur.query.filter_by(mail=mail).first()
+#                 #     lmails= Mail.query.filter_by(expediteur_id=expediteur.id)
+#                 # if request.json:
+#                 #     tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
+#                 #     print(tab,file=sys.stderr)
+#                 # for exps in tab: 
+#                 #     exp = Expediteur.query.filter_by(mail=exps['mail']).first()
+#                 #     if exps['statut']=='1':
+#                 #         exp.statut = 1
+#                 #     else:
+#                 #         if exps['statut']=='2':
+#                 #             exp.statut = 2
+#                 #         else:
+#                 #             exp.statut = 3
+#                 # db.session.commit()
+#                     # flash("Veuillez recharger la page")
+#                 # return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
+#             else:
+#                 if 'nom' in session:
+#                     return render_template("consultmails.html", mail=session['mail'], expediteurs=expediteurs, lmails=lmails)
+#                 else:
+#                     flash(gettext("Modifications bien prises en compte"), "connecte") #Utiliser 2 eme arg pour mettre une icone
+#                     return render_template("login.html")
+#         else:
+#             flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
+#             return redirect(url_for("login"))
+#     except IndexError:
+#         abort(404)
 
 @app.route('/consultmailsexp/<expediteur>', methods=['GET', 'POST'])
 def consultmailsexp(expediteur):
     try:
-        if 'mail' in session:
-            users = Utilisateur.query.filter_by(mail=session['mail']).first()
-            exp = Expediteur.query.filter_by(utilisateur_id=users.id, mail= expediteur).first()
-            lmails= Mail.query.filter_by(expediteur_id = exp.id).all()
-            print(lmails, file=sys.stderr)
-            if request.method == "POST":
-                if request.json:
-                    tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
-                    print(tab,file=sys.stderr)
-                return render_template("consultmailsexp.html", mail=session['mail'], expediteur=expediteur, lmails=lmails)
-            else:
-                if 'nom' in session:
-                    return render_template("consultmailsexp.html", mail=session['mail'], expediteur=expediteur, lmails=lmails)
-                else:
-                    flash(gettext("Modifications bien prises en compte"), "connecte") #Utiliser 2 eme arg pour mettre une icone
-                    return render_template("login.html")
-        else:
+        if 'mail' not in session:
             flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
             return redirect(url_for("login"))
+        users = Utilisateur.query.filter_by(mail=session['mail']).first()
+        exp = Expediteur.query.filter_by(utilisateur_id=users.id, mail= expediteur).first()
+        lmails= Mail.query.filter_by(expediteur_id = exp.id).all() 
+        if request.method == "POST":
+#            if request.json:
+#                tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
+        return render_template("consultmailsexp.html", mail=session['mail'], expediteur=expediteur, lmails=lmails)
     except IndexError:
         abort(404)
+	
+# @app.route('/consultmailsexp/<expediteur>', methods=['GET', 'POST'])
+# def consultmailsexp(expediteur):
+#     try:
+#         if 'mail' in session:
+#             users = Utilisateur.query.filter_by(mail=session['mail']).first()
+#             exp = Expediteur.query.filter_by(utilisateur_id=users.id, mail= expediteur).first()
+#             lmails= Mail.query.filter_by(expediteur_id = exp.id).all()
+#             print(lmails, file=sys.stderr)
+#             if request.method == "POST":
+#                 if request.json:
+#                     tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
+#                     print(tab,file=sys.stderr)
+#                 return render_template("consultmailsexp.html", mail=session['mail'], expediteur=expediteur, lmails=lmails)
+#             else:
+#                 if 'nom' in session:
+#                     return render_template("consultmailsexp.html", mail=session['mail'], expediteur=expediteur, lmails=lmails)
+#                 else:
+#                     flash(gettext("Modifications bien prises en compte"), "connecte") #Utiliser 2 eme arg pour mettre une icone
+#                     return render_template("login.html")
+#         else:
+#             flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
+#             return redirect(url_for("login"))
+#     except IndexError:
+#         abort(404)
 
 @app.route('/consultmailsblacklist/', methods=['GET', 'POST'])
 def consultmailsblacklist():
     try:
-        if 'mail' in session:
-            users = Utilisateur.query.filter_by(mail=session['mail']).first()
-            expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id, statut =2).all()
-            t= []
-            for e in expediteurs:
-                t.append(e.id)
-            lmails= Mail.query.filter(Mail.expediteur_id.in_(t))
-
-            if request.method == "POST":
-                expediteur = request.form.get('sender')
-                return redirect(url_for("consultmailsexp", expediteur=expediteur))
-                # if request.json:
-                #     tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
-                #     print(tab,file=sys.stderr)
-                # else:
-                #     mail = request.form.get('mail')
-                #     expediteur = Expediteur.query.filter_by(mail=mail).first()
-                #     lmails= Mail.query.filter_by(expediteur_id=expediteur.id)
-                # return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
-            else:
-                if 'nom' in session:
-                    return render_template("consultmails.html", mail=session['mail'], expediteurs=expediteurs, lmails=lmails)
-                else:
-                    flash(gettext("Modifications bien prises en compte"), "connecte") #Utiliser 2 eme arg pour mettre une icone
-                    return render_template("login.html")
-        else:
+        if 'mail' not in session:
             flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
             return redirect(url_for("login"))
+        users = Utilisateur.query.filter_by(mail=session['mail']).first()
+        expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id, statut =2).all()
+        t= []
+        for e in expediteurs:
+            t.append(e.id)
+        lmails= Mail.query.filter(Mail.expediteur_id.in_(t))
+        if request.method == "POST":
+            expediteur = request.form.get('sender')
+            return redirect(url_for("consultmailsexp", expediteur=expediteur))
+        return render_template("consultmails.html", mail=session['mail'], expediteurs=expediteurs, lmails=lmails)
     except IndexError:
         abort(404)
+	
+# @app.route('/consultmailsblacklist/', methods=['GET', 'POST'])
+# def consultmailsblacklist():
+#     try:
+#         if 'mail' in session:
+#             users = Utilisateur.query.filter_by(mail=session['mail']).first()
+#             expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id, statut =2).all()
+#             t= []
+#             for e in expediteurs:
+#                 t.append(e.id)
+#             lmails= Mail.query.filter(Mail.expediteur_id.in_(t))
+
+#             if request.method == "POST":
+#                 expediteur = request.form.get('sender')
+#                 return redirect(url_for("consultmailsexp", expediteur=expediteur))
+#                 # if request.json:
+#                 #     tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
+#                 #     print(tab,file=sys.stderr)
+#                 # else:
+#                 #     mail = request.form.get('mail')
+#                 #     expediteur = Expediteur.query.filter_by(mail=mail).first()
+#                 #     lmails= Mail.query.filter_by(expediteur_id=expediteur.id)
+#                 # return render_template("consultmails.html", identifiant=session['identifiant'], expediteurs=expediteurs, lmails=lmails)
+#             else:
+#                 if 'nom' in session:
+#                     return render_template("consultmails.html", mail=session['mail'], expediteurs=expediteurs, lmails=lmails)
+#                 else:
+#                     flash(gettext("Modifications bien prises en compte"), "connecte") #Utiliser 2 eme arg pour mettre une icone
+#                     return render_template("login.html")
+#         else:
+#             flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
+#             return redirect(url_for("login"))
+#     except IndexError:
+#         abort(404)
 
 @app.route('/api/modifmails/', methods=['GET', 'POST'])
 def modifmails():
@@ -649,31 +764,53 @@ def modifmails():
 @app.route('/consultexp/', methods=['GET', 'POST'])
 def consultexp():
     try:
-        if 'mail' in session:
-            users = Utilisateur.query.filter_by(mail=session['mail']).first()
-            expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id)
-            t = dict()
-            for exp in expediteurs:
-                mails = Mail.query.filter_by(expediteur_id=exp.id).count()
-                t[exp.mail] = mails
-            # mails = Mail.query.filter_by(expediteur_id = expediteurs.id)
-            if request.method == "POST":
-                expediteur = request.form.get('mail')
-                if expediteur != None:
-                    return redirect(url_for("consultmailsexp", expediteur=expediteur))
-                else:
-                    return render_template("consultexp.html", mail=session['mail'], users=users, expediteurs=expediteurs, t=t)
-            else:
-                if 'nom' in session:
-                    return render_template("consultexp.html", mail=session['mail'], users=users, expediteurs=expediteurs, t=t)
-                else:
-                    flash(gettext("Pas de compte connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
-                    return render_template("login.html")
-        else:
-            flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
-            return redirect(url_for("login"))
+        if 'mail' not in session:
+	    flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
+	    return redirect(url_for("login"))
+        users = Utilisateur.query.filter_by(mail=session['mail']).first()
+        expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id)
+        t = dict()
+        for exp in expediteurs:
+        mails = Mail.query.filter_by(expediteur_id=exp.id).count()
+        t[exp.mail] = mails
+        # mails = Mail.query.filter_by(expediteur_id = expediteurs.id)
+        if request.method == "POST":
+            expediteur = request.form.get('mail')
+            if expediteur != None:
+                return redirect(url_for("consultmailsexp", expediteur=expediteur))
+        return render_template("consultexp.html", mail=session['mail'], users=users, expediteurs=expediteurs, t=t)
     except IndexError:
         abort(404)
+	
+# @app.route('/consultexp/', methods=['GET', 'POST'])
+# def consultexp():
+#     try:
+#         if 'mail' in session:
+#             users = Utilisateur.query.filter_by(mail=session['mail']).first()
+#             expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id)
+#             t = dict()
+#             for exp in expediteurs:
+#                 mails = Mail.query.filter_by(expediteur_id=exp.id).count()
+#                 t[exp.mail] = mails
+#             # mails = Mail.query.filter_by(expediteur_id = expediteurs.id)
+#             if request.method == "POST":
+#                 expediteur = request.form.get('mail')
+#                 if expediteur != None:
+#                     return redirect(url_for("consultmailsexp", expediteur=expediteur))
+#                 else:
+#                     return render_template("consultexp.html", mail=session['mail'], users=users, expediteurs=expediteurs, t=t)
+#             else:
+#                 if 'nom' in session:
+#                     return render_template("consultexp.html", mail=session['mail'], users=users, expediteurs=expediteurs, t=t)
+#                 else:
+#                     flash(gettext("Pas de compte connecté"), "connecte") #Utiliser 2 eme arg pour mettre une icone
+#                     return render_template("login.html")
+#         else:
+#             flash(gettext("Pas de compte connecté"), "deconnecte") #Utiliser 2 eme arg pour mettre une icone
+#             return redirect(url_for("login"))
+#     except IndexError:
+#         abort(404)
+
 
 @app.route('/api/modifexp/', methods=['GET', 'POST'])
 def modifexp():
