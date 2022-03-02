@@ -32,6 +32,8 @@ import locale
 import glob
 import json
 import pytest
+from db import db
+from db import models
               
 # creation d'une instance de flask
 app = Flask(__name__)
