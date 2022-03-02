@@ -162,9 +162,9 @@ def stats():
 
     labels = [gettext("Nombre d'utilisateurs"), gettext("Nombre total d'expéditeurs"), gettext("Nombre d'expéditeurs validés"), gettext("Nombre d'expéditeurs blacklistés"), gettext("Nombre d'expéditeurs en attente"), gettext("Nombre de mails")]
 
-    stats1 = Statistiques.query.filter_by(actionFiltre=1).all()
-    stats2 = Statistiques.query.filter_by(actionFiltre=2).all()
-    stats3 = Statistiques.query.filter_by(actionFiltre=3).all()
+    stats1 = Statistiques.query.filter_by(actionFiltre=1).order_by(date).all()
+    stats2 = Statistiques.query.filter_by(actionFiltre=2).order_by(date).all()
+    stats3 = Statistiques.query.filter_by(actionFiltre=3).order_by(date).all()
 
     sd1= Statistiques.query.filter_by(actionFiltre=1).count() 
     sd2= Statistiques.query.filter_by(actionFiltre=2).count()
@@ -172,44 +172,47 @@ def stats():
     dico1=[0,0,0,0,0,0,0,0,0,0,0,0]
     dico2=[0,0,0,0,0,0,0,0,0,0,0,0]
     dico3=[0,0,0,0,0,0,0,0,0,0,0,0]
+    index=0
     for st1 in stats1: 
-        if st1.date.strftime("%m") == "01":
+	index = int(st1.date.strftime("%m") )-1
+  	dico1[index]+=1
+       # if st1.date.strftime("%m") == "01":
             # dico1['{{_("Janvier")}}']+=1
-            dico1[0]+=1
+       #     dico1[0]+=1
         # dico1["02"]+=dico1["01"]
-        elif st1.date.strftime("%m") == "02":
+      #  elif st1.date.strftime("%m") == "02":
             # dico1['{{_("Février")}}']+=1
-            dico1[1]+=1
-        elif st1.date.strftime("%m") == "03":
+       #     dico1[1]+=1
+       # elif st1.date.strftime("%m") == "03":
             # dico1["Mars"]+=1
-            dico1[2]+=1
-        elif st1.date.strftime("%m") == "04":
+       #     dico1[2]+=1
+       # elif st1.date.strftime("%m") == "04":
             # dico1["Mai"]+=1
-            dico1[3]+=1
-        elif st1.date.strftime("%m") == "05":
+       #     dico1[3]+=1
+       # elif st1.date.strftime("%m") == "05":
             # dico1["Juin"]+=1
-            dico1[4]+=1
-        elif st1.date.strftime("%m") == "06":
+       #     dico1[4]+=1
+       # elif st1.date.strftime("%m") == "06":
             # dico1["Juillet"]+=1
-            dico1[5]+=1
-        elif st1.date.strftime("%m") == "07":
+       #     dico1[5]+=1
+       # elif st1.date.strftime("%m") == "07":
             # dico1["Aout"]+=1
-            dico1[6]+=1
-        elif st1.date.strftime("%m") == "08":
+       #     dico1[6]+=1
+       # elif st1.date.strftime("%m") == "08":
             # dico1["08"]+=1
-            dico1[7]+=1
-        elif st1.date.strftime("%m") == "09":
+       #     dico1[7]+=1
+       # elif st1.date.strftime("%m") == "09":
             # dico1["09"]+=1
-            dico1[8]+=1
-        elif st1.date.strftime("%m") == "10":
+       #     dico1[8]+=1
+       # elif st1.date.strftime("%m") == "10":
             # dico1["10"]+=1
-            dico1[9]+=1
-        elif st1.date.strftime("%m") == "11":
+       #     dico1[9]+=1
+       # elif st1.date.strftime("%m") == "11":
             # dico1["11"]+=1
-            dico1[10]+=1
-        elif st1.date.strftime("%m") == "12":
+       #     dico1[10]+=1
+       # elif st1.date.strftime("%m") == "12":
             # dico1["12"]+=1
-            dico1[11]+=1
+       #     dico1[11]+=1
         # dico1[i] = st1.date.strftime("%Y-%m-%d")
         # i+=1
 
