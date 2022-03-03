@@ -1,0 +1,190 @@
+# German translations for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2022-01-31 22:07+0100\n"
+"PO-Revision-Date: 2022-01-31 22:11+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: app.py:80
+msgid "Bienvenue"
+msgstr ""
+
+#: app.py:81
+msgid "Pas de compte connecté"
+msgstr ""
+
+#: app.py:82
+msgid "Compte déjà connecté"
+msgstr ""
+
+#: app.py:83
+msgid "Utilisateur déja inscrit"
+msgstr ""
+
+#: app.py:84
+msgid "Modifications bien prises en compte"
+msgstr ""
+
+#: app.py:134
+msgid "Captcha validé"
+msgstr ""
+
+#: app.py:140
+msgid "Adresse "
+msgstr ""
+
+#: app.py:140
+msgid " bien validée"
+msgstr ""
+
+#: app.py:147
+msgid "Token invalide"
+msgstr ""
+
+#: app.py:149
+msgid "Adresse de messagerie invalide"
+msgstr ""
+
+#: app.py:151
+msgid "Veuillez valider le captcha"
+msgstr ""
+
+#: app.py:251
+msgid "Inscription reussie"
+msgstr ""
+
+#: templates/base.html:31 templates/signup.html:2
+msgid "S'inscrire"
+msgstr ""
+
+#: templates/base.html:34
+msgid "Se connecter"
+msgstr ""
+
+#: templates/base.html:37
+msgid "Se déconnecter"
+msgstr ""
+
+#: templates/base.html:40
+msgid "Espace utilisateur"
+msgstr ""
+
+#: templates/base.html:43
+msgid "Consulter mails en attente "
+msgstr ""
+
+#: templates/base.html:46
+msgid "Consulter mails blacklistés "
+msgstr ""
+
+#: templates/base.html:49
+msgid "Consulter expéditeurs "
+msgstr ""
+
+#: templates/consultexp.html:2
+msgid "Expéditeurs"
+msgstr ""
+
+#: templates/consultexp.html:13
+msgid "Liste d'expéditeurs de "
+msgstr ""
+
+#: templates/consultexp.html:23
+msgid "Identifiant"
+msgstr ""
+
+#: templates/consultexp.html:24 templates/consultmails.html:35
+#: templates/consultmailsreject.html:35
+msgid "Statut"
+msgstr ""
+
+#: templates/consultmails.html:2 templates/consultmailsreject.html:2
+msgid "Mails"
+msgstr ""
+
+#: templates/consultmails.html:16 templates/consultmailsreject.html:16
+msgid "Veuillez choisir une adresse"
+msgstr ""
+
+#: templates/consultmails.html:26 templates/consultmailsreject.html:26
+msgid "Liste de mails de"
+msgstr ""
+
+#: templates/consultmails.html:32 templates/consultmailsreject.html:32
+msgid "ID mail"
+msgstr ""
+
+#: templates/consultmails.html:33 templates/consultmailsreject.html:33
+msgid "ID postfix"
+msgstr ""
+
+#: templates/consultmails.html:34 templates/consultmailsreject.html:34
+msgid "Supprimer ?"
+msgstr ""
+
+#: templates/login.html:16 templates/loginwrong.html:12
+#: templates/signup.html:17
+msgid "Pseudo"
+msgstr ""
+
+#: templates/login.html:18 templates/loginwrong.html:14
+#: templates/signup.html:19
+msgid "Entrer votre pseudo"
+msgstr ""
+
+#: templates/login.html:23 templates/loginwrong.html:19
+#: templates/signup.html:38
+msgid "Mot de passe"
+msgstr ""
+
+#: templates/login.html:25 templates/loginwrong.html:21
+#: templates/signup.html:40
+msgid "Entrer votre mot de passe"
+msgstr ""
+
+#: templates/login.html:30 templates/loginwrong.html:26
+#: templates/signup.html:52
+msgid "Afficher mot de passe"
+msgstr ""
+
+#: templates/signup.html:24
+msgid "Nom"
+msgstr ""
+
+#: templates/signup.html:26
+msgid "Entrer votre nom"
+msgstr ""
+
+#: templates/signup.html:33
+msgid "Entrer votre email"
+msgstr ""
+
+#: templates/signup.html:45
+msgid "Confirmer mot de passe"
+msgstr ""
+
+#: templates/signup.html:47
+msgid "Confirmer votre mot de passe"
+msgstr ""
+
+#: templates/signup.html:62
+msgid "Mot de passe Admin"
+msgstr ""
+
+#: templates/signup.html:64
+msgid "Mot de passe admin"
+msgstr ""
+

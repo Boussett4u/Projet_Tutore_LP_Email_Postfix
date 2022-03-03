@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %} {{session['user']}} {% endblock %}
+{% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for msg in messages %}
+<p>{{msg}}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<!-- <form name="listeuti" action="#" method="POST">
+    <label for="mail" class="col-sm-2 col-form-label">{{ _("Utilisateurs") }}</label>
+    <br>
+    <select name= mail method="GET" action="/">
+        
+    </select>
+    <button type="submit" class="btn btn-primary" value="submit" >Submit</button>
+</form> -->
+
+<form name="listeuti" action="#" method="POST">
+    <div class="form-group">
+        <label for="mail" class="col-sm-2 col-form-label">{{ _("Utilisateurs") }}</label>
+        <select class="form-control" id="mail" name="mail">
+            {% for utilisateurs in utilisateurs %}
+            <option value= "{{utilisateurs.mail}}" SELECTED>{{utilisateurs.mail}}</option>"
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="act">{{ _("Action") }}</label>
+        <select multiple class="form-control" id="act" name="act">
+            <option>{{ _("Expéditeur") }}</option>
+            <option>{{ _("Mails en attente") }}</option>
+            <option>{{ _("Mails blacklistés") }}</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary" value="submit" >Submit</button>
+    </div>
+</form>
+{% endblock %}
