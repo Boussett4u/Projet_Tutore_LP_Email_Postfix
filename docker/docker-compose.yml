@@ -28,10 +28,12 @@ services:
     build:
       context: ./projet_postfix
     environment:
-      POSTFIX_DOMAIN: exemple@toto.com:adresseIPTransimision, exemple@titi.com
-      DB_IP: 0.0.0.0 
-      DB_USER: user 
-      DB_PASSWORD: password
+      POSTFIX_DOMAIN: exemple@toto.com:adresseIPTransimision;exemple@titi.com:adresse2IPTransmission
+      DB_IP: docker_db_1
+      DB_USER: root
+      DB_PASSWORD: padmin
+      DB_DB: postfix
+      DB_PORT: 5432
     volumes:
        - ./projet_postfix/etc/postfix:/etc/postfix
        - ./projet_postfix/scripts:/scripts
