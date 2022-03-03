@@ -103,71 +103,40 @@ def stats():
     
     labels = [gettext("Nombre d'utilisateurs"), gettext("Nombre total d'expéditeurs"), gettext("Nombre d'expéditeurs validés"), gettext("Nombre d'expéditeurs blacklistés"), gettext("Nombre d'expéditeurs en attente"), gettext("Nombre de mails")]
 
-    stats1 = Statistiques.query.filter_by(actionFiltre= ACCEPTED).all()
-    stats2 = Statistiques.query.filter_by(actionFiltre= REFUSED).all()
-    stats3 = Statistiques.query.filter_by(actionFiltre= UNDECIDED).all()
+    acceptedmails = Statistiques.query.filter_by(actionFiltre= ACCEPTED).all()
+    refusedmails = Statistiques.query.filter_by(actionFiltre= REFUSED).all()
+    undefinedmails = Statistiques.query.filter_by(actionFiltre= UNDECIDED).all()
 
-    sd1= Statistiques.query.filter_by(actionFiltre= ACCEPTED).count() 
-    sd2= Statistiques.query.filter_by(actionFiltre= REFUSED).count()
-    sd3= Statistiques.query.filter_by(actionFiltre= UNDECIDED).count()
+    nbacceptedmails= Statistiques.query.filter_by(actionFiltre= ACCEPTED).count() 
+    nbrefusedmails= Statistiques.query.filter_by(actionFiltre= REFUSED).count()
+    nbundefinedmails= Statistiques.query.filter_by(actionFiltre= UNDECIDED).count()
 
-    dico1 =[0,0,0,0,0,0,0,0,0,0,0,0]
-    dico2 =[0,0,0,0,0,0,0,0,0,0,0,0] 
-    dico3 =[0,0,0,0,0,0,0,0,0,0,0,0]
+    listacceptedmails =[0,0,0,0,0,0,0,0,0,0,0,0]
+    listrefusedmails =[0,0,0,0,0,0,0,0,0,0,0,0] 
+    listundefinedmails =[0,0,0,0,0,0,0,0,0,0,0,0]
 
     
     index=0
 
 
-    for st1 in stats1:
-        index = int(st1.date.strftime("%m"))-1
-        dico1[index]+=1
+    for mail in acceptedmails:
+        index = int(mail.date.strftime("%m"))-1
+        listacceptedmails[index]+=1
 
-    dico1[1]+=dico1[0]
-    dico1[2]+=dico1[1]
-    dico1[3]+=dico1[2]
-    dico1[4]+=dico1[3]
-    dico1[5]+=dico1[4]
-    dico1[6]+=dico1[5]
-    dico1[7]+=dico1[6]
-    dico1[8]+=dico1[7]
-    dico1[9]+=dico1[8]
-    dico1[10]+=dico1[9]
-    dico1[11]+=dico1[10]
+    for mail in refusedmails: 
+        index = int(mail.date.strftime("%m"))-1
+        listrefusedmails[index]+=1
 
-    for st2 in stats2: 
-        index = int(st2.date.strftime("%m"))-1
-        dico2[index]+=1
+    for mail in undefinedmails: 
+        index = int(mail.date.strftime("%m"))-1
+        listundefinedmails[index]+=1
 
-    dico2[1]+=dico2[0]
-    dico2[2]+=dico2[1]
-    dico2[3]+=dico2[2]
-    dico2[4]+=dico2[3]
-    dico2[5]+=dico2[4]
-    dico2[6]+=dico2[5]
-    dico2[7]+=dico2[6]
-    dico2[8]+=dico2[7]
-    dico2[9]+=dico2[8]
-    dico2[10]+=dico2[9]
-    dico2[11]+=dico2[10]
+    for i in range(11):
+        listacceptedmails[i+1]+=listacceptedmails[i] 
+        listrefusedmails[i+1]+=listrefusedmails[i] 
+        listundefinedmails[i+1]+=listundefinedmails[i] 
 
-    for st3 in stats3: 
-        index = int(st3.date.strftime("%m"))-1
-        dico3[index]+=1
-
-    dico3[1]+=dico3[0]
-    dico3[2]+=dico3[1]
-    dico3[3]+=dico3[2]
-    dico3[4]+=dico3[3]
-    dico3[5]+=dico3[4]
-    dico3[6]+=dico3[5]
-    dico3[7]+=dico3[6]
-    dico3[8]+=dico3[7]
-    dico3[9]+=dico3[8]
-    dico3[10]+=dico3[9]
-    dico3[11]+=dico3[10]
-
-    return render_template("stats.html", tab= json.dumps(tab), labels= json.dumps(labels), sd1=sd1, sd2=sd2, sd3=sd3, dico1= json.dumps(dico1), dico2= json.dumps(dico2), dico3= json.dumps(dico3),mails=mails, exp=exp, uti=uti)
+    return render_template("stats.html", tab= json.dumps(tab), labels= json.dumps(labels), nbacceptedmails=nbacceptedmails, nbrefusedmails=nbrefusedmails, nbundefinedmails=nbundefinedmails, listacceptedmails= json.dumps(listacceptedmails), listrefusedmails= json.dumps(listrefusedmails), listundefinedmails= json.dumps(listundefinedmails),mails=mails, exp=exp, uti=uti)
 
 @app.route('/statut/')
 def statut():
