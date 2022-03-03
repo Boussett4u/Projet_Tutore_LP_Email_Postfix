@@ -12,6 +12,14 @@ export DB_PASSWORD
 export POSTFIX_DOMAIN
 
 
+# Initialisation de /etc/postfix/transport
+rm /etc/postfix/transport
+touch /etc/postfix/transport
+for (( i = 1 ; i < $(echo `expr $(echo -n $POSTFIX_DOMAIN | tr -d [:alnum:]\@\.\: | wc -c) + 2`) ; i++)) do
+    echo $POSTFIX_DOMAIN | awk -F ";" '{print $'$i'}' | sed -e 's/:/\trelay:/g' | sed -e 's/$/:587/g' >> /etc/postfix/transport
+done
+
+
 # Lien symbolique pour le script filtre.py du master.cf
 mkdir /home/testfilter/filtre
 ln -s /scrits/filtre/filtre.py /home/testfilter/filtre/filtre.py
