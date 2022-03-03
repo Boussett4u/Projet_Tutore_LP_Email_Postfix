@@ -5,6 +5,12 @@
 # Ne se génere pas !!!! S'éxecute avant le montage des volumes ? 
 /scripts/classes.py
 
+# Export des variables du docker-compose 
+export DB_IP
+export DB_USER
+export DB_PASSWORD
+export POSTFIX_DOMAIN
+
 
 # Lien symbolique pour le script filtre.py du master.cf
 mkdir /home/testfilter/filtre
