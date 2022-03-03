@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %} {{ _("Mails")}} {% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for msg in messages %}
+<p>{{msg}}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+
+
+<!-- <form name="liste" action="#" method="POST">
+    <label for="mail" class="col-sm-2 col-form-label">{{ _("Veuillez choisir une adresse") }}</label>
+    <br>
+    <select name= mail method="GET" action="/">
+        {% for expediteurs in expediteurs %}
+        <option value= "{{expediteurs.mail}}" SELECTED>{{expediteurs.mail}}</option>"
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary" value="submit" >Submit</button>
+</form>
+<br>  -->
+
+<i class="fa fa-info-circle" aria-hidden="true"></i>{{ _("Statut : 1 valide, 2 refuse, 3 en attente") }}
+<br>
+
+<p>{{ _("Liste de mails de") }} {{expediteur}}</p>
+
+<form action="#" method="post" name="form">
+    <table class="table table-striped" id='table' name='table'>
+        <thead>
+            <tr>
+                <th>{{ _("ID mail") }}</th>
+                <th>{{ _("ID postfix") }}</th>
+                <th>{{ _("Supprimer ?") }}</th>
+                <th>Date</th>
+                <th>{{ _("Statut") }}</th>
+            </tr>
+        </thead>
+        <tbody id='table'>
+            {% for mails in lmails %}
+
+            <tr id='tr'>
+                <td><input type=hidden id='id'  name='id' value="{{ mails.id }}">{{ mails.id }}</td>
+                <td><input type=hidden id='postfixid'  name='postfixid' value="{{ mails.id_mail_postfix }}">{{ mails.id_mail_postfix }}</td>
+                <td id="sup"><input type=checkbox id='sup' name='sup' ></input></td>
+                <td><input type=hidden id='date'  name='date' value="{{ mails.date }}">{{ mails.date }}</td>   
+                <td><input type=text id='statut'  name='statut' value={{ _("en attente") }} readonly="readonly" ></td>
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-primary" onclick=relo()>Submit</button>
+</form>
+
+<script>
+    
+    $(document).ready(function () {
+        $('#table').DataTable();
+        // columns: [
+        // null,
+        // {searchable: false},
+        // {orderable: false, searchable: false},
+        // {orderable: false, searchable: false},
+        // null],
+    });
+    
+        function relo(){
+        $('#table').find('tbody tr').each(function(){
+            $input = $(this).find('input[type=checkbox]')
+            $tr = $(this).find('input[id=statut]')
+            if ($input.is(":checked") ){
+                $input.attr('checked', true);
+                supp = "{{_("supprimé")}}"
+                $tr.val(supp);
+            }else{
+                $input.attr('checked', false);  
+                nsupp = "{{ _("non-supprimé") }}"
+                $tr.val(nsupp)   
+            }
+            
+        });
+        
+        var tab=[]
+        $('#table').find('tbody tr').each(function(){
+            var obj = {},
+            key1 = "identifiant",
+            key2 = "statut",
+            $td = $(this).find('td'),
+            $input = $(this).find('input[id=statut]').val(),
+            val1 = $td.eq(0).text(),
+            val2 = $input
+            obj[key1] = val1;
+            obj[key2] = val2;
+            tab.push(obj);
+        });
+        console.log(tab)
+        
+        jQuery.ajax({
+            url: '/api/modifmails',
+            type: "POST",
+            data: JSON.stringify({ paramName: tab }),
+            success: function(msg) {
+                console.log(tab)
+            },
+            dataType: 'json'
+            
+        });   
+    }
+    
+    
+</script>
+
+
+{% endblock %}
+

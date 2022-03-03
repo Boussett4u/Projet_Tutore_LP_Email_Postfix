@@ -20,88 +20,186 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postfix:postfix@localhost:5432/postfix'
 db = SQLAlchemy(app)
 
-#Création des classes correspondant aux tables de la base de données (utilisé aussi pour la création de la base en phase de test)
+message=""
 
-class Utilisateur(db.Model):
-        #Définition des colonnes
-        id = db.Column(db.Integer, primary_key=True)
-        identifiant = db.Column(db.String(250), unique=True, nullable=False)
-        nom = db.Column(db.String(250), unique=True, nullable=True)
-        mdp = db.Column(db.String(250), unique=False, nullable=False)
-        admin = db.Column(db.Boolean, default=False)
-        mail = db.Column(db.String(250), unique=False, nullable=False)
+#Récupération des paramètres 
+parametres={}
+while 1:
+        line = sys.stdin.readline()
+        if line=='\n':
+                break
+        else:
+                #Construction d'une tableau clé valeur avec les paramètres
+                message+=line
+                resu = line.split("=")
+                parametres[resu[0]] = resu[1]
 
-        #Constructeur
-        def __init__(self, identifiant, nom, mdp, admin, mail):
-                self.identifiant = identifiant
-                self.nom = nom
-                self.mdp = mdp
-                self.admin = admin
-                self.mail = mail
+destinataire = parametres["recipient"].strip()
+expediteur = parametres["sender"].strip()
+mail_id = parametres["queue_id"].strip()
+
+#Préparation du mail de validation
+mailValidation="Subjet : validation expediteur \n Veuillez cliquer sur ce lien et valider le CAPTCHA  : "
+
+
+def envoyerLien(expediteur, mail_id, mailValidation, destinataire):
+        #On récupère le token de l'expediteur
+        expediteur_bdd = Expediteur.query.filter_by(mail=expediteur, utilisateur_id=destinataire_bdd.id).first()
         
-class Expediteur(db.Model):
-        #Définition des colonnes
-        id = db.Column(db.Integer, primary_key=True)
-        mail = db.Column(db.String(250), unique=True, nullable=False)
-        utilisateur_id = db.Column(db.ForeignKey(Utilisateur.id), nullable=False)
-        statut = db.Column(db.Integer, unique=False, nullable=False, default=3)
-        #statut : 1 validé, 2 refusé, 3 en attente
-        token = db.Column(db.String(250), unique=True, nullable=False)
+        #Envoi d'un mail à l'expéditeur avec le lien de validation
+        smtp = smtplib.SMTP("localhost")
+        smtp.sendmail([destinataire], [expediteur], "From: no-reply@localhost\nTo:{0}\n{1}http://127.0.0.1:5000/validation/{2}".format(destinataire, mailValidation, expediteur_bdd.token))
 
-        
-        #Constructeur
-        def __init__(self, mail, utilisateur_id, statut, token): 
-                self.mail = mail
-                self.utilisateur_id = utilisateur_id
-                self.statut = statut
-                self.token = token
 
-class Mail(db.Model):
-        #Définition des colonnes
-        id = db.Column(db.Integer, primary_key=True)
-        id_mail_postfix = db.Column(db.String(250), unique=True, nullable=False)
-        expediteur_id = db.Column(db.ForeignKey(Expediteur.id), nullable=False)
-        date = db.Column(db.DateTime, nullable=False)
+#Fonction permettant d'ajouter un nouveau mail dans la table
+def ajouterMail(expediteur, mail_id):
+        infoExpediteur = Expediteur.query.filter_by(mail=expediteur).first()
+        nouveauMail = Mail (mail_id, infoExpediteur.id)
+        db.session.add(nouveauMail)
+        db.session.commit()
 
-        #Constructeur
-        def __init__(self,id_mail_postfix, expediteur_id, date):
-                self.id_mail_postfix = id_mail_postfix
-                self.expediteur_id = expediteur_id
-                self.date = date
 
-class Statistiques(db.Model):
-        #Définition des colonnes
-        id = db.Column(db.Integer, primary_key=True)
-        date = db.Column(db.DateTime, nullable=False)
-        #1 = accepté, 2 = rejeté, 3 = en attente
-        actionFiltre = db.Column(db.Integer, nullable=False)
-        
-        #Constructeur
-        def __init__(self, date, actionFiltre):
-                self.date = date
-                self.actionFiltre = actionFiltre
- 
 
-# #Récupération du message
-# message=""
-# for line in sys.stdin:
-# #         message += line
+#Fonction pour ajouter un expéditeur
+def ajouterExpediteur(destinataire, expediteur):
+        #calcul de la date pour le token
+        date=datetime.now()
 
-# message=""
-# while 1:
-#     line = sys.stdin.readline()
-#     if line=='\n':
-#         break
-#     else:
-#         message+=line
+        #Ajout des informations
+        infoDestinataire = Utilisateur.query.filter_by(mail=destinataire).first()
+        nouvelExpediteur = Expediteur(expediteur, infoDestinataire.id, 3, hashlib.md5(("VALIDATE"+date.strftime("%m/%d/%Y")+expediteur).encode('utf-8')).hexdigest())
+        db.session.add(nouvelExpediteur)
+        db.session.commit()
 
-# parametre={}
-# fichier = open("/home/testfiltre/filtre/test.txt", "r")
-# for ligne in fichier:
-#         resu = line.split("=")
-#         parametre[resu[0]] = resu[1]  
-# fichier.close()
 
+
+
+#Fonction pour ajouter une entrée dans la table statistiques
+def ajouterStat(statut):
+        if statut==1:
+                nouvelleStat = Statistiques(datetime.now(), 1)
+        elif statut==2:
+                nouvelleStat = Statistiques(datetime.now(), 2)
+        else:
+                nouvelleStat = Statistiques(datetime.now(), 3)
+        db.session.add(nouvelleStat)
+        db.session.commit()
+
+def verifSiTokenIdentique(expediteur, destinataire):
+        date=datetime.now()
+        tokenCalcule=  hashlib.md5(("VALIDATE"+date.strftime("%m/%d/%Y")+expediteur).encode('utf-8')).hexdigest()
+        destinataire_bdd = Utilisateur.query.filter_by(mail=destinataire).first()
+        tokenExpediteur=Expediteur.query.filter_by(mail=expediteur).filter_by(utilisateur_id=destinataire_bdd.id).first()
+        if tokenCalcule==tokenExpediteur.token:
+                return True
+        else:
+                return False
+                
+#Traitement en fonction de l'expéditeur et de son statut
+
+
+#Transmission des logs a rsyslog
+syslog.openlog(logoption=syslog.LOG_PID, facility=syslog.LOG_MAIL)
+
+#Vérification de l'existence du destinataire dans la table
+destinataire_existe = Utilisateur.query.filter_by(mail=destinataire).count()
+                  
+
+#S'il existe
+if destinataire_existe > 0:
+        #Récupération de ses informations
+        destinataire_bdd = Utilisateur.query.filter_by(mail=destinataire).first()
+
+        if destinataire_bdd.admin == False:
+
+                #Vérification de l'expéditeur, est-il déjà dans la table et associé à ce destinataire ?
+                expediteur_existe = Expediteur.query.filter_by(mail=expediteur).filter_by(utilisateur_id=destinataire_bdd.id).count()
+
+                #Si oui
+                if expediteur_existe > 0 and destinataire_bdd.admin == False:
+                
+                        #Info pour le log
+                        syslog.syslog(syslog.LOG_INFO, 'L\'expediteur existe - Verification de son statut')
+
+                        #si oui, récupération de l'objet de la base correspondant à cet expéditeur dans une variable
+                        expediteur_bdd = Expediteur.query.filter_by(mail=expediteur, utilisateur_id=destinataire_bdd.id).first()
+
+                        #En fonction du statut
+
+                        #Si accepté
+                        if expediteur_bdd.statut==1:
+
+                                #Information destinée aux logs
+                                syslog.syslog(syslog.LOG_INFO, 'Expediteur connu et valide - Tranfert du mail au destinataire')
+                                #Ajout d'une entrée dans la table statistiques
+                                ajouterStat(1)
+                                #Le mail peut être envoyé
+                                print("action=dunno \n")
+                        
+
+                                #Si refusé
+                        elif expediteur_bdd.statut==2:
+                                #Informations destinées aux logs
+                                syslog.syslog(syslog.LOG_INFO, 'Expediteur refuse - Mail retourne a l\'expediteur')      
+
+                                #Ajoute d'une entrée dans la table statistiques
+                                ajouterStat(2)
+
+                                #Le mail est rejeté
+                                print("action=reject \n")
+
+                        #Si en attente        
+                        else:
+                                #Informations destinées aux logs
+                                syslog.syslog(syslog.LOG_INFO, 'Expediteur en attente - Mail mis en quarantaine - Envoi d\'un lien de validation')
+                
+                                #Reprise de la fonction definie pour ce cas de figure, permettant de générer un lien et mettre en quarantaine
+
+                                #if verifSiTokenIdentique(expediteur, destinataire)!=True:
+                                #        envoyerLien(expediteur, mail_id, mailValidation, destinataire)
+                                envoyerLien(expediteur, mail_id, mailValidation, destinataire)
+                        
+                        
+                        
+                                #Enregistrement du mail dans la base pour pouvoir le retrouver :
+                                ajouterMail(expediteur, mail_id)
+
+                                #Ajout d'une entrée dans la table statistiques
+                                ajouterStat(3)
+
+                                #Mise en file hold
+                                print("action=hold \n")
+
+                #Cas où l'expéditeur n'existe pas dans la table Expediteur
+                else:
+                        #Informations destinées aux logs
+                        syslog.syslog(syslog.LOG_INFO, 'Expediteur inconnu - Attribution du statut en attente - Mail mis en quarantaine - Envoi d\'un lien de validation')
+
+                        #Ajout de l'expéditeur inconnu dans la base avec le statut en attente
+                        ajouterExpediteur(destinataire, expediteur)
+
+                        #Ajout du mail correspondant dans la table mail
+                        ajouterMail(expediteur, mail_id)
+
+                        #Fonction permettant de générer le lien et envoyer en quarantaine le mail
+                
+                        #if verifSiTokenIdentique(expediteur, destinataire)!=True:
+                        #        envoyerLien(expediteur, mail_id, mailValidation, destinataire)
+                        envoyerLien(expediteur, mail_id, mailValidation, destinataire)
+
+                        #Ajout d'une entrée dans la table statistique
+                        ajouterStat(3)
+
+                        #Mise en file hold
+                        print("action=hold \n")
+
+        else:
+                syslog.syslog(syslog.LOG_INFO, 'Destinataire inconnu')
+                print("action=dunno \n")
+                                
+else:
+        syslog.syslog(syslog.LOG_INFO, 'Destinataire inconnu')
+        print("action=dunno \n")
 
 
 # fichier = open("/home/testfiltre/filtre/test.txt", "a")
@@ -109,26 +207,14 @@ class Statistiques(db.Model):
 # fichier.close()
 
 
-
-#Récupération des paramètres 
-
-parametre={}
-while 1:
-    line = sys.stdin.readline()
-    if line=='\n':
-        break
-    else:
-        #Construction d'une tableau clé valeur avec les paramètres
-        resu = line.split("=")
-        parametre[resu[0]] = resu[1]  
- 
-
-
-#Test pour voir si ça écrit bien le bon paramètre
+# #Test pour voir si ça écrit bien le bon paramètre
 
 # fichier = open("/home/testfiltre/filtre/test2.txt", "a")
-# fichier.write(parametre["queue_id"])
+# #fichier.write(parametres["recipient"])
+# fichier.write("destinataire existe {0} destinataire {1} expediteur existe {2}, booleen{3}, retourToken{4}".format(destinataire_existe, destinataire, expediteur_existe, destinataire_bdd.admin, retourToken))
+
 # fichier.close()
 
+
         
-print("action=hold \n")
+#print("action=dunno \n")

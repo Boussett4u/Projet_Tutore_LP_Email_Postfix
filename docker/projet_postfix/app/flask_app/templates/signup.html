@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %} {{ _("S'inscrire") }} {% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for msg in messages %}
+<p>{{msg}}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+
+<br>
+<form action="#" method="post" name="form">
+    <div class="form-group row">
+        <label for="nom" class="col-sm-2 col-form-label">{{ _("Nom") }}</label>
+        <div class="col-sm-10">
+            <input type="text" name="nm" class="form-control" placeholder="{{ _("Entrer votre nom") }} "/>
+        </div>
+    </div>
+    <br>
+    <div class="form-group row">
+        <label for="email" class="col-sm-2 col-form-label">Email</label>
+        <div class="col-sm-10">
+            <input type="email" name="mail" class="form-control" placeholder="{{ _("Entrer votre email") }} "/>
+            <small id="emailHelp" class="form-text text-muted">{{ share }}</small>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="mdp" class="col-sm-2 col-form-label">{{ _("Mot de passe") }}</label>
+        <div class="col-sm-10">
+            <input type="password" id="mdp" name="mdp" class="form-control" placeholder="{{ _("Entrer votre mot de passe") }} "/>
+        </div>
+    </div>
+    <!-- <br> -->
+    <div class="form-group row">
+        <label for="confirmdp" class="col-sm-2 col-form-label">{{ _("Confirmer mot de passe")}}</label>
+        <div class="col-sm-10">
+            <input type="password" id="confirmmdp" name="confirmmdp" class="form-control" placeholder="{{ _("Confirmer votre mot de passe") }} "/>
+        </div>
+    </div>
+    <br> 
+    <div class="form-group row">
+        <div class="col-sm-2"> {{ _("Afficher mot de passe") }}</div>
+        <div class="col-sm-10">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" onchange="document.getElementById('mdp').type = this.checked ? 'text' : 'password'
+                document.getElementById('confirmmdp').type = this.checked ? 'text' : 'password'"/>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="form-group row">
+        <label for="mdpad" class="col-sm-2 col-form-label">{{ _("Mot de passe Admin") }}</label>
+        <div class="col-sm-10">
+            <input type="password" id="mdpad" name="mdpad" class="form-control" placeholder="{{ _("Mot de passe admin") }} "/>
+        </div>
+    </div>
+    <br>
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary" value="submit" onclick="if(document.getElementById('mdp').value != document.getElementById('confirmmdp').value){
+                document.getElementById('labelmdp').style='color: red'
+                document.getElementById('labelmdp').textContent = 'veuillez ecrire le même mot de passe';
+                return false;}"/>Submit
+            </button>
+        </div>
+    </div>
+</form>
+
+
+
+{% endblock %}
+

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %} Validation {% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for msg in messages %}
+<p>{{msg}}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<form action="#" method="post" name="form">
+    <div class="mb-3">
+        <label for="titre" class="form-label">{{ _("Veuillez valider le captcha afin de valider votre email") }} : {{ mail }}</label>
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Captcha</label>
+        {{ recaptcha }}
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<br>
+<p>{{ message }}</p>
+
+{% endblock%}

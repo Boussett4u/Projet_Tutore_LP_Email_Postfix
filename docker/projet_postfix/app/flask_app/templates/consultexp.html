@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}{{ _("Expéditeurs") }} {% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for msg in messages %}
+<p>{{msg}}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<p>{{ _("Liste d'expéditeurs de ") }} {{mail}}</p>
+
+<i class="fa fa-info-circle" aria-hidden="true"></i>{{ _("Statut : 1 valide, 2 refuse, 3 en attente") }}
+<br>
+
+<br>
+<form action="#" method="post" name="form">
+    <table class="table table-striped" id='table' name='table'>
+        <thead>
+            <tr>
+                <th>{{ _("Identifiant") }}</th>
+                <th>{{ _("Email") }}</th>
+                <th>{{ _("Nombre de mails") }}</th>
+                <th>{{ _("Statut") }}</th>
+            </tr>
+        </thead>
+        <tbody id='table'>
+            {% for expediteurs in expediteurs %}
+            
+            <tr id='tr'>
+                <td><input type=hidden id='id'  name='id' value="{{ expediteurs.id }}">{{ expediteurs.id }}</td>
+                <td><button type=submit id='mail'  name='mail' value="{{ expediteurs.mail }}">{{ expediteurs.mail }}</td>
+                <!-- <td><input type=hidden id='mail'  name='mail' value="{{ expediteurs.mail }}">{{ expediteurs.mail }}</td> -->
+                {% if expediteurs.mail in t: %}
+                <td><input type=hidden id='nb'  name='nb' value="{{ expediteurs.mail }}">{{ t.get(expediteurs.mail) }}</td>
+                {% endif %}
+                {% if expediteurs.statut == 3: %}
+                <td id='stat'><input type="number" id='statut' name='statut' min="1" max="3" value="3"></input></td>
+                {% else: %}
+                {% if expediteurs.statut == 2: %}
+                <td id="stat"><input type="number" id='statut' name='statut' min="1" max="3" value="2"></input></td>
+                {% else: %}
+                <td id="stat"><input type="number" id='statut' name='statut' min="1" max="3" value="1"></input></td>
+                {% endif %}
+                {% endif %}
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-primary" onclick=relo()>Submit</button>
+</form>
+
+<script>
+    
+    
+    $(document).ready(function () {
+        $('#table').DataTable();
+        // columns: [
+        // null,
+        // {searchable: false},
+        // {orderable: false, searchable: false},
+        // {orderable: false, searchable: false},
+        // null],
+    });
+    
+    function relo(){
+        $('#table').find('tbody tr').each(function(){
+            $input = $(this).find('input[type=number][id=statut]')
+            $td = $(this).find('td')
+            if ($input.val()==3){
+                console.log("c'est 3")
+                // $input.val()=3
+            }else{
+                if($input.val()==2){
+                    console.log("c'est 2")
+                    console.log($td.eq(1).text())
+                    // $input.val()=2      
+                }else{
+                    console.log("c'est 1")
+                    console.log($td.eq(1).text())
+                    // $input.val()=1
+                }
+            }
+        });
+        var tab=[]
+        $('#table').find('tbody tr').each(function(){
+            var obj = {},
+            key1 = "mail",
+            key2 = "statut",
+            $td = $(this).find('button[type=submit][id=mail]'),
+            $input = $(this).find('input[type=number][id=statut]')
+            val1 = $td.text(),
+            val2 = $input.val(),
+            obj[key1] = val1;
+            obj[key2] = val2;
+            tab.push(obj);
+        });
+        console.log(tab)
+        jQuery.ajax({
+            url: '/api/modifexp',
+            type: "POST",
+            data: JSON.stringify({ paramName: tab }),
+            success: function(msg) {
+                console.log(tab)
+            },
+            dataType: 'json'
+            
+        });     
+    }  
+    
+</script>
+
+{% endblock %}
+

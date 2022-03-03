@@ -6,6 +6,13 @@ from datetime import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
+#Importation des variables du docker-compose
+DB_USER = os.getenv('DB_USER')
+DB_PWD = os.getenv('DB_PASSWORD')
+DB_IP = os.getenv('DB_IP')
+DB_DB = os.getenv('DB_DB')
+DB_PORT = int(os.getenv('DB_PORT'))
+
 #Configuration pour utiliser flask et SQLAlchemy               
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True

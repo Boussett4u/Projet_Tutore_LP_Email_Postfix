@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{% block title %} {{ _("Statistiques") }} {% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for msg in messages %}
+<p>{{msg}}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title text-center">{{ _("Nombre d'utilisateurs") }}</h5>
+                <h1 class="card-text text-center">{{ uti }}</h1>
+            </div>
+            <!-- <div class="card-footer">
+                <small class="text-white">Last updated 3 mins ago</small>
+            </div> -->
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title text-center">{{ _("Nombre d'expéditeurs") }}</h5>
+                <h1 class="card-text text-center">{{ exp }}</h1>
+            </div>
+            <!-- <div class="card-footer">
+                <small class="text-white">Last updated 3 mins ago</small>
+            </div> -->
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-white bg-secondary mb-3">
+            <div class="card-body">
+                <h5 class="card-title text-center">{{ _("Nombre de mails") }}</h5>
+                <h1 class="card-text text-center">{{ mails }}</h1>
+            </div>
+            <!-- <div class="card-footer">
+                <small class="text-white">Last updated 3 mins ago</small>
+            </div> -->
+        </div>
+    </div>
+</div>
+
+
+<!-- </br> -->
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col-xs-10 col-sm-6 col-md-6">
+        <div class="card card-style mb-2">
+            <div class="card-body">
+                <div class="d-flex justify-content-center">
+                    <div class="chart-container center" style="position: relative; height:39vh; width:39vw">
+                        <canvas id="chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-10 col-sm-6 col-md-6">
+        <div class="card card-style mb-2">
+            <div class="card-body">
+                <div class="d-flex justify-content-center">
+                    <div class="chart-container center" style="position: relative; height:39vh; width:18vw">
+                        <canvas id="chart1"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- </br> -->
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col-xs-10 col-sm-6 col-md-6">
+        <div class="card text-white bg-success w-100 mb-3">
+            <div class="card-body">
+              <h5 class="card-title text-center">{{_("Mails acceptés")}}</h5>
+              <h2 class="card-text text-center">{{sd1}}</h2>
+            </div>
+          </div>
+          
+          <div class="card text-white bg-danger w-100 mb-3">
+            <div class="card-body">
+              <h5 class="card-title text-center">{{_("Mails rejetés")}}</h5>
+              <h2 class="card-text text-center">{{sd2}}</h2>
+            </div>
+          </div>
+          <div class="card text-white bg-warning w-100 mb-3">
+            <div class="card-body">
+              <h5 class="card-title text-center">{{_("Mails en attente")}}</h5>
+              <h2 class="card-text text-center">{{sd3}}</h2>
+            </div>
+          </div>
+    </div>
+
+    <!-- <div class="card text-white bg-primary mb-3">
+        <div class="card-body">
+            <h5 class="card-title text-center">{{ _("Nombre d'utilisateurs") }}</h5>
+            <h1 class="card-text text-center">{{ uti }}</h1>
+        </div>
+         <div class="card-footer">
+            <small class="text-white">Last updated 3 mins ago</small>
+        </div> 
+    </div> -->
+    <div class="col-xs-10 col-sm-6 col-md-6">
+        <div class="card card-style mb-2">
+            <div class="card-body">
+                <div class="d-flex justify-content-center">
+                    <div class="chart-container center" style="position: relative; height:32.2vh; width:32.2vw">
+                        <canvas id="chart2"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    let tab = JSON.parse({{tab | tojson }});
+    let labels = JSON.parse({{labels | tojson }});
+    let dico1 = JSON.parse({{dico1 | tojson}});
+    let dico2 = JSON.parse({{dico2 | tojson}});
+    let dico3 = JSON.parse({{dico3 | tojson}}); 
+    const ctx = document.getElementById('chart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: ' {{ _("Statistiques") }}',
+                data: tab,
+                backgroundColor: [
+                'rgba(0, 181, 204, 0.2)',
+                'rgba(45, 85, 255, 0.2)',
+                'rgba(0, 128, 0, 0.2)',
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(216, 250, 8, 0.2)',
+                'rgba(10, 10, 10, 0.2)'
+                ],
+                borderColor: [
+                'rgba(0, 181, 204, 1)',
+                'rgba(45, 85, 255, 1)',
+                'rgba(0, 128, 0, 1)',
+                'rgba(255, 100, 132, 1)',
+                'rgba(206, 150, 0, 1)',
+                'rgba(10, 10, 10, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+    });
+    
+    const ctx1 = document.getElementById('chart1').getContext('2d');
+    const myChart1 = new Chart(ctx1, {
+        type: 'pie',
+        data: {
+            labels: ['{{ _("Users") }}', '{{ _("Expéditeurs") }}', '{{ _("Mails") }}'],
+            datasets: [{
+                data: [{{uti}}, {{exp}}, {{mails}}],
+                backgroundColor: ['rgba(0, 181, 204, 1)',
+                'rgba(45, 85, 255, 1)',
+                'rgba(10, 10, 10, 0.5)',
+                ],
+                borderWidth: 1,
+                hoverBorderColor: "black",
+                hoverBorderWidth: 2,
+                pointHoverRadius: 5
+            }],
+        },
+    });
+    
+    const ctx2 = document.getElementById('chart2').getContext('2d');
+    const myChart2 = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: ['{{_("Janvier")}}', '{{_("Février")}}', '{{_("Mars")}}', '{{_("Avril")}}', '{{_("Mai")}}', '{{_("Juin")}}', '{{_("Juillet")}}', '{{_("Aout")}}', '{{_("Septembre")}}', '{{_("Octobre")}}', '{{_("Novembre")}}', '{{_("Décembre")}}'], 
+            datasets: [{
+                label: '{{_("Mails acceptés")}}',
+                fill: false,
+                lineTension: 0.1,
+                borderColor: 'rgba(0, 255, 0, 1)',
+                backgroundColor: 'rgba(0, 255, 0, 1)',
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBackgroundColor: 'rgba(0, 255, 0, 1)',
+                pointBorderColor: 'rgba(0, 255, 0, 1)',
+                pointBorderWidth: 1,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data: dico1
+            },{
+                label: '{{_("Mails rejetés")}}',
+                fill: false,
+                lineTension: 0.1,
+                borderColor: 'rgba(255, 0, 0, 1)',
+                backgroundColor: 'rgba(255, 0, 0, 1)',
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBackgroundColor: 'rgba(255, 0, 0, 1)',
+                pointBorderColor: 'rgba(255, 0, 0, 1)',
+                pointBorderWidth: 1,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data: dico2
+            },{
+                label: '{{_("Mails en attente")}}',
+                fill: false,
+                lineTension: 0.1,
+                borderColor: 'rgba(216, 250, 8, 1)',
+                backgroundColor: 'rgba(216, 250, 8, 1)',
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBackgroundColor: 'rgba(216, 250, 8, 1)',
+                pointBorderColor: 'rgba(216, 250, 8, 1)',
+                pointBorderWidth: 1,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data: dico3
+            }],
+            
+        },
+    });
+</script>
+
+{% endblock%}
