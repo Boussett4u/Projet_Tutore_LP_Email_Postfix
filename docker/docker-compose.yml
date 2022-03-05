@@ -6,6 +6,8 @@ services:
     restart: always
     volumes:
       - ./projet_db/database:/var/lib/postgresql/
+      - ./projet_db/log/spool:/var/spool/
+      - ./projet_db/log/log:/var/log/
     hostname: db
     build:
       context: ./projet_db
@@ -35,8 +37,8 @@ services:
     volumes:
        - ./projet_postfix/etc/postfix:/etc/postfix
        - ./projet_postfix/scripts:/scripts
-       - ./projet_postfix/log:/var/spool
-       - ./projet_postfix/etc/ssl:/etc/ssl
+       - ./projet_postfix/log/spool:/var/spool/
+       - ./projet_postfix/log/log:/var/log/
     networks:
       - local
 networks:
