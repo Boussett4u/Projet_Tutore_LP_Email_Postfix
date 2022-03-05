@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
-# Permission d'accès au dossier database (Projet*/docker/projet/database) & install paquets
-./scripts/script.sh
+# Mise à jour
+apt update
+apt install -y iproute2
+# Permission d'accès au dossier postgres (Projet*/docker/projet/database)
+chmod -R 777 /var/lib/postgresql
 
 set -Eeo pipefail
 # TODO swap to -Eeuo pipefail above (after handling all potentially-unset variables)
