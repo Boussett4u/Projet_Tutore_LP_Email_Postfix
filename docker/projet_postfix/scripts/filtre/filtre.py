@@ -1,6 +1,13 @@
 #!/usr/bin/python3
 #coding: utf-8
 
+#Importation des variables du docker-compose
+DB_USER = os.getenv('DB_USER')
+DB_PWD = os.getenv('DB_PASSWORD')
+DB_IP = os.getenv('DB_IP')
+DB_NAME = os.getenv('DB_NAME')
+DB_PORT = int(os.getenv('DB_PORT'))
+
 #On récuềre les modules nécessaires
 import os, sys, smtplib, getopt, subprocess, fileinput, email, hashlib, syslog
 from datetime import datetime
@@ -32,7 +39,7 @@ for opt, arg in opts:
 #Configuration pour utiliser flask et SQLAlchemy               
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://root:padmin@docker_db_1:5432/postfix'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://${DB_USER}:${DB_PWD}@${DB_IP}:${DB_PORT}/${DB_NAME}'
 db = SQLAlchemy(app)
 
 #Création des classes correspondant aux tables de la base de données (utilisé aussi pour la création de la base en phase de test)
