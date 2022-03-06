@@ -337,7 +337,26 @@ def consultmails():
         return render_template("consultmails.html", mail=session['mail'], expediteurs=expediteurs, lmails=lmails)
     except IndexError:
         abort(404)
-	
+
+@app.route('/consultallmails/', methods=['GET', 'POST'])
+def consultallmails():
+    try:
+        if 'mail' not in session:
+            flash(gettext("Pas de compte connecté"), "deconnecte")
+            return redirect(url_for("login"))
+        users = Utilisateur.query.filter_by(mail=session['mail']).first()
+        expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id).all()
+        t= []
+        for e in expediteurs:
+            t.append(e.id)
+        lmails= Mail.query.filter(Mail.expediteur_id.in_(t))
+        if request.method == "POST":
+            expediteur = request.form.get('sender')
+            return redirect(url_for("consultmailsexp", expediteur=expediteur))
+
+        return render_template("consultmails.html", mail=session['mail'], expediteurs=expediteurs, lmails=lmails)
+    except IndexError:
+        abort(404)	
 
 @app.route('/consultmailsexp/<expediteur>', methods=['GET', 'POST'])
 def consultmailsexp(expediteur):
@@ -387,14 +406,15 @@ def modifmails():
                     mail = Mail.query.filter_by(id=mails['identifiant']).first()
                     db.session.add(stat)
                     db.session.delete(mail)
-                # if mails['statut']=='acheminé' or 'sent':
-                    # stat = Statistiques(date= today.strftime("%Y-%m-%d"), actionFiltre= ACCEPTED)
-                    # db.session.add(stat)
-                #     mail.statut = ACCEPTED
-                 # if mails['statut']=='en attente' or 'pending':
-                    # stat = Statistiques(date= today.strftime("%Y-%m-%d"), actionFiltre= UNDECIDED)
-                    # db.session.add(stat)
-                #     mail.statut = UNDECIDED
+                if mails['statut']=='acheminé' or 'sent':
+                    stat = Statistiques(date= datetime.today().strftime("%Y-%m-%d"), actionFiltre= ACCEPTED)
+                    db.session.add(stat)
+                    # mail.statut = ACCEPTED
+                    db.session.delete(mail)
+                if mails['statut']=='en attente' or 'pending':
+                    stat = Statistiques(date= datetime.today().strftime("%Y-%m-%d"), actionFiltre= UNDECIDED)
+                    db.session.add(stat)
+                    # mail.statut = UNDECIDED
             db.session.commit()
             return render_template("consultmails.html", )
     except IndexError:
