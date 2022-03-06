@@ -5,20 +5,20 @@ services:
     image: asrall_postgres
     restart: always
     volumes:
-      - ./projet_db/scripts:/scripts
-      - ./projet_db/scripts:/docker-entrypoint-initdb.d
-      #- ./projet_db/database:/var/lib/postgresql/data
+      - ./projet_db/database:/var/lib/postgresql/
+      - ./projet_db/log/spool:/var/spool/
+      - ./projet_db/log/log:/var/log/
     hostname: db
     build:
       context: ./projet_db
     environment:
-      POSTGRES_PASSWORD: padmin
-      POSTGRES_USER: root
-      POSTGRES_DB: postfix
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
     networks:
       - local
     ports:
-      - 5432:5432
+      - 5432:${DB_PORT}
 
   postfix:
     depends_on:
@@ -29,16 +29,16 @@ services:
       context: ./projet_postfix
     environment:
       POSTFIX_DOMAIN: exemple@toto.com:adresseIPTransimision;exemple@titi.com:adresse2IPTransmission
-      DB_IP: docker_db_1
-      DB_USER: root
-      DB_PASSWORD: padmin
-      DB_DB: postfix
-      DB_PORT: 5432
+      DB_IP: ${DB_IP}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DB: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
     volumes:
        - ./projet_postfix/etc/postfix:/etc/postfix
        - ./projet_postfix/scripts:/scripts
-       - ./projet_postfix/log:/var/spool
-       - ./projet_postfix/etc/ssl:/etc/ssl
+       - ./projet_postfix/log/spool:/var/spool/
+       - ./projet_postfix/log/log:/var/log/
     networks:
       - local
 networks:
