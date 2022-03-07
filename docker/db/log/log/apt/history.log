@@ -1,0 +1,10 @@
+
+Start-Date: 2022-03-07  21:50:08
+Commandline: apt install -y iproute2
+Install: libxtables12:amd64 (1.8.7-1, automatic), libcap2-bin:amd64 (1:2.44-1, automatic), libatm1:amd64 (1:2.5.1-4, automatic), libbpf0:amd64 (1:0.3-2, automatic), libmnl0:amd64 (1.0.4-3, automatic), libcap2:amd64 (1:2.44-1, automatic), libpam-cap:amd64 (1:2.44-1, automatic), libelf1:amd64 (0.183-1, automatic), iproute2:amd64 (5.10.0-4)
+End-Date: 2022-03-07  21:50:10
+
+Start-Date: 2022-03-07  22:04:02
+Commandline: apt install -y iproute2
+Install: libxtables12:amd64 (1.8.7-1, automatic), libcap2-bin:amd64 (1:2.44-1, automatic), libatm1:amd64 (1:2.5.1-4, automatic), libbpf0:amd64 (1:0.3-2, automatic), libmnl0:amd64 (1.0.4-3, automatic), libcap2:amd64 (1:2.44-1, automatic), libpam-cap:amd64 (1:2.44-1, automatic), libelf1:amd64 (0.183-1, automatic), iproute2:amd64 (5.10.0-4)
+End-Date: 2022-03-07  22:04:03
