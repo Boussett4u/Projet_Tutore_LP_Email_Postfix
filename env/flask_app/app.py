@@ -19,20 +19,20 @@ from flask_migrate import Migrate
 import psycopg2
 from config import bdd_uri as settings
 from config import *
-
+from db import *
 from flask_bcrypt import Bcrypt
 import sys
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_recaptcha import ReCaptcha
-from flask_babel import Babel, format_datetime, gettext
+from flask_babel import Babel, gettext
 from datetime import datetime
 from datetime import date
 import locale
 import glob
 import json
 import pytest
-from db import *
+from config import *
 # from db import models
 
 # config captcha
