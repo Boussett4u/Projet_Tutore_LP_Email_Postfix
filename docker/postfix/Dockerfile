@@ -19,5 +19,11 @@ COPY docker-entrypoint.sh /usr/local/bin/
 
 RUN chmod 777 /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
-
-CMD ["postfix & apache2"]
+COPY /etc/postfix/ /etc/postfix/
+COPY /scripts/ /scripts/
+COPY /app/ /app/
+RUN pip install -r /app/requirements.txt
+RUN chmod 777 /scripts/classes.py
+#RUN /scripts/classes.py
+EXPOSE 5000
+CMD ["flask", "run"]
