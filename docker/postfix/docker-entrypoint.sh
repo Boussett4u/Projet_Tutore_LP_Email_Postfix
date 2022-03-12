@@ -23,10 +23,14 @@ mkdir /home/testfilter/filtre
 ln -s /scrits/filtre/filtre.py /home/testfilter/filtre/filtre.py
 
 # Permission d'accès au dossier correspondant depuis la machine hôte
-chmod -R 777 /etc/prostfix
+chmod -R 777 /etc/postfix
 chmod -R 777 /home
 chmod -R 777 /var/spool
 chmod -R 777 /scripts
 
-# Sleep pour que le docker soit actif
-sleep 100000000
+# lancer rsyslog
+/usr/sbin/rsyslogd
+# lancer postfix
+/usr/lib/postfix/configure-instance.sh
+/etc/init.d/postfix start
+flask run
