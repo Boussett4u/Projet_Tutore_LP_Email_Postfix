@@ -85,6 +85,7 @@ def ajouterStat(statut):
         db.session.add(nouvelleStat)
         db.session.commit()
 
+#Voir pertinence de cette fonction car peut être que pas besoin
 def verifSiTokenIdentique(expediteur, destinataire):
         date=datetime.now()
         tokenCalcule=  hashlib.md5(("VALIDATE"+date.strftime("%m/%d/%Y")+expediteur).encode('utf-8')).hexdigest()
@@ -107,16 +108,23 @@ destinataire_existe = Utilisateur.query.filter_by(mail=destinataire).count()
 
 #S'il existe
 if destinataire_existe > 0:
+
+        syslog.syslog(syslog.LOG_INFO, 'Le destinataire existe')
+        
         #Récupération de ses informations
         destinataire_bdd = Utilisateur.query.filter_by(mail=destinataire).first()
 
+        #S'il n'est pas administrateur
         if destinataire_bdd.admin == False:
+
+                syslog.syslog(syslog.LOG_INFO, 'Le destinataire est une adresse protegee')
 
                 #Vérification de l'expéditeur, est-il déjà dans la table et associé à ce destinataire ?
                 expediteur_existe = Expediteur.query.filter_by(mail=expediteur).filter_by(utilisateur_id=destinataire_bdd.id).count()
 
                 #Si oui
-                if expediteur_existe > 0 and destinataire_bdd.admin == False:
+                #if expediteur_existe > 0 and destinataire_bdd.admin == False:
+                if expediteur_existe > 0:
                 
                         #Info pour le log
                         syslog.syslog(syslog.LOG_INFO, 'L\'expediteur existe - Verification de son statut')
@@ -151,13 +159,23 @@ if destinataire_existe > 0:
                         #Si en attente        
                         else:
                                 #Informations destinées aux logs
-                                syslog.syslog(syslog.LOG_INFO, 'Expediteur en attente - Mail mis en quarantaine - Envoi d\'un lien de validation')
+                                syslog.syslog(syslog.LOG_INFO, 'Expediteur en attente - Mail mis en quarantaine')
                 
                                 #Reprise de la fonction definie pour ce cas de figure, permettant de générer un lien et mettre en quarantaine
 
-                                #if verifSiTokenIdentique(expediteur, destinataire)!=True:
-                                #        envoyerLien(expediteur, mail_id, mailValidation, destinataire)
-                                envoyerLien(expediteur, mail_id, mailValidation, destinataire)
+
+
+                                #VERIFIER CA !!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+                                
+                                if verifSiTokenIdentique(expediteur, destinataire)!=True:
+                                        envoyerLien(expediteur, mail_id, mailValidation, destinataire)
+                                        syslog.syslog(syslog.LOG_INFO, 'Envoi d\'un lien de validation')
+                                else:
+                                        syslog.syslog(syslog.LOG_INFO, 'Mail de validation deja envoye')
+            
+                                #envoyerLien(expediteur, mail_id, mailValidation, destinataire)
                         
                         
                         
@@ -182,9 +200,6 @@ if destinataire_existe > 0:
                         ajouterMail(expediteur, mail_id)
 
                         #Fonction permettant de générer le lien et envoyer en quarantaine le mail
-                
-                        #if verifSiTokenIdentique(expediteur, destinataire)!=True:
-                        #        envoyerLien(expediteur, mail_id, mailValidation, destinataire)
                         envoyerLien(expediteur, mail_id, mailValidation, destinataire)
 
                         #Ajout d'une entrée dans la table statistique
@@ -194,11 +209,12 @@ if destinataire_existe > 0:
                         print("action=hold \n")
 
         else:
-                syslog.syslog(syslog.LOG_INFO, 'Destinataire inconnu')
+                
+                syslog.syslog(syslog.LOG_INFO, 'Le destinataire est administrateur et non une adresse protegee - livraison du mail')
                 print("action=dunno \n")
                                 
 else:
-        syslog.syslog(syslog.LOG_INFO, 'Destinataire inconnu')
+        syslog.syslog(syslog.LOG_INFO, 'Adresse non protegee - livraison du mail')
         print("action=dunno \n")
 
 
