@@ -19,20 +19,20 @@ from flask_migrate import Migrate
 import psycopg2
 from config import bdd_uri as settings
 from config import *
-
+from db import *
 from flask_bcrypt import Bcrypt
 import sys
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_recaptcha import ReCaptcha
-from flask_babel import Babel, format_datetime, gettext
+from flask_babel import Babel, gettext
 from datetime import datetime
 from datetime import date
 import locale
 import glob
 import json
 import pytest
-from db import *
+from config import *
 # from db import models
 
 # config captcha
@@ -103,71 +103,40 @@ def stats():
     
     labels = [gettext("Nombre d'utilisateurs"), gettext("Nombre total d'expéditeurs"), gettext("Nombre d'expéditeurs validés"), gettext("Nombre d'expéditeurs blacklistés"), gettext("Nombre d'expéditeurs en attente"), gettext("Nombre de mails")]
 
-    stats1 = Statistiques.query.filter_by(actionFiltre= ACCEPTED).all()
-    stats2 = Statistiques.query.filter_by(actionFiltre= REFUSED).all()
-    stats3 = Statistiques.query.filter_by(actionFiltre= UNDECIDED).all()
+    acceptedmails = Statistiques.query.filter_by(actionFiltre= ACCEPTED).all()
+    refusedmails = Statistiques.query.filter_by(actionFiltre= REFUSED).all()
+    undefinedmails = Statistiques.query.filter_by(actionFiltre= UNDECIDED).all()
 
-    sd1= Statistiques.query.filter_by(actionFiltre= ACCEPTED).count() 
-    sd2= Statistiques.query.filter_by(actionFiltre= REFUSED).count()
-    sd3= Statistiques.query.filter_by(actionFiltre= UNDECIDED).count()
+    nbacceptedmails= Statistiques.query.filter_by(actionFiltre= ACCEPTED).count() 
+    nbrefusedmails= Statistiques.query.filter_by(actionFiltre= REFUSED).count()
+    nbundefinedmails= Statistiques.query.filter_by(actionFiltre= UNDECIDED).count()
 
-    dico1 =[0,0,0,0,0,0,0,0,0,0,0,0]
-    dico2 =[0,0,0,0,0,0,0,0,0,0,0,0] 
-    dico3 =[0,0,0,0,0,0,0,0,0,0,0,0]
+    listacceptedmails =[0,0,0,0,0,0,0,0,0,0,0,0]
+    listrefusedmails =[0,0,0,0,0,0,0,0,0,0,0,0] 
+    listundefinedmails =[0,0,0,0,0,0,0,0,0,0,0,0]
 
     
     index=0
 
 
-    for st1 in stats1:
-        index = int(st1.date.strftime("%m"))-1
-        dico1[index]+=1
+    for mail in acceptedmails:
+        index = int(mail.date.strftime("%m"))-1
+        listacceptedmails[index]+=1
 
-    dico1[1]+=dico1[0]
-    dico1[2]+=dico1[1]
-    dico1[3]+=dico1[2]
-    dico1[4]+=dico1[3]
-    dico1[5]+=dico1[4]
-    dico1[6]+=dico1[5]
-    dico1[7]+=dico1[6]
-    dico1[8]+=dico1[7]
-    dico1[9]+=dico1[8]
-    dico1[10]+=dico1[9]
-    dico1[11]+=dico1[10]
+    for mail in refusedmails: 
+        index = int(mail.date.strftime("%m"))-1
+        listrefusedmails[index]+=1
 
-    for st2 in stats2: 
-        index = int(st2.date.strftime("%m"))-1
-        dico2[index]+=1
+    for mail in undefinedmails: 
+        index = int(mail.date.strftime("%m"))-1
+        listundefinedmails[index]+=1
 
-    dico2[1]+=dico2[0]
-    dico2[2]+=dico2[1]
-    dico2[3]+=dico2[2]
-    dico2[4]+=dico2[3]
-    dico2[5]+=dico2[4]
-    dico2[6]+=dico2[5]
-    dico2[7]+=dico2[6]
-    dico2[8]+=dico2[7]
-    dico2[9]+=dico2[8]
-    dico2[10]+=dico2[9]
-    dico2[11]+=dico2[10]
+    for i in range(11):
+        listacceptedmails[i+1]+=listacceptedmails[i] 
+        listrefusedmails[i+1]+=listrefusedmails[i] 
+        listundefinedmails[i+1]+=listundefinedmails[i] 
 
-    for st3 in stats3: 
-        index = int(st3.date.strftime("%m"))-1
-        dico3[index]+=1
-
-    dico3[1]+=dico3[0]
-    dico3[2]+=dico3[1]
-    dico3[3]+=dico3[2]
-    dico3[4]+=dico3[3]
-    dico3[5]+=dico3[4]
-    dico3[6]+=dico3[5]
-    dico3[7]+=dico3[6]
-    dico3[8]+=dico3[7]
-    dico3[9]+=dico3[8]
-    dico3[10]+=dico3[9]
-    dico3[11]+=dico3[10]
-
-    return render_template("stats.html", tab= json.dumps(tab), labels= json.dumps(labels), sd1=sd1, sd2=sd2, sd3=sd3, dico1= json.dumps(dico1), dico2= json.dumps(dico2), dico3= json.dumps(dico3),mails=mails, exp=exp, uti=uti)
+    return render_template("stats.html", tab= json.dumps(tab), labels= json.dumps(labels), nbacceptedmails=nbacceptedmails, nbrefusedmails=nbrefusedmails, nbundefinedmails=nbundefinedmails, listacceptedmails= json.dumps(listacceptedmails), listrefusedmails= json.dumps(listrefusedmails), listundefinedmails= json.dumps(listundefinedmails),mails=mails, exp=exp, uti=uti)
 
 @app.route('/statut/')
 def statut():
@@ -274,25 +243,29 @@ def login():
             flash(gettext("Compte déjà connecté"), "connecte") 
             return redirect(url_for("user"))
         if request.method == "POST":
+            if not request.form['mail'] or not request.form['mdp']:
+                flash(gettext("Veuillez remplir toutes les cases"), "connecte")
+                return redirect(url_for("login"))
             session.permanent = True
             # On donne en parametre dans la requete POST 
             mail = request.form['mail'] 
             mdp = request.form['mdp']
             # On verifie si il existe un utilisateur avec cet email dans la bdd
             found_user = Utilisateur.query.filter_by(mail=mail).first() 
-            if found_user:
-                 # returne vrai si les mots de passe sont les memes sans chiffrement
-                if bcrypt.check_password_hash(found_user.mdp, mdp):
-                    session['nom'] = found_user.nom
-                    session['mail'] = found_user.mail
-                    session['mdp'] = found_user.mdp
-                    session['admin'] = found_user.admin
-                    if found_user.admin:
-                        return redirect(url_for("admin"))
-                    else:
-                        return redirect(url_for('user'))
+            if not found_user:
+                flash(gettext("Pas d'utilisateur trouvé"), "connecte") 
+            # returne vrai si les mots de passe sont les memes sans chiffrement
+            if bcrypt.check_password_hash(found_user.mdp, mdp):
+                session['nom'] = found_user.nom
+                session['mail'] = found_user.mail
+                session['mdp'] = found_user.mdp
+                session['admin'] = found_user.admin
+                if found_user.admin:
+                    return redirect(url_for("admin"))
                 else:
-                    return render_template("loginwrong.html")
+                    return redirect(url_for('user'))
+            else:
+                return render_template("loginwrong.html")
         return render_template("login.html")
     except IndexError:
         abort(404)
@@ -306,6 +279,9 @@ def signup():
             flash(gettext("Compte déjà connecté"), "connecte") 
             return redirect(url_for("user"))
         if request.method == "POST":
+            if not request.form['mail'] or not request.form['nm'] or not request.form['mdp']:
+                flash(gettext("Veuillez remplir toutes les cases"), "connecte")
+                return redirect(url_for("signup"))
             session.permanent = True
             # On donne en parametre dans la requete POST   
             nom = request.form['nm']        
@@ -368,7 +344,26 @@ def consultmails():
         return render_template("consultmails.html", mail=session['mail'], expediteurs=expediteurs, lmails=lmails)
     except IndexError:
         abort(404)
-	
+
+@app.route('/consultallmails/', methods=['GET', 'POST'])
+def consultallmails():
+    try:
+        if 'mail' not in session:
+            flash(gettext("Pas de compte connecté"), "deconnecte")
+            return redirect(url_for("login"))
+        users = Utilisateur.query.filter_by(mail=session['mail']).first()
+        expediteurs = Expediteur.query.filter_by(utilisateur_id=users.id).all()
+        t= []
+        for e in expediteurs:
+            t.append(e.id)
+        lmails= Mail.query.filter(Mail.expediteur_id.in_(t))
+        if request.method == "POST":
+            expediteur = request.form.get('sender')
+            return redirect(url_for("consultmailsexp", expediteur=expediteur))
+
+        return render_template("consultmails.html", mail=session['mail'], expediteurs=expediteurs, lmails=lmails)
+    except IndexError:
+        abort(404)	
 
 @app.route('/consultmailsexp/<expediteur>', methods=['GET', 'POST'])
 def consultmailsexp(expediteur):
@@ -418,14 +413,15 @@ def modifmails():
                     mail = Mail.query.filter_by(id=mails['identifiant']).first()
                     db.session.add(stat)
                     db.session.delete(mail)
-                # if mails['statut']=='acheminé' or 'sent':
-                    # stat = Statistiques(date= today.strftime("%Y-%m-%d"), actionFiltre= ACCEPTED)
-                    # db.session.add(stat)
-                #     mail.statut = ACCEPTED
-                 # if mails['statut']=='en attente' or 'pending':
-                    # stat = Statistiques(date= today.strftime("%Y-%m-%d"), actionFiltre= UNDECIDED)
-                    # db.session.add(stat)
-                #     mail.statut = UNDECIDED
+                if mails['statut']=='acheminé' or 'sent':
+                    stat = Statistiques(date= datetime.today().strftime("%Y-%m-%d"), actionFiltre= ACCEPTED)
+                    db.session.add(stat)
+                    # mail.statut = ACCEPTED
+                    db.session.delete(mail)
+                if mails['statut']=='en attente' or 'pending':
+                    stat = Statistiques(date= datetime.today().strftime("%Y-%m-%d"), actionFiltre= UNDECIDED)
+                    db.session.add(stat)
+                    # mail.statut = UNDECIDED
             db.session.commit()
             return render_template("consultmails.html", )
     except IndexError:

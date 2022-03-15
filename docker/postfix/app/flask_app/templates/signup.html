@@ -61,9 +61,10 @@
     <div class="form-group row">
         <div class="col-sm-10">
             <button type="submit" class="btn btn-primary" value="submit" onclick="if(document.getElementById('mdp').value != document.getElementById('confirmmdp').value){
-                document.getElementById('labelmdp').style='color: red'
-                document.getElementById('labelmdp').textContent = 'veuillez ecrire le même mot de passe';
-                return false;}"/>Submit
+                document.getElementById('mdp').style='color: red'
+                document.getElementById('mdp').type = 'text'
+                document.getElementById('mdp').value = 'veuillez ecrire le même mot de passe' 
+                return false }"/>Submit
             </button>
         </div>
     </div>
