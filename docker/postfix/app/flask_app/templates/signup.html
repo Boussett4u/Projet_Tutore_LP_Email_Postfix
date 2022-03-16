@@ -51,19 +51,13 @@
         </div>
     </div>
     <br>
-    <div class="form-group row">
-        <label for="mdpad" class="col-sm-2 col-form-label">{{ _("Mot de passe Admin") }}</label>
-        <div class="col-sm-10">
-            <input type="password" id="mdpad" name="mdpad" class="form-control" placeholder="{{ _("Mot de passe admin") }} "/>
-        </div>
-    </div>
     <br>
     <div class="form-group row">
         <div class="col-sm-10">
             <button type="submit" class="btn btn-primary" value="submit" onclick="if(document.getElementById('mdp').value != document.getElementById('confirmmdp').value){
-                document.getElementById('mdp').style='color: red'
-                document.getElementById('mdp').type = 'text'
-                document.getElementById('mdp').value = 'veuillez ecrire le même mot de passe' 
+                document.getElementById('mdp').value = ''
+                document.getElementById('confirmmdp').value = ''
+                document.getElementById('mdp').placeholder = '{{ _("Veuillez écrire les mêmes mots de passe") }}' 
                 return false }"/>Submit
             </button>
         </div>

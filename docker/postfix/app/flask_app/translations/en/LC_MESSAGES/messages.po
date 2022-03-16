@@ -393,3 +393,7 @@ msgstr "Please fill in all fields"
 msgid "Pas d'utilisateur trouvé"
 msgstr "No user found"
 
+#: templates/index.html:25
+msgid "Veuillez écrire les mêmes mots de passe"
+msgstr "Please fill the same passwords"
+

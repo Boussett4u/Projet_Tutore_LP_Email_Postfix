@@ -288,21 +288,15 @@ def signup():
             # On chiffre le mot de passe
             mdp = bcrypt.generate_password_hash(request.form['mdp']).decode('utf-8') 
             mail = request.form['mail']
-            mdpadmin = request.form['mdpad']
             found_user = Utilisateur.query.filter_by(mail=mail).first()
             if found_user:
                 flash(gettext("Utilisateur déja inscrit"), "connecte") 
                 return render_template("signup.html")
-            if  bcrypt.check_password_hash(mdp_admin, mdpadmin):
-                admin=True
-            else:
-                admin=False
             # On definit les variables de session
             session['nom'] = nom
             session['mail'] = mail 
             session['mdp'] = mdp
-            session['admin'] = admin
-            usr = Utilisateur(nom, mail, mdp, admin)
+            usr = Utilisateur(nom, mail, mdp, False)
             db.session.add(usr)
             db.session.commit() 
             flash(gettext("Inscription reussie"), "connecte") 
