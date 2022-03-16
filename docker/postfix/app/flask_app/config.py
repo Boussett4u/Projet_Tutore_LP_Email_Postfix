@@ -1,10 +1,10 @@
 # Cette chaîne nous permet de nous connecter à la bdd
 # bdd_uri = "postgresql://postgres:nael2001@127.0.0.1:5432/test"
-bdd_uri = { 'pguser':'postgres',
-'pgpasswd':'nael2001',
-'pghost':'localhost',
+bdd_uri = { 'pguser':'root',
+'pgpasswd':'padmin',
+'pghost':'db',
 'pgport': 5432,
-'pgdb':'test'}
+'pgdb':'postfix'}
 
 mdp_admin = "nael2001"
 
