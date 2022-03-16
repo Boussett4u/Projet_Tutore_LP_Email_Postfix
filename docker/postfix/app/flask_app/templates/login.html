@@ -14,12 +14,32 @@
 <form action="#" method="post" name="form">
     <div class="form-group row">
         <label for="mail" class="col-sm-2 col-form-label">{{ _("Mail") }}</label>
-        <div class="col-sm-10">
+        <div class="col-sm-2">
             <input type="email" name="mail" class="form-control" placeholder=" {{ _("Entrer votre mail") }}"/>
         </div>
     </div>
     <br> 
-    <div class="form-group row">
+
+    <div class="form-group">
+        <label for="mdp" class="col-sm-2 col-form-label">{{ _("Mot de passe") }}</label>
+        <div class="form-check-inline">
+            <div class="col-sm-12">
+                <label class="form-check-label">
+                    <input type="password" id="mdp" name="mdp" class="form-control" placeholder="{{ _("Entrer votre mot de passe") }} "/>
+                </label>
+            </div>
+        </div>
+        <div class="form-check-inline">
+            <label class="btn btn-primary">
+                <div class="form-check">
+                    <input class="form-check-input" autocomplete="off" type="checkbox" onchange="document.getElementById('mdp').type = this.checked ? 'text' : 'password'
+                    document.getElementById('confirmmdp').type = this.checked ? 'text' : 'password'"/>
+                </div>
+            </label>
+        </div>
+        
+    </div>
+    <!-- <div class="form-group row">
         <label for="mdp" class="col-sm-2 col-form-label">{{ _("Mot de passe") }}</label>
         <div class="col-sm-10">
             <input type="password" id="mdp" name="mdp" class="form-control" placeholder="{{ _("Entrer votre mot de passe") }} "/>
@@ -34,15 +54,16 @@
                 document.getElementById('confirmmdp').type = this.checked ? 'text' : 'password'">
             </div>
         </div>
-    </div>
+    </div> -->
     <br>
+
+    
     <div class="form-group row">
         <div class="col-sm-10">
             <button type="submit" class="btn btn-primary" value="submit" >Submit</button>
         </div>
     </div>
 </form>
-
 
 {% endblock %}
 

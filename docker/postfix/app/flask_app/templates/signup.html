@@ -15,56 +15,79 @@
 <form action="#" method="post" name="form">
     <div class="form-group row">
         <label for="nom" class="col-sm-2 col-form-label">{{ _("Nom") }}</label>
-        <div class="col-sm-10">
+        <div class="col-sm-2">
             <input type="text" name="nm" class="form-control" placeholder="{{ _("Entrer votre nom") }} "/>
         </div>
     </div>
     <br>
     <div class="form-group row">
         <label for="email" class="col-sm-2 col-form-label">Email</label>
-        <div class="col-sm-10">
+        <div class="col-sm-2">
             <input type="email" name="mail" class="form-control" placeholder="{{ _("Entrer votre email") }} "/>
             <small id="emailHelp" class="form-text text-muted">{{ share }}</small>
         </div>
     </div>
+    <br>
     <div class="form-group row">
         <label for="mdp" class="col-sm-2 col-form-label">{{ _("Mot de passe") }}</label>
-        <div class="col-sm-10">
+        <div class="col-sm-2">
             <input type="password" id="mdp" name="mdp" class="form-control" placeholder="{{ _("Entrer votre mot de passe") }} "/>
         </div>
     </div>
-    <!-- <br> -->
-    <div class="form-group row">
+    <br>
+    <div class="form-group">
         <label for="confirmdp" class="col-sm-2 col-form-label">{{ _("Confirmer mot de passe")}}</label>
-        <div class="col-sm-10">
-            <input type="password" id="confirmmdp" name="confirmmdp" class="form-control" placeholder="{{ _("Confirmer votre mot de passe") }} "/>
-        </div>
-    </div>
-    <br> 
-    <div class="form-group row">
-        <div class="col-sm-2"> {{ _("Afficher mot de passe") }}</div>
-        <div class="col-sm-10">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" onchange="document.getElementById('mdp').type = this.checked ? 'text' : 'password'
-                document.getElementById('confirmmdp').type = this.checked ? 'text' : 'password'"/>
+        <div class="form-check-inline">
+            <div class="col-sm-12">
+                <label class="form-check-label">
+                    <input type="password" id="confirmmdp" name="confirmmdp" class="form-control" placeholder="{{ _("Confirmer votre mot de passe") }} "/>
+                </label>
             </div>
         </div>
-    </div>
-    <br>
-    <br>
-    <div class="form-group row">
-        <div class="col-sm-10">
-            <button type="submit" class="btn btn-primary" value="submit" onclick="if(document.getElementById('mdp').value != document.getElementById('confirmmdp').value){
-                document.getElementById('mdp').value = ''
-                document.getElementById('confirmmdp').value = ''
-                document.getElementById('mdp').placeholder = '{{ _("Veuillez écrire les mêmes mots de passe") }}' 
-                return false }"/>Submit
-            </button>
+        <div class="form-check-inline">
+            <label class="btn btn-primary">
+                <div class="form-check">
+                    <input class="form-check-input" autocomplete="off" type="checkbox" onchange="document.getElementById('mdp').type = this.checked ? 'text' : 'password'
+                    document.getElementById('confirmmdp').type = this.checked ? 'text' : 'password'"/>
+                </div>
+            </label>
         </div>
+        
     </div>
-</form>
-
-
-
-{% endblock %}
-
+    
+    <!-- <br>
+        <div class="form-group ">
+            <label for="confirmdp" class="col-sm-2 col-form-label">{{ _("Confirmer mot de passe")}}</label>
+            <div class="col-sm-10">
+                <input type="password" id="confirmmdp" name="confirmmdp" class="form-control" placeholder="{{ _("Confirmer votre mot de passe") }} "/>
+            </div>
+        </div>
+        <br> 
+        <div class="form-group ">
+            <div class="col-sm-2"> {{ _("Afficher mot de passe") }}</div>
+            <div class="col-sm-10">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" onchange="document.getElementById('mdp').type = this.checked ? 'text' : 'password'
+                    document.getElementById('confirmmdp').type = this.checked ? 'text' : 'password'"/>
+                </div>
+            </div>
+        </div>
+        <br> -->
+        <br> 
+        <div class="form-group ">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary" value="submit" onclick="if(document.getElementById('mdp').value != document.getElementById('confirmmdp').value){
+                    document.getElementById('mdp').value = ''
+                    document.getElementById('confirmmdp').value = ''
+                    document.getElementById('mdp').placeholder = '{{ _("Veuillez écrire les mêmes mots de passe") }}' 
+                    return false }"/>Submit
+                </button>
+            </div>
+        </div>
+    </form>
+    
+    
+    
+    {% endblock %}
+    
+    
