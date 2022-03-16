@@ -1,10 +1,20 @@
 # Cette chaîne nous permet de nous connecter à la bdd
 # bdd_uri = "postgresql://postgres:nael2001@127.0.0.1:5432/test"
-bdd_uri = { 'pguser':'root',
-'pgpasswd':'padmin',
-'pghost':'db',
-'pgport': 5432,
-'pgdb':'postfix'}
+from decouple import config
+
+DB_USER = config('DB_USER')
+DB_PASSWORD = config('DB_PASSWORD')
+DB_HOST = config('DB_HOST')
+DB_PORT = config('DB_PORT')
+DB_NAME = config('DB_NAME')
+
+bdd_uri = {
+        'pguser': DB_USER,
+        'pgpasswd':DB_PASSWORD,
+        'pghost':DB_HOST,
+        'pgport': DB_PORT,
+        'pgdb':DB_NAME
+        }
 
 mdp_admin = "nael2001"
 
@@ -21,4 +31,4 @@ secret_key = '6LfJt0IeAAAAAJgNyIow5R81ACZPnk6ZKTC5-FHQ'
 
 ACCEPTED=1
 REFUSED=2
-UNDECIDED=3 
+UNDECIDED=3

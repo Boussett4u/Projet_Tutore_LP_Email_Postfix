@@ -36,6 +36,7 @@
                 <th>{{ _("Expéditeur") }}</th>
                 <th>{{ _("ID mail") }}</th>
                 <th>{{ _("ID postfix") }}</th>
+                <th>{{ _("Acheminer ?") }}</th>
                 <th>{{ _("Supprimer ?") }}</th>
                 <th> Date </th>
                 <th>{{ _("Statut") }}</th>
@@ -47,79 +48,88 @@
             {% if exp.id == mails.expediteur_id %}
             <tr id='tr'>
                 <td><button type=submit id='sender'  name='sender' value="{{ exp.mail }}">{{ exp.mail }}</td>
-                <td><input type=hidden id='id'  name='id' value="{{ mails.id }}">{{ mails.id }}</td>
-                <td><input type=hidden id='postfixid'  name='postfixid' value="{{ mails.id_mail_postfix }}">{{ mails.id_mail_postfix }}</td>
-                <td id="sup"><input type=checkbox id='sup' name='sup' ></input></td>
-                <td><input type=hidden id='date'  name='date' value="{{ mails.date }}">{{ mails.date }}</td>               
-                <td><input type=text id='statut'  name='statut' value={{ _("en attente") }} readonly="readonly" ></td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-            {% endfor %}
-            
-        </tbody>
-    </table>
-    <button type="button" class="btn btn-primary" onclick=relo()>Submit</button>
-</form>
+                    <td><input type=hidden id='id'  name='id' value="{{ mails.id }}">{{ mails.id }}</td>
+                    <td><input type=hidden id='postfixid'  name='postfixid' value="{{ mails.id_mail_postfix }}">{{ mails.id_mail_postfix }}</td>
+                    <td id="ach"><input type=checkbox id='ach' name='ach' ></input></td>
+                    <td id="sup"><input type=checkbox id='sup' name='sup' ></input></td>
+                    <td><input type=hidden id='date'  name='date' value="{{ mails.date }}">{{ mails.date }}</td>
+                    <td><input type=text id='statut'  name='statut' value={{ _("en attente") }} readonly="readonly" ></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
 
-<script>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-primary" onclick=relo()>Submit</button>
+    </form>
     
-    $(document).ready(function () {
-        $('#table').DataTable();
-        // columns: [
-        // null,
-        // {searchable: false},
-        // {orderable: false, searchable: false},
-        // {orderable: false, searchable: false},
-        // null],
-    });
-    
-    function relo(){
-        $('#table').find('tbody tr').each(function(){
-            $input = $(this).find('input[type=checkbox]')
-            $tr = $(this).find('input[id=statut]')
-            if ($input.is(":checked") ){
-                $input.attr('checked', true);
-                supp = "{{_("supprimé")}}"
-                $tr.val(supp);
-            }else{
-                $input.attr('checked', false);  
-                nsupp = "{{ _("non-supprimé") }}"
-                $tr.val(nsupp)   
-            }
-            
+    <script>
+        
+        $(document).ready(function () {
+            $('#table').DataTable();
+            // columns: [
+            // null,
+            // {searchable: false},
+            // {orderable: false, searchable: false},
+            // {orderable: false, searchable: false},
+            // null],
         });
         
-        var tab=[]
-        $('#table').find('tbody tr').each(function(){
-            var obj = {},
-            key1 = "identifiant",
-            key2 = "statut",
-            $td = $(this).find('td'),
-            $input = $(this).find('input[id=statut]').val(),
-            val1 = $td.eq(1).text(),
-            val2 = $input
-            obj[key1] = val1;
-            obj[key2] = val2;
-            tab.push(obj);
-        });
-        console.log(tab)
-        
-        jQuery.ajax({
-            url: '/api/modifmails',
-            type: "POST",
-            data: JSON.stringify({ paramName: tab }),
-            success: function(msg) {
-                console.log(tab)
-            },
-            dataType: 'json'
+        function relo(){
+            $('#table').find('tbody tr').each(function(){
+                $input = $(this).find('input[type=checkbox][id=sup]')
+                $inp = $(this).find('input[type=checkbox][id=ach]')
+                $tr = $(this).find('input[id=statut]')
+                if ($input.is(":checked") ){
+                    $input.attr('checked', true);
+                    supp = "{{_("supprimé")}}"
+                    $tr.val(supp);
+                }else if ($inp.is(":checked") ){
+                    $inp.attr('checked', true);
+                    supp = "{{_("acheminé")}}"
+                    $tr.val(supp);
+                }else{
+                    $input.attr('checked', false);
+                    $inp.attr('checked', false);
+                    nsupp = "{{ _("en attente") }}"
+                    $tr.val(nsupp)
+                }
+
+
+
+            });
             
-        });   
-    }
-    
-    
-</script>
+            var tab=[]
+            $('#table').find('tbody tr').each(function(){
+                var obj = {},
+                key1 = "identifiant",
+                key2 = "statut",
+                $td = $(this).find('td'),
+                $input = $(this).find('input[id=statut]').val(),
+                val1 = $td.eq(1).text(),
+                val2 = $input
+                obj[key1] = val1;
+                obj[key2] = val2;
+                tab.push(obj);
+            });
+            console.log(tab)
+
+            jQuery.ajax({
+                url: '/api/modifmails',
+                type: "POST",
+                data: JSON.stringify({ paramName: tab }),
+                success: function(msg) {
+                    console.log(tab)
+                },
+                dataType: 'json'
+
+            });
+        }
 
 
-{% endblock %}
+    </script>
+    
+    
+    {% endblock %}
 

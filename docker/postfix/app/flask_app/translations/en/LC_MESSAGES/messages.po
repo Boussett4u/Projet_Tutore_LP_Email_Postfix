@@ -87,6 +87,10 @@ msgid "Consulter mails en attente "
 msgstr "Check pending mails"
 
 #: templates/base.html:46
+msgid "Consulter mails "
+msgstr "Check mails"
+
+#: templates/base.html:46
 msgid "Consulter mails blacklistés "
 msgstr "Check blacklisted mails"
 
@@ -156,6 +160,14 @@ msgid "ID postfix"
 msgstr "Postfix ID"
 
 #: templates/consultmails.html:34 templates/consultmailsreject.html:34
+msgid "Acheminer ?"
+msgstr "Send ?"
+
+#: templates/consultmails.html:34 templates/consultmailsreject.html:34
+msgid "acheminé"
+msgstr "sent"
+
+#: templates/consultmails.html:39 templates/consultmailsreject.html:39
 msgid "Supprimer ?"
 msgstr "Delete ?"
 
@@ -329,8 +341,8 @@ msgid "supprimé"
 msgstr "removed"
 
 #: templates/consultmailsreject.html:68
-msgid "non-supprimé"
-msgstr "sent"
+msgid "en attente"
+msgstr "pending"
 
 #: templates/consultmails.html:36
 msgid "Expéditeur"
@@ -345,8 +357,8 @@ msgid "supprimé"
 msgstr "removed"
 
 #: templates/consultmails.html:68
-msgid "non-supprimé"
-msgstr "sent"
+msgid "en attente"
+msgstr "pending"
 
 #: templates/index.html:5
 msgid "L'application de filtrage"
