@@ -83,7 +83,28 @@ db.init_app(app)
 @app.route('/')      
 @app.route('/index/')
 def hello():
-    return render_template("index.html")
+    postfix = True 
+    app = True
+    c1=0
+    c2=0
+    c3=0
+    db = Utilisateur
+    if (db):
+        c1=1
+    if (postfix):
+        c2=1
+    if(app):
+        c3=1
+        # abort(400)
+    # flash(mess)
+    # return redirect(url_for('hello'))
+    if c1+c2+c3 == 3:
+        # abort(200, mess)
+        return render_template("index.html", c1=c1, c2=c2, c3=c3 ), 200
+        # return redirect(url_for("hello", mess=mess)), 200
+    else:
+        return render_template("index.html", c1=c1, c2=c2, c3=c3 ), 500
+        # abort(500, mess)
 
 @app.route('/stats/')
 def stats():
@@ -138,30 +159,8 @@ def stats():
 
     return render_template("stats.html", tab= json.dumps(tab), labels= json.dumps(labels), nbacceptedmails=nbacceptedmails, nbrefusedmails=nbrefusedmails, nbundefinedmails=nbundefinedmails, listacceptedmails= json.dumps(listacceptedmails), listrefusedmails= json.dumps(listrefusedmails), listundefinedmails= json.dumps(listundefinedmails),mails=mails, exp=exp, uti=uti)
 
-@app.route('/statut/')
-def statut():
-    postfix = True 
-    app = True
-    c1=0
-    c2=0
-    c3=0
-    db = Utilisateur
-    if (db):
-        c1=1
-    if (postfix):
-        c2=1
-    if(app):
-        c3=1
-        # abort(400)
-    # flash(mess)
-    # return redirect(url_for('hello'))
-    if c1+c2+c3 == 3:
-        # abort(200, mess)
-        return render_template("index.html", c1=c1, c2=c2, c3=c3 ), 200
-        # return redirect(url_for("hello", mess=mess)), 200
-    else:
-        return render_template("index.html", c1=c1, c2=c2, c3=c3 ), 500
-        # abort(500, mess)
+
+    
  
 @app.route('/validation/<token>', methods=["GET", "POST"])
 def validation(token):

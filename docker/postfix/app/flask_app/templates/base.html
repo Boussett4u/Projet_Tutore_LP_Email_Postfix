@@ -17,35 +17,73 @@
    <meta http-equiv="content-type" content="text/html;charset=utf-8">
 </head>
 <body>
-   <nav class="navbar navbar-expand-lg navbar-dark bg-primary ">
+   <!-- <nav class="navbar navbar-expand-lg navbar-light">
       <div class="container-fluid">
-         <a class="navbar-brand" href="#">Navbar</a>
+         <a class="navbar-brand" href="/">Home</a>
          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
          </button>
          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-               <li class="nav-item">
+            <ul class="navbar-nav"> -->
+               <!-- <li class="nav-item">
                   <a class="nav-link active" aria-current="page" href="/">Home</a>
-               </li>
-               <li class="nav-item">
+               </li> -->
+               <!-- <li class="nav-item">
                   <a class="nav-link" href="/signup">{{ _("S'inscrire") }}</a>
                </li>
                <li class="nav-item">
                   <a class="nav-link" href="/login">{{ _("Se connecter") }}</a>
                </li>
-               <li class="nav-item bg-danger ">
-                  <a class="nav-link" href="/logout">{{ _("Se déconnecter") }}</a>
-               </li>
+               
                <li class="nav-item">
                   <a class="nav-link" href="/user">{{ _("Espace utilisateur") }}</a>
-               </li>
+               </li> -->
                <!-- <li class="nav-item">
                   <a class="nav-link" href="/consultmails">{{ _("Consulter mails en attente ") }}</a>
                </li>
                <li class="nav-item">
                   <a class="nav-link" href="/consultmailsblacklist">{{ _("Consulter mails blacklistés ") }}</a>
                </li> -->
+               <!-- <li class="nav-item">
+                  <a class="nav-link" href="/consultallmails">{{ _("Consulter mails ") }}</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="/consultexp">{{ _("Consulter expéditeurs ") }}</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="/stats">{{ _("Consulter statistiques ") }}</a>
+               </li>
+               
+               
+            </ul>
+         </div>
+      </div>
+   </nav>    -->
+   
+   <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+         <a class="navbar-brand" href="/">Home</a>
+         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+               <li class="nav-item">
+                  <a class="nav-link" href="/signup">{{ _("S'inscrire") }}</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="/login">{{ _("Se connecter") }}</a>
+               </li>
+               
+               <li class="nav-item">
+                  <a class="nav-link" href="/user">{{ _("Espace utilisateur") }}</a>
+               </li> 
+               <li class="nav-item">
+                  <a class="nav-link" href="/consultmails">{{ _("Consulter mails en attente ") }}</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="/consultmailsblacklist">{{ _("Consulter mails blacklistés ") }}</a>
+               </li>
                <li class="nav-item">
                   <a class="nav-link" href="/consultallmails">{{ _("Consulter mails ") }}</a>
                </li>
@@ -55,13 +93,16 @@
                <li class="nav-item">
                   <a class="nav-link" href="/stats">{{ _("Consulter statistiques ") }}</a>
                </li>
-               <li class="nav-item">
-                  <a class="nav-link" href="/statut">{{ _("Consulter statut ") }}</a>
+            </ul>
+            <ul class="navbar-nav">
+               <li class="nav-item-right bg-danger active">
+                  <a class="nav-link" href="/logout">{{ _("Se déconnecter") }}</a>
                </li>
             </ul>
          </div>
       </div>
-   </nav>   
+   </nav>
+   
    
    <div class="container-fluid">
       {% block login %}
