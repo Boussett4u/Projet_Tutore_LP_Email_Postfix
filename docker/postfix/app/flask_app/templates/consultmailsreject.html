@@ -113,16 +113,16 @@
             });
             console.log(tab)
             
-            // jQuery.ajax({
-                //     url: '/api/modifmails',
-                //     type: "POST",
-                //     data: JSON.stringify({ paramName: tab }),
-                //     success: function(msg) {
-                    //         console.log(tab)
-                    //     },
-                    //     dataType: 'json'
+            jQuery.ajax({
+                    url: '/api/modifmails',
+                    type: "POST",
+                    data: JSON.stringify({ paramName: tab }),
+                    success: function(msg) {
+                            console.log(tab)
+                        },
+                        dataType: 'json'
                     
-                    // });   
+                    });   
                 }
                 
                 

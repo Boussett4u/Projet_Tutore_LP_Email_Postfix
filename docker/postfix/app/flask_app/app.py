@@ -496,13 +496,12 @@ def status():
     try:
         if request.method == "POST":
             tab = request.get_json(force=true)['paramName'] # On recupere la liste au format json des emails
-            print(tab,file=sys.stderr)
             for mails in tab: 
-                mail = Mail.query.filter_by(id=mails['identifiant']).first()
+                mail = Mail.query.filter_by(id=mails['mail']).first()
                 if mails['statut']=='supprimé':
                     db.session.delete(mail)
             db.session.commit()
-            return render_template("consultmails.html", )
+        return render_template("consultmails.html", )
     except IndexError:
         abort(404)
 
