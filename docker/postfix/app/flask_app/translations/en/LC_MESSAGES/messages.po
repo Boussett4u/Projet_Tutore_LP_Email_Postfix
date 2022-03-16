@@ -397,3 +397,6 @@ msgstr "No user found"
 msgid "Veuillez écrire les mêmes mots de passe"
 msgstr "Please fill the same passwords"
 
+#: templates/index.html:25
+msgid "Entrer votre mail"
+msgstr "Enter mail"
