@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Export des variables du docker-compose 
-export DB_IP
+export DB_HOST
 export DB_USER
 export DB_NAME
 export DB_PORT
