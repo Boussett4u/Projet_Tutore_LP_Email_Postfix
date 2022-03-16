@@ -28,9 +28,9 @@ services:
     hostname: postfix
     build:
       context: ./postfix
-      args:
-         - "https_proxy=http://webproxy.coe.int:8080"
-         - "http_proxy=http://webproxy.coe.int:8080"
+      #args:
+      #   - "https_proxy=http://webproxy.coe.int:8080"
+      #   - "http_proxy=http://webproxy.coe.int:8080"
     environment:
       POSTFIX_DOMAIN: exemple@toto.com:adresseIPTransimision;exemple@titi.com:adresse2IPTransmission
       DB_HOST: 'db'
