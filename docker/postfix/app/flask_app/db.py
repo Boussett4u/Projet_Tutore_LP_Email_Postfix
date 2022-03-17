@@ -33,10 +33,11 @@ class Expediteur(db.Model):
     statut = db.Column(db.Integer, unique=False, nullable=False, default=3)
     token = db.Column(db.String(250), unique=True, nullable=True )
     #statut : 1 valide, 2 refuse, 3 en attente
-    def __init__(self, mail, utilisateur_id, statut):
+    def __init__(self, mail, utilisateur_id, statut, token):
         self.mail = mail
         self.utilisateur_id = utilisateur_id
         self.statut = statut
+        self.token = token
 class Mail(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_mail_postfix = db.Column(db.String(250), unique=True, nullable=False)
