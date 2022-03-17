@@ -1,5 +1,5 @@
-paul@localhost	  	OK
-reject@		 	REJECT vade retro satanas
-hold@			HOLD
-filter@			FILTER filter:dummy
-defer@			DEFER_IF_PERMIT Attendez un peu
+/^paul@localhost$/	OK
+/^hold@localhost$/	OK
+/^filter@localhost$/	FILTER filter:dummy
+/^defer@localhost$/	OK
+/^reject@localhost$/ 	FILTER filter:dummy
