@@ -70,40 +70,30 @@
          <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                <li class="nav-item">
-                  <!-- <a class="nav-link" href="/signup">{{ _("S'inscrire") }}</a> -->
                   <a class="nav-link {% if mail is defined and mail != '' %}{% else %}disabled{% endif %}" href="/consultmails"><i class="fas fa-inbox"></i> {{ _("Consulter mails en attente ") }}</a>
                </li>
                <li class="nav-item">
-                  <!-- <a class="nav-link" href="/login">{{ _("Se connecter") }}</a> -->
                   <a class="nav-link {% if mail is defined and mail != '' %}{% else %}disabled{% endif %}" href="/consultmailsblacklist"><i class="fas fa-user-alt-slash"></i> {{ _("Consulter mails blacklistés ") }}</a>
                </li>              
-               <!-- <li class="nav-item">
-                  <a class="nav-link" href="/user">{{ _("Espace utilisateur") }}</a>
-               </li>  -->
                <li class="nav-item">
-                  <!-- <a class="nav-link" href="/consultallmails">{{ _("Consulter mails ") }}</a> -->
                   <a class="nav-link {% if mail is defined and mail != '' %}{% else %}disabled{% endif %}" href="/consultallmails"><i class="fas fa-envelope"></i> {{ _("Consulter mails ") }}</a>
                </li>
                <li class="nav-item">
-                  <!-- <a class="nav-link" href="/consultexp">{{ _("Consulter expéditeurs ") }}</a> -->
                   <a class="nav-link {% if mail is defined and mail != '' %}{% else %}disabled{% endif %}" href="/consultexp"><i class="fas fa-user-cog"></i> {{ _("Consulter expéditeurs ") }}</a>
                </li>
                <li class="nav-item">
-                  <a class="nav-link" href="/stats">{{ _("Consulter statistiques ") }}</a>
+                  <a class="nav-link" href="/stats"><i class="fas fa-percent"></i>{{ _("Consulter statistiques ") }}</a>
                </li>
                <li class="nav-item">
-                  <a class="nav-link" href="/">{{ _("Health Check ") }}</a>
+                  <a class="nav-link" href="/"><i class="fas fa-heartbeat"></i>{{ _("Health Check ") }}</a>
                </li>
             </ul>
 
             <ul class="navbar-nav">
-               <li class="nav-item-right bg-danger active">
-                  <a class="nav-link" href="/logout">{{ _("Se déconnecter") }}</a>
-                  {% if mail is defined and mail != '' %}
-               </li>
+               {% if mail is defined and mail != '' %}
                <li class="nav-item-right"><a href="/user" class="nav-link">{{ mail }}</a>
                </li>
-               <li class="nav-item-right active">
+               <li class="nav-item-right active bg-danger active">
                   <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i> {{ _("Se déconnecter") }}</a>
                </li>
                {% else %}
