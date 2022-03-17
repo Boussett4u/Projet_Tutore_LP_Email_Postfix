@@ -6,7 +6,7 @@
 </br>
 {% if c1 and c2 and c3: %}
 
-<table class="table table-sm table-dark table-bordered ">
+<!-- <table class="table table-sm table-dark table-bordered ">
     <thead>
         <tr class="bg-primary">
             <th scope="col">{{ _("Serveur") }}</th>
@@ -48,7 +48,62 @@
         </tr>
         {% endif %}
     </tbody>
-</table>
+</table> -->
+
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="row g-0">
+            <div class="col-lg-3">
+                <i class="fas fa-heartbeat fa-8x {% if c1==1 and c2==1 and c3==1 %}text-success{% else %}text-warning{% endif %}"></i>
+            </div>
+            <div class="col-lg-6">
+                <table class="table table-sm table-dark table-bordered ">
+                    <thead>
+                        <tr class="bg-primary">
+                            <th scope="col">{{ _("Serveur") }}</th>
+                            <th scope="col">{{ _("Etat") }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if c1==1:%}
+                        <tr class="table-success">
+                            <td>{{ _("Base de données" )}}</td>
+                            <td>{{ _("Fonctionnel") }}</td>
+                        </tr>
+                        {% else %}
+                        <tr class="table-danger">
+                            <td>{{ _("Base de données" )}}</td>
+                            <td>{{ _("Non-fonctionnel") }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if c2==1:%}
+                        <tr class="table-success">
+                            <td>{{ _("Postfix") }}</td>
+                            <td>{{ _("Fonctionnel") }}</td>
+                        </tr>
+                        {% else %}
+                        <tr class="table-danger">
+                            <td>{{ _("Postfix") }}</td>
+                            <td>{{ _("Non-fonctionnel") }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if c3==1:%}
+                        <tr class="table-success">
+                            <td>{{ _("Application") }}</td>
+                            <td>{{ _("Fonctionnel") }}</td>
+                        </tr>
+                        {% else %}
+                        <tr class="table-danger">
+                            <td>{{ _("Application") }}</td>
+                            <td>{{ _("Non-fonctionnel") }}</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endif %}
 
 {% endblock %}

@@ -83,6 +83,10 @@ db.init_app(app)
 @app.route('/')      
 @app.route('/index/')
 def hello():
+    if 'mail' in session:
+        mail = session['mail']
+    else:
+        mail = ''
     postfix = True 
     app = True
     c1=0
@@ -100,10 +104,10 @@ def hello():
     # return redirect(url_for('hello'))
     if c1+c2+c3 == 3:
         # abort(200, mess)
-        return render_template("index.html", c1=c1, c2=c2, c3=c3 ), 200
+        return render_template("index.html", c1=c1, c2=c2, c3=c3, mail=mail ), 200
         # return redirect(url_for("hello", mess=mess)), 200
     else:
-        return render_template("index.html", c1=c1, c2=c2, c3=c3 ), 500
+        return render_template("index.html", c1=c1, c2=c2, c3=c3, mail=mail), 500
         # abort(500, mess)
 
 @app.route('/stats/')
@@ -157,11 +161,13 @@ def stats():
         listrefusedmails[i+1]+=listrefusedmails[i] 
         listundefinedmails[i+1]+=listundefinedmails[i] 
 
-    return render_template("stats.html", tab= json.dumps(tab), labels= json.dumps(labels), nbacceptedmails=nbacceptedmails, nbrefusedmails=nbrefusedmails, nbundefinedmails=nbundefinedmails, listacceptedmails= json.dumps(listacceptedmails), listrefusedmails= json.dumps(listrefusedmails), listundefinedmails= json.dumps(listundefinedmails),mails=mails, exp=exp, uti=uti)
+    if 'mail' in session:
+        mail = session['mail']
+    else:
+        mail = ''
 
+    return render_template("stats.html", tab= json.dumps(tab), labels= json.dumps(labels), nbacceptedmails=nbacceptedmails, nbrefusedmails=nbrefusedmails, nbundefinedmails=nbundefinedmails, listacceptedmails= json.dumps(listacceptedmails), listrefusedmails= json.dumps(listrefusedmails), listundefinedmails= json.dumps(listundefinedmails),mails=mails, exp=exp, uti=uti, mail=mail)
 
-    
- 
 @app.route('/validation/<token>', methods=["GET", "POST"])
 def validation(token):
     message = '' 
@@ -213,7 +219,7 @@ def admin():
                 return redirect(url_for("consultmailsblacklist"))
     else:
         flash(gettext("Bienvenue") +f", {session['nom']}")
-        return render_template("admin.html", utilisateurs=utilisateurs)
+        return render_template("admin.html", utilisateurs=utilisateurs, mail=session['mail'])
 
 @app.route('/user/', methods=["GET", "POST"])
 def user():
@@ -228,7 +234,7 @@ def user():
         if found_user.admin:
             return redirect(url_for("admin"))
         flash(gettext("Bienvenue")+f", {session['nom']}")
-        return render_template("user.html")
+        return render_template("user.html", mail=session['mail'])
     except IndexError:
         abort(404)
 	
@@ -264,7 +270,7 @@ def login():
                 else:
                     return redirect(url_for('user'))
             else:
-                return render_template("loginwrong.html")
+                return render_template("loginwrong.html", mail='')
         return render_template("login.html")
     except IndexError:
         abort(404)
@@ -290,7 +296,7 @@ def signup():
             found_user = Utilisateur.query.filter_by(mail=mail).first()
             if found_user:
                 flash(gettext("Utilisateur déja inscrit"), "connecte") 
-                return render_template("signup.html")
+                return render_template("signup.html", mail=session['mail'])
             # On definit les variables de session
             session['nom'] = nom
             session['mail'] = mail 
@@ -300,7 +306,7 @@ def signup():
             db.session.commit() 
             flash(gettext("Inscription reussie"), "connecte") 
             return redirect(url_for("user"))        
-        return render_template("signup.html")
+        return render_template("signup.html", mail=session['mail'])
     except IndexError:
         abort(404)
 	
@@ -403,7 +409,7 @@ def modifmails():
             for mails in tab: 
                 if mails['statut']=='supprimé' or mails['statut'] == 'removed':
                     stat = Statistiques(date= datetime.today().strftime('%Y-%m-%d'), actionFiltre=REFUSED)
-                    mail = Mail.query.filter_by(id=mails['identifiant']).first()
+                    mail = Mail.query.filter_by(id=mails['mail']).first()
                     db.session.add(stat)
                     db.session.delete(mail)
                 if mails['statut']=='acheminé' or 'sent':
@@ -416,7 +422,7 @@ def modifmails():
                     db.session.add(stat)
                     # mail.statut = UNDECIDED
             db.session.commit()
-            return render_template("consultmails.html", )
+            return render_template("consultmails.html", mail=session['mail'])
     except IndexError:
         abort(404)
         

@@ -80,31 +80,31 @@
     <div class="col-xs-10 col-sm-6 col-md-6">
         <div class="card text-white bg-success w-100 mb-3">
             <div class="card-body">
-              <h5 class="card-title text-center">{{_("Mails acceptés")}}</h5>
-              <h2 class="card-text text-center">{{nbacceptedmails}}</h2>
+                <h5 class="card-title text-center">{{_("Mails acceptés")}}</h5>
+                <h2 class="card-text text-center">{{nbacceptedmails}}</h2>
             </div>
-          </div>
-          
-          <div class="card text-white bg-danger w-100 mb-3">
+        </div>
+        
+        <div class="card text-white bg-danger w-100 mb-3">
             <div class="card-body">
-              <h5 class="card-title text-center">{{_("Mails rejetés")}}</h5>
-              <h2 class="card-text text-center">{{nbrefusedmails}}</h2>
+                <h5 class="card-title text-center">{{_("Mails rejetés")}}</h5>
+                <h2 class="card-text text-center">{{nbrefusedmails}}</h2>
             </div>
-          </div>
-          <div class="card text-white bg-warning w-100 mb-3">
+        </div>
+        <div class="card text-white bg-warning w-100 mb-3">
             <div class="card-body">
-              <h5 class="card-title text-center">{{_("Mails en attente")}}</h5>
-              <h2 class="card-text text-center">{{nbundefinedmails}}</h2>
+                <h5 class="card-title text-center">{{_("Mails en attente")}}</h5>
+                <h2 class="card-text text-center">{{nbundefinedmails}}</h2>
             </div>
-          </div>
+        </div>
     </div>
-
+    
     <!-- <div class="card text-white bg-primary mb-3">
         <div class="card-body">
             <h5 class="card-title text-center">{{ _("Nombre d'utilisateurs") }}</h5>
             <h1 class="card-text text-center">{{ uti }}</h1>
         </div>
-         <div class="card-footer">
+        <div class="card-footer">
             <small class="text-white">Last updated 3 mins ago</small>
         </div> 
     </div> -->
@@ -181,6 +181,13 @@
     const ctx2 = document.getElementById('chart2').getContext('2d');
     const myChart2 = new Chart(ctx2, {
         type: 'line',
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        },
         data: {
             labels: ['{{_("Janvier")}}', '{{_("Février")}}', '{{_("Mars")}}', '{{_("Avril")}}', '{{_("Mai")}}', '{{_("Juin")}}', '{{_("Juillet")}}', '{{_("Aout")}}', '{{_("Septembre")}}', '{{_("Octobre")}}', '{{_("Novembre")}}', '{{_("Décembre")}}'], 
             datasets: [{
