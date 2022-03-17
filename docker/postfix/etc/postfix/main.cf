@@ -44,4 +44,4 @@ inet_interfaces = all
 inet_protocols = all
 
 transport_maps = hash:/etc/postfix/transport
-smtpd_recipient_restrictions = check_recipient_access hash:/etc/postfix/access
+smtpd_recipient_restrictions = check_recipient_access pcre:/etc/postfix/access
