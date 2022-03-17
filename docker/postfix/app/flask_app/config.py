@@ -1,27 +1,27 @@
 # Cette chaîne nous permet de nous connecter à la bdd
 # bdd_uri = "postgresql://postgres:nael2001@127.0.0.1:5432/test"
-# from decouple import config
+from decouple import config
 
-bdd_uri = { 'pguser':'postgres',
-'pgpasswd':'nael2001',
-'pghost':'localhost',
-'pgport': 5432,
-'pgdb':'test'}
+# bdd_uri = { 'pguser':'postgres',
+# 'pgpasswd':'nael2001',
+# 'pghost':'localhost',
+# 'pgport': 5432,
+# 'pgdb':'test'}
 
 
-# DB_USER = config('DB_USER')
-# DB_PASSWORD = config('DB_PASSWORD')
-# DB_HOST = config('DB_HOST')
-# DB_PORT = config('DB_PORT')
-# DB_NAME = config('DB_NAME')
+DB_USER = config('DB_USER')
+DB_PASSWORD = config('DB_PASSWORD')
+DB_HOST = config('DB_HOST')
+DB_PORT = config('DB_PORT')
+DB_NAME = config('DB_NAME')
 
-# bdd_uri = {
-#         'pguser': DB_USER,
-#         'pgpasswd':DB_PASSWORD,
-#         'pghost':DB_HOST,
-#         'pgport': DB_PORT,
-#         'pgdb':DB_NAME
-#         }
+bdd_uri = {
+        'pguser': DB_USER,
+        'pgpasswd':DB_PASSWORD,
+        'pghost':DB_HOST,
+        'pgport': DB_PORT,
+        'pgdb':DB_NAME
+        }
 
 mdp_admin = "nael2001"
 
