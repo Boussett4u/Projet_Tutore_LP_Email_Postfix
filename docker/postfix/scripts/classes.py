@@ -24,19 +24,18 @@ db = SQLAlchemy(app)
 class Utilisateur(db.Model):
         #Définition des colonnes
         id = db.Column(db.Integer, primary_key=True)
-        identifiant = db.Column(db.String(250), unique=True, nullable=False)
         nom = db.Column(db.String(250), unique=True, nullable=True)
+        mail = db.Column(db.String(250), unique=False, nullable=False)
         mdp = db.Column(db.String(250), unique=False, nullable=False)
         admin = db.Column(db.Boolean, default=False)
-        mail = db.Column(db.String(250), unique=False, nullable=False)
+
 
         #Constructeur
-        def __init__(self, identifiant, nom, mdp, admin, mail):
-                self.identifiant = identifiant
+        def __init__(self, nom, mail, mdp, admin):
                 self.nom = nom
+                self.mail = mail
                 self.mdp = mdp
                 self.admin = admin
-                self.mail = mail
         
 class Expediteur(db.Model):
         #Définition des colonnes
@@ -62,10 +61,10 @@ class Mail(db.Model):
         date = db.Column(db.DateTime, nullable=False)
 
         #Constructeur
-        def __init__(self,id_mail_postfix, expediteur_id):
+        def __init__(self, id_mail_postfix, expediteur_id, date):
                 self.id_mail_postfix = id_mail_postfix
                 self.expediteur_id = expediteur_id
-                self.date = datetime.now()
+                self.date = date
 
 
 class Statistiques(db.Model):
