@@ -259,6 +259,7 @@ def login():
             found_user = Utilisateur.query.filter_by(mail=mail).first() 
             if not found_user:
                 flash(gettext("Pas d'utilisateur trouvé"), "connecte") 
+                return render_template("login.html", mail='')
             # returne vrai si les mots de passe sont les memes sans chiffrement
             if bcrypt.check_password_hash(found_user.mdp, mdp):
                 session['nom'] = found_user.nom
@@ -270,7 +271,8 @@ def login():
                 else:
                     return redirect(url_for('user'))
             else:
-                return render_template("loginwrong.html", mail='')
+                flash(gettext("Mauvais mot de passe")+ ", "+ mail, "connecte")
+                return render_template("login.html", mail='')
         return render_template("login.html")
     except IndexError:
         abort(404)

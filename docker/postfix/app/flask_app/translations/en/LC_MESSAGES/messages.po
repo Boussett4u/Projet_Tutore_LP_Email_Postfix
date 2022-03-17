@@ -400,3 +400,7 @@ msgstr "Please fill the same passwords"
 #: templates/index.html:25
 msgid "Entrer votre mail"
 msgstr "Enter mail"
+
+#: templates/index.html:25
+msgid "Mauvais mot de passe"
+msgstr "Wrong Password"
