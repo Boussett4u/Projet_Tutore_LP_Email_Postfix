@@ -306,7 +306,7 @@ def signup():
             db.session.commit() 
             flash(gettext("Inscription reussie"), "connecte") 
             return redirect(url_for("user"))        
-        return render_template("signup.html", mail=session['mail'])
+        return render_template("signup.html")
     except IndexError:
         abort(404)
 	
