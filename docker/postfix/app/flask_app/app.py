@@ -78,7 +78,11 @@ app.permanent_session_lifetime = timedelta(hours=2)
 
 db.init_app(app)
 
-
+if not Utilisateur.query.filter_by(nom = "admin").first():
+    usr = Utilisateur("admin", "admin@admin.fr", bcrypt.generate_password_hash("admin").decode('utf-8'), True)
+    db.session.add(usr)
+    db.session.commit() 
+    
 # Possible d'avoir plusieurs routes
 @app.route('/')      
 @app.route('/index/')
