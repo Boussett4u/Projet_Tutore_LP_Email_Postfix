@@ -13,6 +13,9 @@
 <div class="row row-cols-1 row-cols-md-3 g-4">
     <div class="col">
         <div class="card text-white bg-info mb-3">
+            <div class="bg-icon">
+              <i class="fas fa-user fa-4x"></i>
+            </div>
             <div class="card-body">
                 <h5 class="card-title text-center">{{ _("Nombre d'utilisateurs") }}</h5>
                 <h1 class="card-text text-center">{{ uti }}</h1>
@@ -24,6 +27,9 @@
     </div>
     <div class="col">
         <div class="card text-white bg-primary mb-3">
+            <div class="bg-icon">
+              <i class="fas fa-user-edit fa-4x"></i>
+            </div>
             <div class="card-body">
                 <h5 class="card-title text-center">{{ _("Nombre d'expéditeurs") }}</h5>
                 <h1 class="card-text text-center">{{ exp }}</h1>
@@ -35,6 +41,9 @@
     </div>
     <div class="col">
         <div class="card text-white bg-secondary mb-3">
+            <div class="bg-icon">
+              <i class="fas fa-envelope fa-4x"></i>
+            </div>
             <div class="card-body">
                 <h5 class="card-title text-center">{{ _("Nombre de mails") }}</h5>
                 <h1 class="card-text text-center">{{ mails }}</h1>
@@ -79,6 +88,9 @@
 <div class="row row-cols-1 row-cols-md-3 g-4">
     <div class="col-xs-10 col-sm-6 col-md-6">
         <div class="card text-white bg-success w-100 mb-3">
+            <div class="bg-icon">
+               <i class="fas fa-envelope fa-4x"></i>
+            </div>
             <div class="card-body">
                 <h5 class="card-title text-center">{{_("Mails acceptés")}}</h5>
                 <h2 class="card-text text-center">{{nbacceptedmails}}</h2>
@@ -86,12 +98,18 @@
         </div>
         
         <div class="card text-white bg-danger w-100 mb-3">
+            <div class="bg-icon">
+              <i class="fas fa-hand-paper fa-4x"></i>
+            </div>
             <div class="card-body">
                 <h5 class="card-title text-center">{{_("Mails rejetés")}}</h5>
                 <h2 class="card-text text-center">{{nbrefusedmails}}</h2>
             </div>
         </div>
         <div class="card text-white bg-warning w-100 mb-3">
+            <div class="bg-icon">
+              <i class="fas fa-hourglass-half fa-4x"></i>
+            </div>
             <div class="card-body">
                 <h5 class="card-title text-center">{{_("Mails en attente")}}</h5>
                 <h2 class="card-text text-center">{{nbundefinedmails}}</h2>
@@ -182,11 +200,11 @@
     const myChart2 = new Chart(ctx2, {
         type: 'line',
         options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
+          scales: {
+              y: {
+                beginAtZero: true
             }
+          }
         },
         data: {
             labels: ['{{_("Janvier")}}', '{{_("Février")}}', '{{_("Mars")}}', '{{_("Avril")}}', '{{_("Mai")}}', '{{_("Juin")}}', '{{_("Juillet")}}', '{{_("Aout")}}', '{{_("Septembre")}}', '{{_("Octobre")}}', '{{_("Novembre")}}', '{{_("Décembre")}}'], 
