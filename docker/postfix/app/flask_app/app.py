@@ -33,6 +33,7 @@ import glob
 import json
 import pytest
 from config import *
+import os
 # from db import models
 
 # config captcha
@@ -82,7 +83,7 @@ if not Utilisateur.query.filter_by(nom = "admin").first():
     usr = Utilisateur("admin", "admin@admin.fr", bcrypt.generate_password_hash("admin").decode('utf-8'), True)
     db.session.add(usr)
     db.session.commit() 
-    
+
 # Possible d'avoir plusieurs routes
 @app.route('/')      
 @app.route('/index/')
@@ -421,16 +422,20 @@ def modifmails():
         if request.method == "POST":
             tab = request.get_json(force=true)['paramName'] 
             for mails in tab: 
+                mail = Mail.query.filter_by(id=mails['mail']).first()
                 if mails['statut']=='supprimé' or mails['statut'] == 'removed':
-                    stat = Statistiques(date= datetime.today().strftime('%Y-%m-%d'), actionFiltre=REFUSED)
-                    mail = Mail.query.filter_by(id=mails['mail']).first()
+                    stat = Statistiques(date= datetime.today().strftime('%Y-%m-%d'), actionFiltre=REFUSED)                
                     db.session.add(stat)
+                    bashCommand = "postsuper -d " + mail.id_mail_postfix
+                    os.system(bashCommand)
                     db.session.delete(mail)
                 if mails['statut']=='acheminé' or 'sent':
                     stat = Statistiques(date= datetime.today().strftime("%Y-%m-%d"), actionFiltre= ACCEPTED)
                     db.session.add(stat)
                     # mail.statut = ACCEPTED
-                    db.session.delete(mail)
+                    bashCommand = "postqueue -H " + mail.id_mail_postfix
+                    os.system(bashCommand)
+                    # db.session.delete(mail)
                 if mails['statut']=='en attente' or 'pending':
                     stat = Statistiques(date= datetime.today().strftime("%Y-%m-%d"), actionFiltre= UNDECIDED)
                     db.session.add(stat)
