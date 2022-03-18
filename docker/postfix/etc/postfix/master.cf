@@ -11,7 +11,13 @@
 # ==========================================================================
 smtp      inet  n       -       y       -       -       smtpd 
 # -o content_filter=script_filtre:dummy
+
+#Pour le filtre
 filter	  unix   -       n       n       -        10    pipe flags=Rq user=testfilter argv=/home/testfilter/filtre/filtre.py -e ${sender} -d ${recipient} -q ${queue_id}
+
+#Pour policy
+policy	  unix	 -	 n	 n	 -	  0	spawn	      user=nobody     argv=/home/testfilter/filtre/policy.py
+
 #smtp      inet  n       -       y       -       1       postscreen
 #smtpd     pass  -       -       y       -       -       smtpd
 #dnsblog   unix  -       -       y       -       0       dnsblog
