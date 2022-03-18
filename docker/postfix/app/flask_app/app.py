@@ -34,6 +34,7 @@ import json
 import pytest
 from config import *
 import os
+import subprocess as sp
 # from db import models
 
 # config captcha
@@ -92,7 +93,7 @@ def hello():
         mail = session['mail']
     else:
         mail = ''
-    postfix = True 
+    postfix = sp.getoutput('service postfix status | grep "active" | cut -d ":" -f 2 | cut -d "(" -f 1')
     app = True
     c1=0
     c2=0
@@ -100,7 +101,7 @@ def hello():
     db = Utilisateur
     if (db):
         c1=1
-    if (postfix):
+    if postfix == " active ":
         c2=1
     if(app):
         c3=1
