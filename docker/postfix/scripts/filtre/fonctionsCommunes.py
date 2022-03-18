@@ -2,12 +2,7 @@
 #coding: utf-8
 
 
-#Importation des variables du docker-compose
-db_user = os.getenv('DB_USER')
-db_password = os.getenv('DB_PASSWORD')
-db_host = os.getenv('DB_HOST')
-db_name = os.getenv('DB_NAME')
-db_port = os.getenv('DB_PORT')
+
 
 #On récupère les modules nécessaires
 import os, sys, smtplib, getopt, subprocess, fileinput, email, hashlib, syslog
@@ -20,7 +15,12 @@ from flask_sqlalchemy import SQLAlchemy
 #Ici ce qui concerne les classes créées dans le fichiers classes.py
 from classes import Utilisateur, db, Expediteur, Mail, Statistiques
 
-
+#Importation des variables du docker-compose
+db_user = os.getenv('DB_USER')
+db_password = os.getenv('DB_PASSWORD')
+db_host = os.getenv('DB_HOST')
+db_name = os.getenv('DB_NAME')
+db_port = os.getenv('DB_PORT')
 
 #Configuration pour utiliser flask et SQLAlchemy               
 app = Flask(__name__)

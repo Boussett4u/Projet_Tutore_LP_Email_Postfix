@@ -15,11 +15,11 @@ from classes import Utilisateur, db, Expediteur, Mail, Statistiques
 from fonctionsCommunes import envoyerLien, ajouterMail, ajouterExpediteur, ajouterStat, verifSiTokenIdentique
 
 #Importation des variables du docker-compose
-db_user = os.getenv('DB_USER')
-db_password = os.getenv('DB_PASSWORD')
-db_host = os.getenv('DB_HOST')
-db_name = os.getenv('DB_NAME')
-db_port = os.getenv('DB_PORT')
+#db_user = os.getenv('DB_USER')
+#db_password = os.getenv('DB_PASSWORD')
+#db_host = os.getenv('DB_HOST')
+#db_name = os.getenv('DB_NAME')
+#db_port = os.getenv('DB_PORT')
 
 #Récupération des arguments
 #e: = expediteur, d: destinataire, q: id_mail
@@ -38,10 +38,10 @@ for opt, arg in opts:
         options[opt]=arg
 
 #Configuration pour utiliser flask et SQLAlchemy               
-app = Flask(__name__)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = ("postgresql://{0}:{1}@{2}:{3}/{4}".format(db_user, db_password, db_host, db_port, db_name))
-db = SQLAlchemy(app)
+#app = Flask(__name__)
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+#app.config['SQLALCHEMY_DATABASE_URI'] = ("postgresql://{0}:{1}@{2}:{3}/{4}".format(db_user, db_password, db_host, db_port, db_name))
+#db = SQLAlchemy(app)
                 
 #Actions du filtre
 
