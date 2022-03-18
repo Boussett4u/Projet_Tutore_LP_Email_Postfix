@@ -21,6 +21,49 @@ services:
     networks:
       - default
 
+  promtail:
+    image: grafana/promtail
+    container_name: promtail
+    command: -config.file=/etc/promtail/promtail.yaml
+    restart: unless-stopped
+    volumes:
+      - ./promtail.yaml:/etc/promtail/promtail.yaml
+      - ./data/loki/:/loki
+      - ./data/postfix/log:/log/postfix/
+      - ./data/db/log:/log/db/
+    ports:
+      - 9095:9095
+
+  loki:
+    image: grafana/loki
+    container_name: loki
+      #command: -config.file=/mnt/config/loki-config.yml
+    restart: unless-stopped
+    volumes:
+      #- ./local-config.yaml:/mnt/config/loki-config.yml
+      - ./data/loki/:/loki
+    ports:
+      - 3107:3100
+
+  grafana:
+    hostname: grafana
+    image: grafana/grafana-oss
+    networks:
+      - default
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./data/grafana/conf:/etc/grafana
+      - ./data/grafana/data:/var/lib/grafana
+  prometheus:
+    hostname: prometheus
+    image: prom/prometheus
+    networks:
+      - default
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
   mailhog:
     hostname: mailhog
     image: mailhog/mailhog
