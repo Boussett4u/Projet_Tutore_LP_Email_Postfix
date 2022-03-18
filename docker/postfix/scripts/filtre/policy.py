@@ -157,5 +157,5 @@ if destinataire_existe > 0:
                 print("action=dunno \n\n")
                                 
 else:
-        syslog.syslog(syslog.LOG_INFO, 'Le destinataire {0} est introuvable')
+        syslog.syslog(syslog.LOG_INFO, 'Le destinataire {0} est introuvable'.format(destinataire))
         print("action=dunno \n\n")
