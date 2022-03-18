@@ -12,7 +12,7 @@ RUN apt-get update \
     && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # FIXME trouver une meilleure place /var/spool/postfix/quarantaine ?
-RUN mkdir /home/testfilter/quarantaine
+RUN mkdir -p /home/testfilter/quarantaine
 
 COPY docker-entrypoint.sh /
 
