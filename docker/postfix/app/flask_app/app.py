@@ -93,7 +93,7 @@ def hello():
         mail = session['mail']
     else:
         mail = ''
-    postfix = sp.getoutput('service postfix status | grep "active" | cut -d ":" -f 2 | cut -d "(" -f 1')
+    postfix = sp.getoutput('/etc/init.d/postfix status')
     app = True
     c1=0
     c2=0
@@ -101,7 +101,7 @@ def hello():
     db = Utilisateur
     if (db):
         c1=1
-    if postfix == " active ":
+    if postfix == "postfix is running.":
         c2=1
     if(app):
         c3=1
