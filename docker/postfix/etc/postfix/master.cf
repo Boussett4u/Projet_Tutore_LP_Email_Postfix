@@ -11,7 +11,7 @@
 # ==========================================================================
 smtp      inet  n       -       y       -       -       smtpd 
 # -o content_filter=script_filtre:dummy
-filter	  unix   -       n       n       -        10    pipe flags=Rq user=testfiltre argv=/home/testfiltre/script_filtre.bash -f ${sender} -- ${recipient}
+filter	  unix   -       n       n       -        10    pipe flags=Rq user=testfilter argv=/home/testfilter/filtre/filtre.py -e ${sender} -d ${recipient} -q ${queue_id}
 #smtp      inet  n       -       y       -       1       postscreen
 #smtpd     pass  -       -       y       -       -       smtpd
 #dnsblog   unix  -       -       y       -       0       dnsblog
