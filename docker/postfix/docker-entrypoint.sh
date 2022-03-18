@@ -21,6 +21,7 @@ done
 # Lien symbolique pour le script filtre.py du master.cf
 mkdir /home/testfilter/filtre
 ln -s /scripts/filtre/filtre.py /home/testfilter/filtre/filtre.py
+ln -s /scripts/filtre/policy.py /home/testfilter/filtre/policy.py
 
 # Permission d'accès au dossier correspondant depuis la machine hôte
 chmod -R 777 /etc/postfix
