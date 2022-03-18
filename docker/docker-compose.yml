@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.8'
 
 services:
   db:
@@ -15,9 +15,9 @@ services:
         timeout: 10s
         retries: 10
     environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_DB: "${DB_NAME}"
     networks:
       - default
 
@@ -27,7 +27,7 @@ services:
     networks:
       - default
     ports:
-      - 8025:8025
+      - "8025:8025"
   postfix:
     depends_on:
       db:
@@ -42,17 +42,17 @@ services:
     environment:
       MIO_METHOD: "policy_toto"
       MAILNAME: "mio.test.net"
-      POSTFIX_DOMAIN: toto.com=[mailhog]:1025;titi.com=[mailhog]:1025;test.net=[mailhog]:1025
+      POSTFIX_DOMAIN: "toto.com=[mailhog]:1025;titi.com=[mailhog]:1025;test.net=[mailhog]:1025"
       DB_HOST: 'db'
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
-      DB_PORT: ${DB_PORT}
+      DB_USER: "${DB_USER}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_NAME: "${DB_NAME}"
+      DB_PORT: "${DB_PORT}"
     volumes:
        - ./data/postfix/spool:/var/spool/postfix
        - ./data/postfix/log:/var/log/
     networks:
       - default
     ports:
-      - 5000:5000
-      - 2525:25
+      - "5000:5000"
+      - "2525:25"
