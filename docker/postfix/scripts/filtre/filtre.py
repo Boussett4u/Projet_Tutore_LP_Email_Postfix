@@ -16,7 +16,7 @@ from fonctionsCommunes import envoyerLien, ajouterMail, ajouterExpediteur, ajout
 
 #Importation des variables du docker-compose
 db_user = os.getenv('DB_USER')
-db_pwd = os.getenv('DB_PASSWORD')
+db_password = os.getenv('DB_PASSWORD')
 db_host = os.getenv('DB_HOST')
 db_name = os.getenv('DB_NAME')
 db_port = os.getenv('DB_PORT')
@@ -40,7 +40,7 @@ for opt, arg in opts:
 #Configuration pour utiliser flask et SQLAlchemy               
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = ("postgresql://"+db_user+":"+db_pwd+"@"+db_host+":"+db_port+"/"+db_name)
+app.config['SQLALCHEMY_DATABASE_URI'] = ("postgresql://{0}:{1}@{2}:{3}/{4}".format(db_user, db_password, db_host, db_port, db_name))
 db = SQLAlchemy(app)
                 
 #Actions du filtre
@@ -61,7 +61,7 @@ for line in sys.stdin:
 #Fonctione permettant la mise en quarantaine
 def miseQuarantaine(mail_id, message):
         #Mise en quarantaine du message dans un répertoire spécifique
-        mailFichier = open("/home/testfiltre/quarantaine/{0}".format(mail_id), "a")
+        mailFichier = open("/home/testfilter/quarantaine/{0}".format(mail_id), "a")
         mailFichier.write(message)
         mailFichier.close()
  
@@ -163,5 +163,5 @@ if destinataire_existe > 0:
 
 
 else:
-        syslog.syslog(syslog.LOG_INFO, 'Le destinataire {0} est introuvable')
+        syslog.syslog(syslog.LOG_INFO, 'Le destinataire {0} est introuvable'.format(destinataire))
         

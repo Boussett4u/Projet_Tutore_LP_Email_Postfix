@@ -1,4 +1,4 @@
-#!/usr/bin/python3.5
+#!/usr/bin/python3
 #coding utf-8
 
 import smtplib, sys
@@ -8,4 +8,4 @@ import smtplib, sys
 smtp = smtplib.SMTP("localhost") #Le paramètre est l'adresse du MTA a utiliser
 
 #Ensuite, on peut envoyer le mail
-smtp.sendmail("root", [sys.argv[1]], "From: root\nTo: <destinataire>\nSubject: Test de mail\n\n <message>")
+smtp.sendmail(sys.argv[1], [sys.argv[2]], "From: root\nTo: <destinataire>\nSubject: Test de mail\n\n <message ici !!!!!!!!!!!>")

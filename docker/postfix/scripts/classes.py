@@ -16,7 +16,7 @@ db_port = os.getenv('DB_PORT')
 #Configuration pour utiliser flask et SQLAlchemy               
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = ("postgresql://"+db_user+":"+db_password+"@"+db_host+":"+db_port+"/"+db_name)
+app.config['SQLALCHEMY_DATABASE_URI'] = ("postgresql://{0}:{1}@{2}:{3}/{4}".format(db_user, db_password, db_host, db_port, db_name))
 db = SQLAlchemy(app)
 
 #Création des classes correspondant aux tables de la base de données (utilisé aussi pour la création de la base en phase de test)
