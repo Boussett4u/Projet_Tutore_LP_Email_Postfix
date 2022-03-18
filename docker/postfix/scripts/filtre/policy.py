@@ -89,7 +89,7 @@ if destinataire_existe > 0:
                                 #Ajout d'une entrée dans la table statistiques
                                 ajouterStat(1)
                                 #Le mail peut être envoyé
-                                print("action=dunno \n")
+                                print("action=dunno \n\n")
                         
 
                         #Si refusé
@@ -101,7 +101,7 @@ if destinataire_existe > 0:
                                 ajouterStat(2)
 
                                 #Le mail est rejeté
-                                print("action=reject \n")
+                                print("action=reject \n\n")
 
                         #Si en attente        
                         else:
@@ -129,7 +129,7 @@ if destinataire_existe > 0:
                                 ajouterStat(3)
 
                                 #Mise en file hold
-                                print("action=hold \n")
+                                print("action=hold \n\n")
 
                 #Cas où l'expéditeur n'existe pas dans la table Expediteur
                 else:
@@ -149,13 +149,13 @@ if destinataire_existe > 0:
                         ajouterStat(3)
 
                         #Mise en file hold
-                        print("action=hold \n")
+                        print("action=hold \n\n")
 
         else:
                 
                 syslog.syslog(syslog.LOG_INFO, 'Le destinataire {0} n\'est pas protege'.format(destinataire))
-                print("action=dunno \n")
+                print("action=dunno \n\n")
                                 
 else:
         syslog.syslog(syslog.LOG_INFO, 'Le destinataire {0} est introuvable')
-        print("action=dunno \n")
+        print("action=dunno \n\n")

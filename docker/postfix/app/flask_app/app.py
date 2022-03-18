@@ -102,6 +102,10 @@ def hello():
         # abort(400)
     # flash(mess)
     # return redirect(url_for('hello'))
+    if 'mail' in session:
+        mail = session['mail']
+    else:
+        mail = ''
     if c1+c2+c3 == 3:
         # abort(200, mess)
         return render_template("index.html", c1=c1, c2=c2, c3=c3, mail=mail ), 200
@@ -272,8 +276,7 @@ def login():
                     return redirect(url_for('user'))
             else:
                 flash(gettext("Mauvais mot de passe")+ ", "+ mail, "connecte")
-                return render_template("login.html", mail='')
-        return render_template("login.html")
+        return render_template("login.html", mail='')
     except IndexError:
         abort(404)
 
@@ -298,7 +301,7 @@ def signup():
             found_user = Utilisateur.query.filter_by(mail=mail).first()
             if found_user:
                 flash(gettext("Utilisateur déja inscrit"), "connecte") 
-                return render_template("signup.html", mail=session['mail'])
+                return render_template("signup.html", mail=mail)
             # On definit les variables de session
             session['nom'] = nom
             session['mail'] = mail 
@@ -308,6 +311,11 @@ def signup():
             db.session.commit() 
             flash(gettext("Inscription reussie"), "connecte") 
             return redirect(url_for("user"))        
+#        if 'mail' in session:
+#            mail = session['mail']
+#        else:
+#            mail = ''
+#        return render_template("signup.html", mail=mail)
         return render_template("signup.html")
     except IndexError:
         abort(404)
