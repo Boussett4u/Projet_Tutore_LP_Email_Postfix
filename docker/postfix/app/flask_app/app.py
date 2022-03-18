@@ -422,21 +422,28 @@ def modifmails():
         if request.method == "POST":
             tab = request.get_json(force=true)['paramName'] 
             for mails in tab: 
-                mail = Mail.query.filter_by(id=mails['mail']).first()
+                print (mails, file=sys.stderr)
+                mail = Mail.query.filter_by(id=mails['identifiant']).first()
+                # print (mail, file=sys.stderr)
                 if mails['statut']=='supprimé' or mails['statut'] == 'removed':
+                    print ("sup", file=sys.stderr)
                     stat = Statistiques(date= datetime.today().strftime('%Y-%m-%d'), actionFiltre=REFUSED)                
                     db.session.add(stat)
                     bashCommand = "postsuper -d " + mail.id_mail_postfix
                     os.system(bashCommand)
                     db.session.delete(mail)
-                if mails['statut']=='acheminé' or 'sent':
+
+                if mails['statut']=='acheminé' or mails['statut']=='sent':
+                    print ("env", file=sys.stderr)
                     stat = Statistiques(date= datetime.today().strftime("%Y-%m-%d"), actionFiltre= ACCEPTED)
                     db.session.add(stat)
                     # mail.statut = ACCEPTED
                     bashCommand = "postqueue -H " + mail.id_mail_postfix
                     os.system(bashCommand)
                     # db.session.delete(mail)
-                if mails['statut']=='en attente' or 'pending':
+
+                if mails['statut']== 'pending' or mails['statut']=='en attente':
+                    print ("att", file=sys.stderr)
                     stat = Statistiques(date= datetime.today().strftime("%Y-%m-%d"), actionFiltre= UNDECIDED)
                     db.session.add(stat)
                     # mail.statut = UNDECIDED
