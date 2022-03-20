@@ -80,12 +80,12 @@ services:
     build:
       context: ./postfix
       args:
-         - "https_proxy=http://webproxy.coe.int:8080"
-         - "http_proxy=http://webproxy.coe.int:8080"
+         - "https_proxy=${HTTP_PROXY}"
+         - "http_proxy=${HTTP_PROXY}"
     environment:
       MIO_METHOD: "policy_toto"
       MAILNAME: "mio.test.net"
-      POSTFIX_DOMAIN: "toto.com=[mailhog]:1025;titi.com=[mailhog]:1025;test.net=[mailhog]:1025"
+      POSTFIX_DOMAIN: "${POSTFIX_DOMAIN}"
       DB_HOST: 'db'
       DB_USER: "${DB_USER}"
       DB_PASSWORD: "${DB_PASSWORD}"
