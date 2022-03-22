@@ -1,0 +1,9 @@
+
+Log started: 2022-03-21  20:21:22
+Selecting previously unselected package telnet.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18337 files and directories currently installed.)
+Preparing to unpack .../telnet_0.17-42_amd64.deb ...
+Unpacking telnet (0.17-42) ...
+Setting up telnet (0.17-42) ...
+update-alternatives: using /usr/bin/telnet.netkit to provide /usr/bin/telnet (telnet) in auto mode
+Log ended: 2022-03-21  20:21:22

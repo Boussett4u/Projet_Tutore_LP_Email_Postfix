@@ -1,0 +1,17 @@
+{"caller":"main.go:81","level":"info","msg":"starting pushgateway","ts":"2022-03-21T16:14:28.227Z","version":"(version=1.0.0, branch=HEAD, revision=cc61f46971f5eb7a5be64e80c2ee03857ddbb41a)"}
+{"build_context":"(go=go1.13.1, user=root@58be538fc30e, date=20191015-19:58:18)","caller":"main.go:82","level":"info","ts":"2022-03-21T16:14:28.227Z"}
+{"caller":"main.go:142","level":"info","listen_address":":9091","ts":"2022-03-21T16:14:28.227Z"}
+{"caller":"diskmetricstore.go:220","file":"/tmp/metric.store","level":"info","msg":"metrics persisted","ts":"2022-03-21T16:38:50.750Z"}
+{"caller":"diskmetricstore.go:220","file":"/tmp/metric.store","level":"info","msg":"metrics persisted","ts":"2022-03-21T19:36:54.607Z"}
+{"caller":"diskmetricstore.go:220","file":"/tmp/metric.store","level":"info","msg":"metrics persisted","ts":"2022-03-21T19:41:54.607Z"}
+{"caller":"diskmetricstore.go:220","file":"/tmp/metric.store","level":"info","msg":"metrics persisted","ts":"2022-03-21T20:24:49.045Z"}
+{"caller":"diskmetricstore.go:220","file":"/tmp/metric.store","level":"info","msg":"metrics persisted","ts":"2022-03-21T20:29:49.046Z"}
+{"caller":"diskmetricstore.go:220","file":"/tmp/metric.store","level":"info","msg":"metrics persisted","ts":"2022-03-21T20:34:49.047Z"}
+{"caller":"diskmetricstore.go:220","file":"/tmp/metric.store","level":"info","msg":"metrics persisted","ts":"2022-03-21T20:39:49.047Z"}
+{"caller":"diskmetricstore.go:220","file":"/tmp/metric.store","level":"info","msg":"metrics persisted","ts":"2022-03-21T20:44:49.048Z"}
+{"caller":"diskmetricstore.go:220","file":"/tmp/metric.store","level":"info","msg":"metrics persisted","ts":"2022-03-21T20:54:07.266Z"}
+{"caller":"diskmetricstore.go:220","file":"/tmp/metric.store","level":"info","msg":"metrics persisted","ts":"2022-03-21T20:59:07.267Z"}
+{"caller":"diskmetricstore.go:220","file":"/tmp/metric.store","level":"info","msg":"metrics persisted","ts":"2022-03-21T21:10:42.122Z"}
+{"caller":"diskmetricstore.go:220","file":"/tmp/metric.store","level":"info","msg":"metrics persisted","ts":"2022-03-21T21:15:42.123Z"}
+{"caller":"diskmetricstore.go:220","file":"/tmp/metric.store","level":"info","msg":"metrics persisted","ts":"2022-03-21T21:20:42.123Z"}
+{"caller":"diskmetricstore.go:220","file":"/tmp/metric.store","level":"info","msg":"metrics persisted","ts":"2022-03-21T21:25:42.124Z"}

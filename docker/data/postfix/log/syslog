@@ -1,0 +1,35 @@
+Mar 21 11:00:21 postfix postfix/master[189]: daemon started -- version 3.5.6, configuration /etc/postfix
+Mar 21 11:00:22 postfix rsyslogd: cannot create '/var/spool/postfix/dev/log': No such file or directory [v8.2102.0 try https://www.rsyslog.com/e/2176 ]
+Mar 21 11:00:22 postfix rsyslogd: imklog: cannot open kernel log (/proc/kmsg): Operation not permitted.
+Mar 21 11:00:22 postfix rsyslogd: activation of module imklog failed [v8.2102.0 try https://www.rsyslog.com/e/2145 ]
+Mar 21 11:00:22 postfix rsyslogd: [origin software="rsyslogd" swVersion="8.2102.0" x-pid="31" x-info="https://www.rsyslog.com"] start
+Mar 21 14:22:57 postfix postfix/master[134]: daemon started -- version 3.5.6, configuration /etc/postfix
+Mar 21 14:22:58 postfix rsyslogd: imklog: cannot open kernel log (/proc/kmsg): Operation not permitted.
+Mar 21 14:22:58 postfix rsyslogd: activation of module imklog failed [v8.2102.0 try https://www.rsyslog.com/e/2145 ]
+Mar 21 14:22:58 postfix rsyslogd: [origin software="rsyslogd" swVersion="8.2102.0" x-pid="31" x-info="https://www.rsyslog.com"] start
+Mar 21 14:25:33 postfix postfix/master[134]: daemon started -- version 3.5.6, configuration /etc/postfix
+Mar 21 14:25:34 postfix rsyslogd: imklog: cannot open kernel log (/proc/kmsg): Operation not permitted.
+Mar 21 14:25:34 postfix rsyslogd: activation of module imklog failed [v8.2102.0 try https://www.rsyslog.com/e/2145 ]
+Mar 21 14:25:34 postfix rsyslogd: [origin software="rsyslogd" swVersion="8.2102.0" x-pid="31" x-info="https://www.rsyslog.com"] start
+Mar 21 15:04:03 postfix postfix/master[134]: daemon started -- version 3.5.6, configuration /etc/postfix
+Mar 21 15:04:04 postfix rsyslogd: imklog: cannot open kernel log (/proc/kmsg): Operation not permitted.
+Mar 21 15:04:04 postfix rsyslogd: activation of module imklog failed [v8.2102.0 try https://www.rsyslog.com/e/2145 ]
+Mar 21 15:04:04 postfix rsyslogd: [origin software="rsyslogd" swVersion="8.2102.0" x-pid="31" x-info="https://www.rsyslog.com"] start
+Mar 21 20:21:34 postfix postfix/smtpd[529]: connect from localhost[127.0.0.1]
+Mar 21 20:22:37 postfix postfix/smtpd[529]: 5616B5E35A0: client=localhost[127.0.0.1]
+Mar 21 20:22:50 postfix postfix/cleanup[533]: 5616B5E35A0: message-id=<20220321202237.5616B5E35A0@mio.test.net>
+Mar 21 20:22:50 postfix postfix/qmgr[138]: 5616B5E35A0: from=<jacki@debian>, size=304, nrcpt=1 (queue active)
+Mar 21 20:22:50 postfix postfix/smtp[534]: 5616B5E35A0: to=<bar@cannette.pmu>, relay=mailhog[172.21.0.5]:1025, delay=35, delays=35/0/0/0, dsn=2.0.0, status=sent (250 Ok: queued as BgkSzd_AqxLi68swvZ4Em91qH_nXCiCfEf0No63_6b4=@mailhog.example)
+Mar 21 20:22:50 postfix postfix/qmgr[138]: 5616B5E35A0: removed
+Mar 21 20:22:54 postfix postfix/smtpd[529]: disconnect from localhost[127.0.0.1] ehlo=1/2 mail=1 rcpt=1 data=1 quit=1 commands=5/6
+Mar 21 21:24:11 postfix postfix/smtpd[562]: connect from localhost[127.0.0.1]
+Mar 21 21:25:19 postfix postfix/smtpd[562]: 8BF455E3586: client=localhost[127.0.0.1]
+Mar 21 21:25:41 postfix postfix/cleanup[565]: 8BF455E3586: message-id=<20220321212519.8BF455E3586@mio.test.net>
+Mar 21 21:25:41 postfix postfix/qmgr[138]: 8BF455E3586: from=<mousse@en.cannette>, size=317, nrcpt=1 (queue active)
+Mar 21 21:25:41 postfix postfix/smtp[566]: 8BF455E3586: to=<bar@cannette.pmu>, relay=mailhog[172.21.0.5]:1025, delay=47, delays=47/0/0/0, dsn=2.0.0, status=sent (250 Ok: queued as xsWFPoiaCs8aXDlbvZuFuO2Z_hYqnNPDGeYy2a0xTPU=@mailhog.example)
+Mar 21 21:25:41 postfix postfix/qmgr[138]: 8BF455E3586: removed
+Mar 21 21:25:44 postfix postfix/smtpd[562]: disconnect from localhost[127.0.0.1] ehlo=1 mail=1 rcpt=1 data=1 quit=1 commands=5
+Mar 21 22:30:26 postfix postfix/master[134]: daemon started -- version 3.5.6, configuration /etc/postfix
+Mar 21 22:30:27 postfix rsyslogd: imklog: cannot open kernel log (/proc/kmsg): Operation not permitted.
+Mar 21 22:30:27 postfix rsyslogd: activation of module imklog failed [v8.2102.0 try https://www.rsyslog.com/e/2145 ]
+Mar 21 22:30:27 postfix rsyslogd: [origin software="rsyslogd" swVersion="8.2102.0" x-pid="31" x-info="https://www.rsyslog.com"] start

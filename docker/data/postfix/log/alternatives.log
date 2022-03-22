@@ -1,0 +1,2 @@
+update-alternatives 2022-03-21 20:21:22: run with --install /usr/bin/telnet telnet /usr/bin/telnet.netkit 100 --slave /usr/share/man/man1/telnet.1.gz telnet.1.gz /usr/share/man/man1/telnet.netkit.1.gz
+update-alternatives 2022-03-21 20:21:22: link group telnet updated to point to /usr/bin/telnet.netkit

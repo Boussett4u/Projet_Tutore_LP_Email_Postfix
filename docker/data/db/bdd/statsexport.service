@@ -1,0 +1,11 @@
+[Unit]
+Description=statsexport
+
+[Service]
+User=root
+Group=root
+ExecStart=/usr/local/pushdata.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target 

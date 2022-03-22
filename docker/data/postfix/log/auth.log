@@ -1,0 +1,4 @@
+Mar 21 20:13:41 postfix su: (to root) root on pts/0
+Mar 21 20:13:41 postfix su: pam_env(su:session): Unable to open env file: /etc/default/locale: No such file or directory
+Mar 21 20:13:41 postfix su: pam_unix(su:session): session opened for user root(uid=0) by (uid=0)
+Mar 21 22:17:25 postfix su: pam_unix(su:session): session closed for user root

@@ -1,0 +1,5 @@
+Mar 21 11:00:22 postfix rsyslogd: imklog: cannot open kernel log (/proc/kmsg): Operation not permitted.
+Mar 21 14:22:58 postfix rsyslogd: imklog: cannot open kernel log (/proc/kmsg): Operation not permitted.
+Mar 21 14:25:34 postfix rsyslogd: imklog: cannot open kernel log (/proc/kmsg): Operation not permitted.
+Mar 21 15:04:04 postfix rsyslogd: imklog: cannot open kernel log (/proc/kmsg): Operation not permitted.
+Mar 21 22:30:27 postfix rsyslogd: imklog: cannot open kernel log (/proc/kmsg): Operation not permitted.

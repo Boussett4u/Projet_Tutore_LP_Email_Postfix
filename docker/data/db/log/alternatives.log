@@ -1,0 +1,4 @@
+update-alternatives 2022-03-21 16:13:10: run with --install /usr/bin/editor editor /bin/nano 40 --slave /usr/share/man/man1/editor.1.gz editor.1.gz /usr/share/man/man1/nano.1.gz
+update-alternatives 2022-03-21 16:13:10: link group editor updated to point to /bin/nano
+update-alternatives 2022-03-21 16:13:10: run with --install /usr/bin/pico pico /bin/nano 10 --slave /usr/share/man/man1/pico.1.gz pico.1.gz /usr/share/man/man1/nano.1.gz
+update-alternatives 2022-03-21 16:13:10: link group pico updated to point to /bin/nano

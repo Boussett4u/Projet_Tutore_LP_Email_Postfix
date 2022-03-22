@@ -1,0 +1,5 @@
+Mar 21 11:00:22 postfix rsyslogd: [origin software="rsyslogd" swVersion="8.2102.0" x-pid="31" x-info="https://www.rsyslog.com"] start
+Mar 21 14:22:58 postfix rsyslogd: [origin software="rsyslogd" swVersion="8.2102.0" x-pid="31" x-info="https://www.rsyslog.com"] start
+Mar 21 14:25:34 postfix rsyslogd: [origin software="rsyslogd" swVersion="8.2102.0" x-pid="31" x-info="https://www.rsyslog.com"] start
+Mar 21 15:04:04 postfix rsyslogd: [origin software="rsyslogd" swVersion="8.2102.0" x-pid="31" x-info="https://www.rsyslog.com"] start
+Mar 21 22:30:27 postfix rsyslogd: [origin software="rsyslogd" swVersion="8.2102.0" x-pid="31" x-info="https://www.rsyslog.com"] start
