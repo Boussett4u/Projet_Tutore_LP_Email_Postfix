@@ -96,7 +96,7 @@ def hello():
     postfix = sp.getoutput('/etc/init.d/postfix status')
     app = True
     c1=0
-    c2=0
+    c2=1
     c3=0
     db = Utilisateur
     if (db):
@@ -188,11 +188,17 @@ def validation(token):
             if recaptcha.verify(): 
                 message = gettext('Captcha validé') 
                 expediteur.statut = ACCEPTED
+                mails = Mail.query.filter_by(expediteur_id = expediteur.id).all()
+                for mail in mails:
+                    stat = Statistiques(date= datetime.today().strftime("%Y-%m-%d"), actionFiltre= ACCEPTED)
+                    db.session.add(stat)
+                    bashCommand = "/usr/sbin/postsuper -H " + mail.id_mail_postfix
+                    os.system(bashCommand)
                 db.session.commit()
         else:
             message = gettext('Veuillez valider le captcha') 
     else:
-        message = gettext('Expediteur ' + expediteur.mail + ' deja valide') 
+        message = gettext('Sender ' + expediteur.mail + ' already valid') 
     return render_template('validation.html', message=message, mail = expediteur.mail)
 
             # expmail = request.form.get('email')
