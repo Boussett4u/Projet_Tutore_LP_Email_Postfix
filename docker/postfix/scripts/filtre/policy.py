@@ -29,7 +29,7 @@ from fonctionsCommunes import envoyerLien, ajouterMail, ajouterExpediteur, ajout
 #app.config['SQLALCHEMY_DATABASE_URI'] = ("postgresql://{0}:{1}@{2}:{3}/{4}".format(db_user, db_password, db_host, db_port, db_name))
 #db = SQLAlchemy(app)
 
-message=""
+#message=""
 
 #Récupération des paramètres 
 parametres={}
@@ -39,7 +39,7 @@ while 1:
                 break
         else:
                 #Construction d'une tableau clé valeur avec les paramètres
-                message+=line
+                #message+=line
                 resu = line.split("=")
                 parametres[resu[0]] = resu[1]
 

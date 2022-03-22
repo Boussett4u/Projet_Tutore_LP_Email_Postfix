@@ -433,7 +433,7 @@ def modifmails():
                 if mails['statut']=='supprimé' or mails['statut'] == 'removed':
                     stat = Statistiques(date= datetime.today().strftime('%Y-%m-%d'), actionFiltre=REFUSED)                
                     db.session.add(stat)
-                    bashCommand = "/usr/bin/postsuper -d " + mail.id_mail_postfix
+                    bashCommand = "/usr/sbin/postsuper -d " + mail.id_mail_postfix
                     os.system(bashCommand)
                     db.session.delete(mail)
 
@@ -442,7 +442,7 @@ def modifmails():
                     stat = Statistiques(date= datetime.today().strftime("%Y-%m-%d"), actionFiltre= ACCEPTED)
                     db.session.add(stat)
                     # mail.statut = ACCEPTED
-                    bashCommand = "/usr/bin/postsuper -H " + mail.id_mail_postfix
+                    bashCommand = "/usr/sbin/postsuper -H " + mail.id_mail_postfix
                     os.system(bashCommand)
                     # db.session.delete(mail)
 

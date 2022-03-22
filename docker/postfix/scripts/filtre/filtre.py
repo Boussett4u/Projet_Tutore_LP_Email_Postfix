@@ -58,7 +58,7 @@ message=""
 for line in sys.stdin:
         message += line
 
-#Fonctione permettant la mise en quarantaine
+#Fonction permettant la mise en quarantaine
 def miseQuarantaine(mail_id, message):
         #Mise en quarantaine du message dans un répertoire spécifique
         mailFichier = open("/home/testfilter/quarantaine/{0}".format(mail_id), "a")

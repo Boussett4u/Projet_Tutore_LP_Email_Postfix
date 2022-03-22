@@ -35,7 +35,7 @@ case $MIO_METHOD in
   ;;
   policy | *)
     echo "Configuration pour POLICY"
-    postconf -e "smtpd_data_restrictions = reject_unauth_destination check_policy_service unix:private/policy"
+    postconf -e "smtpd_data_restrictions = permit_mynetworks reject_unauth_destination check_policy_service unix:private/policy"
     postconf -e "policy_time_limit = 3600"
     postconf -e "smtpd_policy_service_request_limit = 1"
     postconf -e "export_environment = TZ MAIL_CONFIG LANG DB_HOST DB_USER DB_PASSWORD DB_NAME DB_PORT"

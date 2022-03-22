@@ -49,9 +49,11 @@ def envoyerLien(expediteur, mailValidation, destinataire):
 def ajouterMail(expediteur, mail_id):
         infoExpediteur = Expediteur.query.filter_by(mail=expediteur).first()
         nouveauMail = Mail (mail_id, infoExpediteur.id, datetime.now())
-        db.session.add(nouveauMail)
-        db.session.commit()
-
+        try:
+            db.session.add(nouveauMail)
+            db.session.commit()
+        except:
+            db.session.commit()
 
 #Fonction pour ajouter un expéditeur
 def ajouterExpediteur(destinataire, expediteur):
